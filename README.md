@@ -3,7 +3,7 @@
 ## Build
 
 ```
-sudo vcpkg install glfw3 glm boost stb imgui[bindings] spdlog cpp-httplib nlohmann-json
+sudo vcpkg install glfw3 glm boost stb imgui[bindings] spdlog cpp-httplib nlohmann-json entt tinygltf
 mkdir build
 cd build
 cmake ..
