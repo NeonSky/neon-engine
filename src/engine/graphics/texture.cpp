@@ -5,8 +5,7 @@
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <map>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "image.hpp"
 
 using namespace engine::graphics;
 
@@ -18,20 +17,10 @@ Texture::Texture(std::string img_path) {
     return;
   }
 
-  stbi_set_flip_vertically_on_load(true); // Match opengl
-
-  std::string res_path = boost::dll::program_location().parent_path().string() + "/res/";
-  std::string full_img_path = res_path + img_path;
-
-  int w, h, comp;
-  unsigned char* image = stbi_load(full_img_path.c_str(), &w, &h, &comp, STBI_rgb_alpha);
-  if (image == NULL)
-    LOG_ERROR("Can not load texture: " + full_img_path);
-
+  Image image(img_path);
   glGenTextures(1, &_texture);
   glBindTexture(GL_TEXTURE_2D, _texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  free(image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.data());
 
   // Clamp coords
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
