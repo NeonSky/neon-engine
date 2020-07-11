@@ -12,7 +12,10 @@ using namespace engine::gui;
 Window::Window()
   : Window(1920, 1080, "Application") {}
 
-Window::Window(int width, int height, const char* title) {
+Window::Window(unsigned int width, unsigned int height, const char* title)
+  : _width(width),
+    _height(height) {
+
   if (!glfwInit()) {
     LOG_CRITICAL("Failed to init glfw.");
   }
@@ -78,8 +81,16 @@ void Window::clear_screen() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-bool Window::is_closing() {
+bool Window::is_closing() const {
   return glfwWindowShouldClose(this->window);
+}
+
+unsigned int Window::width() const {
+  return _width;
+}
+
+unsigned int Window::height() const {
+  return _height;
 }
 
 void Window::add_on_key_callback(std::function<void(GLFWwindow*, int)> callback) {

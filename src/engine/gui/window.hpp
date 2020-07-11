@@ -10,7 +10,7 @@ namespace engine::gui {
   class Window {
   public:
     Window();
-    Window(int width, int height, const char* title);
+    Window(unsigned int width, unsigned int height, const char* title);
     ~Window();
 
     // Mutators
@@ -23,10 +23,14 @@ namespace engine::gui {
     void add_on_mouse_scroll_callback(std::function<void(GLFWwindow*, float, float)> callback);
 
     // Accessors
-    bool is_closing();
+    bool is_closing() const;
+    unsigned int width() const;
+    unsigned int height() const;
 
   private:
     GLFWwindow* window;
+    unsigned int _width;
+    unsigned int _height;
 
     std::vector<std::function<void(GLFWwindow*, int)>> on_key_callbacks;
     std::vector<std::function<void(GLFWwindow*, int, int)>> on_mouse_click_callbacks;
