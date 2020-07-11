@@ -30,7 +30,7 @@ add_subdirectory("vendor")
 # Configure executable.
 file(GLOB_RECURSE src_files "src/*.c" "src/*.h" "src/*.cpp" "src/*.hpp")
 add_executable(ECS_Scenes "${src_files}")
-# target_compile_options(ECS_Scenes PRIVATE -Werror -Wall -Wextra)
+target_compile_options(ECS_Scenes PRIVATE -Werror -Wall -Wextra)
 file(COPY "res" DESTINATION ".")
 
 # Link dependencies.

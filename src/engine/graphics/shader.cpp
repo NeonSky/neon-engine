@@ -32,7 +32,12 @@ void Shader::use() {
   glUseProgram(this->program);
 }
 
-void Shader::set_uniform(const GLchar* uniform, const GLfloat *data) {
+void Shader::set_uniform_vec3(const GLchar* uniform, const GLfloat *data) {
+  int loc = glGetUniformLocation(this->program, uniform);
+  glUniform3fv(loc, 1, data);
+}
+
+void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat *data) {
   int loc = glGetUniformLocation(this->program, uniform);
   glUniformMatrix4fv(loc, 1, false, data);
 }

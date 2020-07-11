@@ -54,7 +54,7 @@ void DebugDrawer::render(const glm::mat4 &view_projection_matrix) {
 
   glBindVertexArray(vao);
 
-  this->shader.set_uniform("modelViewProjectionMatrix", &view_projection_matrix[0].x);
+  this->shader.set_uniform_mat4("modelViewProjectionMatrix", &view_projection_matrix[0].x);
 
   glLineWidth(this->line_width);
   glDrawArrays(GL_LINES, 0, 6 * this->line_queue.size()); // NOTE: 6 floats per line

@@ -1,4 +1,8 @@
-#version 330 core
+#version 420
+
+// required by GLSL spec Sect 4.5.3 (though nvidia does not, amd does)
+precision highp float;
+
 in vec3 normal;
 in vec3 position;
 in vec2 texcoord;

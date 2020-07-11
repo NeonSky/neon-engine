@@ -8,7 +8,11 @@
 
 using namespace engine::graphics;
 
-Rectangle::Rectangle(geometry::Rectangle rectangle, const Texture *texture) : _texture(texture){
+// TODO: Don't take a pointer. Simply have a function that doesn't take a texture as alternative.
+Rectangle::Rectangle(geometry::Rectangle rectangle,
+                    const Texture *texture)
+  : _texture(texture) {
+
   _shader = std::make_unique<Shader>("texture.vert", "texture.frag");
 
   glm::vec3 botleft  = rectangle.botleft();
@@ -74,8 +78,7 @@ void Rectangle::render(const glm::mat4 &view_projection_matrix) {
   _shader->use();
 
   glm::mat4 model_view_projection = view_projection_matrix * this->transform.matrix();
-  _shader->set_uniform("mvp_matrix", &model_view_projection[0].x);
-  // _shader->set_uniform("modelViewProjectionMatrix", &model_view_projection[0].x);
+  _shader->set_uniform_mat4("mvp_matrix", &model_view_projection[0].x);
 
   if (_texture != nullptr) {
     glActiveTexture(GL_TEXTURE0);
