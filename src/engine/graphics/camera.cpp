@@ -15,7 +15,9 @@ double yaw = 0.0f;
 double pitch = 0.0f;
 
 Camera::Camera() : Camera(geometry::Transform()){}
-Camera::Camera(const geometry::Transform& transform) : transform(transform){
+Camera::Camera(const geometry::Transform& transform)
+  : transform(transform) {
+
   yaw = this->transform.yaw();
   pitch = this->transform.pitch();
 }
@@ -26,19 +28,19 @@ void Camera::move(Direction move_dir) {
   glm::vec3 displacement_dir;
   switch (move_dir) {
   case Direction::FORWARD:
-    displacement_dir = this->transform.forward();
+    displacement_dir = +this->transform.forward();
     break;
   case Direction::BACKWARD:
     displacement_dir = -this->transform.forward();
     break;
   case Direction::RIGHT:
-    displacement_dir = this->transform.right();
+    displacement_dir = +this->transform.right();
     break;
   case Direction::LEFT:
     displacement_dir = -this->transform.right();
     break;
   case Direction::UP:
-    displacement_dir = this->transform.up();
+    displacement_dir = +this->transform.up();
     break;
   case Direction::DOWN:
     displacement_dir = -this->transform.up();
@@ -49,22 +51,17 @@ void Camera::move(Direction move_dir) {
   this->transform.position += this->movement_speed * displacement_dir;
 }
 
-// void Camera::look_at(glm::vec3 target) {
-//   this->orientation = Orientation(target - this->pos);
-// }
-
 void Camera::set_zoom(float zoom_level) {
   // FIXME: name constant
   this->perspective.fov = 45.0f - zoom_level;
 }
 
 void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
-  if (firstMouse)
-    {
-      lastX = mouse_xpos;
-      lastY = mouse_ypos;
-      firstMouse = false;
-    }
+  if (firstMouse) {
+    lastX = mouse_xpos;
+    lastY = mouse_ypos;
+    firstMouse = false;
+  }
 
   float xoffset = mouse_xpos - lastX;
   float yoffset = mouse_ypos - lastY;
@@ -84,7 +81,12 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 }
 
 glm::mat4 Camera::view_matrix() const {
-  glm::mat3 base_vectors_in_world_space(this->transform.right(), this->transform.up(), -this->transform.forward());
+
+  glm::mat3 base_vectors_in_world_space(
+    this->transform.right(),  // (R_x, R_y, R_z)
+    this->transform.up(),     // (U_x, U_y, U_z)
+    this->transform.forward() // (F_x, F_y, F_z)
+  );
 
   // NOTE: transpose = inverse, since the matrix is an orthonormal base.
   glm::mat3 inverse_base = glm::transpose(base_vectors_in_world_space);
@@ -95,7 +97,7 @@ glm::mat4 Camera::view_matrix() const {
 glm::mat4 Camera::projection_matrix(ProjectionType projection_type) const {
   switch (projection_type) {
   case ProjectionType::PERSPECTIVE:
-    return glm::perspective(
+    return glm::perspectiveLH(
       glm::radians(this->perspective.fov),
       this->perspective.aspect_ratio,
       this->perspective.near,
