@@ -1,7 +1,4 @@
-# Usage:
-# 1. docker build -t ecs-scenes .
-# 2. docker run ecs-scenes
-FROM archlinux/base
+FROM archlinux/base:latest
 
 # Setup yay workspace.
 RUN echo '[multilib]' >> /etc/pacman.conf && \
@@ -40,18 +37,3 @@ RUN sudo vcpkg install nlohmann-json
 RUN sudo vcpkg install entt
 RUN sudo vcpkg install tinygltf
 RUN sudo vcpkg install gtest
-
-RUN mkdir -p /home/aur/ecs-scenes/build
-RUN mkdir -p /home/aur/ecs-scenes/src
-
-WORKDIR /home/aur/ecs-scenes
-COPY res res
-COPY src src
-COPY CMakeLists.txt .
-
-WORKDIR build
-RUN cmake ..
-RUN make rebuild_cache
-RUN make
-
-CMD ["/home/aur/ecs-scenes/build/ECS_Scenes_Test"]

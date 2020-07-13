@@ -1,11 +1,10 @@
 # ECS Scenes
 
-## Build
+[![Build Status](https://travis-ci.com/NeonSky/ecs-scenes.svg?token=TptU3mWb3ppa6yPiyN4b&branch=master&status=started)](https://travis-ci.org/NeonSky/ecs-scenes)
+
+## Getting Started
 
 ```
-sudo vcpkg install glfw3 glm boost stb imgui[bindings] spdlog cpp-httplib nlohmann-json entt tinygltf gtest
-mkdir build
-cd build
-cmake ..
-make && ./ECS_Scenes
+make setup
+make run
 ```
