@@ -6,6 +6,7 @@ project(ECS_Scenes VERSION 1.0.0)
 # Global options.
 set(CMAKE_CXX_STANDARD 17)
 set(OpenGL_GL_PREFERENCE "GLVND")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Global debug options.
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -13,7 +14,7 @@ set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 
 # Load configuration cmake files from dependencies.
 find_package(glfw3 3.3.2 CONFIG REQUIRED)
-find_package(glm 0.9.9.8 CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(spdlog 1.4.2 CONFIG REQUIRED)
 find_package(nlohmann_json 3.7.3 CONFIG REQUIRED)
