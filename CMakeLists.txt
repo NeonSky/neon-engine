@@ -26,7 +26,7 @@ set(Boost_USE_STATIC_RUNTIME ON)
 find_package(Boost 1.72.0 REQUIRED COMPONENTS filesystem)
 
 # Include local dependencies.
-add_subdirectory("vendor")
+add_subdirectory("src/vendor")
 
 # Configure executable.
 file(GLOB_RECURSE src_files "src/engine/*.c" "src/engine/*.h" "src/engine/*.cpp" "src/engine/*.hpp")
