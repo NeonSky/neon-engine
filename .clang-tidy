@@ -1,0 +1,9 @@
+---
+Checks:          'modernize-*'
+WarningsAsErrors: '*'
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     none
+User:            neonsky
+...
+

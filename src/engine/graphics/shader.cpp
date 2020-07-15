@@ -26,7 +26,7 @@ Shader::Shader(std::string vertex_shader_path, std::string fragment_shader_path)
     LOG_ERROR("Could not link program.");
 }
 
-Shader::~Shader() {}
+Shader::~Shader() = default;
 
 void Shader::use() {
   glUseProgram(this->program);
@@ -42,7 +42,7 @@ void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat *data) {
   glUniformMatrix4fv(loc, 1, false, data);
 }
 
-GLuint Shader::load_shader_file(std::string shader_path, GLenum shader_type) {
+auto Shader::load_shader_file(std::string shader_path, GLenum shader_type) -> GLuint {
   if (_cache.count(shader_path))
     return _cache[shader_path];
 

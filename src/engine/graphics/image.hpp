@@ -13,9 +13,9 @@ namespace engine::graphics {
     Image(std::string img_path);
     ~Image();
 
-    const unsigned char* data() const;
-    unsigned int width() const;
-    unsigned int height() const;
+    [[nodiscard]] auto data() const -> const unsigned char*;
+    [[nodiscard]] auto width() const -> unsigned int;
+    [[nodiscard]] auto height() const -> unsigned int;
 
   private:
     std::unique_ptr<unsigned char> _data;

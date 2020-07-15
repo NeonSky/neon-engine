@@ -5,7 +5,7 @@
 
 using namespace engine::debug;
 
-bool checkGLError(const char* file, int line) {
+auto checkGLError(const char* file, int line) -> bool {
 	bool wasError = false;
 	for (GLenum glErr = glGetError(); glErr != GL_NO_ERROR; glErr = glGetError()) {
     LOG_ERROR("OpenGL error #" + std::to_string(glErr) + " in " + file + " at line: " + std::to_string(line));

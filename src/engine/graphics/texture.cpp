@@ -38,4 +38,6 @@ Texture::Texture(std::string img_path) {
   _cache[img_path] = _texture;
 }
 
-Texture::~Texture() {}
+Texture::~Texture() = default;
+
+auto Texture::id() const -> GLuint { return _texture; }

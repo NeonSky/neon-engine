@@ -20,7 +20,7 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
     LOG_CRITICAL("Failed to init glfw.");
   }
 
-  GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
   if (!window) {
     glfwTerminate();
     LOG_CRITICAL("Failed to create glfw window.");
@@ -30,25 +30,25 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
   glfwSetWindowUserPointer(window, reinterpret_cast<void *>(this));
 
   glfwSetKeyCallback(window, [](GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
-    Window* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
     for (std::function<void(GLFWwindow*, int)> c : w->on_key_callbacks)
       c(window, action);
   });
 
   glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, [[maybe_unused]] int mods) {
-    Window* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
     for (std::function<void(GLFWwindow*, int, int)> c : w->on_mouse_click_callbacks)
       c(window, button, action);
   });
 
   glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
-    Window* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
     for (std::function<void(GLFWwindow*, float, float)> c : w->on_mouse_move_callbacks)
       c(window, xpos, ypos);
   });
 
   glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-    Window* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
     for (std::function<void(GLFWwindow*, float, float)> c : w->on_mouse_scroll_callbacks)
       c(window, xoffset, yoffset);
   });
@@ -81,15 +81,15 @@ void Window::clear_screen() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-bool Window::is_closing() const {
+auto Window::is_closing() const -> bool {
   return glfwWindowShouldClose(this->window);
 }
 
-unsigned int Window::width() const {
+auto Window::width() const -> unsigned int {
   return _width;
 }
 
-unsigned int Window::height() const {
+auto Window::height() const -> unsigned int {
   return _height;
 }
 

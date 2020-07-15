@@ -80,7 +80,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
   this->transform.set_rotation(yaw, pitch, 0.0f);
 }
 
-glm::mat4 Camera::view_matrix() const {
+auto Camera::view_matrix() const -> glm::mat4 {
 
   glm::mat3 base_vectors_in_world_space(
     this->transform.right(),  // (R_x, R_y, R_z)
@@ -94,7 +94,7 @@ glm::mat4 Camera::view_matrix() const {
   return glm::mat4(inverse_base) * glm::translate(-this->transform.position);
 }
 
-glm::mat4 Camera::projection_matrix(ProjectionType projection_type) const {
+auto Camera::projection_matrix(ProjectionType projection_type) const -> glm::mat4 {
   switch (projection_type) {
   case ProjectionType::PERSPECTIVE:
     return glm::perspectiveLH(

@@ -8,14 +8,14 @@ Rectangle::Rectangle(Transform transform, float width, float height) : _transfor
 }
 
 // Accessors
-Transform Rectangle::transform() const { return this->_transform; }
-float Rectangle::width() const { return this->_width; }
-float Rectangle::height() const { return this->_height; }
+auto Rectangle::transform() const -> Transform { return this->_transform; }
+auto Rectangle::width() const -> float { return this->_width; }
+auto Rectangle::height() const -> float { return this->_height; }
 
-glm::vec3 Rectangle::topleft() const { return this->_topleft; }
-glm::vec3 Rectangle::topright() const { return this->_topright; }
-glm::vec3 Rectangle::botleft() const { return this->_botleft; }
-glm::vec3 Rectangle::botright() const { return this->_botright; }
+auto Rectangle::topleft() const -> glm::vec3 { return this->_topleft; }
+auto Rectangle::topright() const -> glm::vec3 { return this->_topright; }
+auto Rectangle::botleft() const -> glm::vec3 { return this->_botleft; }
+auto Rectangle::botright() const -> glm::vec3 { return this->_botright; }
 
 // Mutators
 void Rectangle::update_corners() {

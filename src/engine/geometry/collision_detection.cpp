@@ -11,9 +11,10 @@
 
 using namespace engine::geometry;
 
-Intersection::Intersection(glm::vec3 point) : point(point) {}
+Intersection::Intersection(glm::vec3 point)
+  : point(point) {}
 
-Intersection* engine::geometry::ray_plane_intersection(Ray ray, Plane plane) {
+auto engine::geometry::ray_plane_intersection(Ray ray, Plane plane) -> Intersection* {
   glm::vec3 from = ray.origin;
   glm::vec3 dir = ray.direction;
   glm::vec3 normal = plane.normal;
@@ -28,7 +29,7 @@ Intersection* engine::geometry::ray_plane_intersection(Ray ray, Plane plane) {
   return new Intersection(hit);
 }
 
-Intersection* engine::geometry::ray_rectangle_intersection(Ray ray, Rectangle rectangle) {
+auto engine::geometry::ray_rectangle_intersection(Ray ray, Rectangle rectangle) -> Intersection* {
   Intersection* hit = ray_plane_intersection(ray, Plane(rectangle));
   if (hit == nullptr)
     return nullptr;
@@ -43,5 +44,9 @@ Intersection* engine::geometry::ray_rectangle_intersection(Ray ray, Rectangle re
   bool check1 = glm::dot(botleft, OA) < glm::dot(hit->point, OA) && glm::dot(hit->point, OA) < glm::dot(topleft, OA);
   bool check2 = glm::dot(botleft, OB) < glm::dot(hit->point, OB) && glm::dot(hit->point, OB) < glm::dot(botright, OB);
 
-  return (check1 && check2) ? hit : nullptr;
+  if (check1 && check2)
+    return hit;
+
+  delete hit;
+  return nullptr;
 }

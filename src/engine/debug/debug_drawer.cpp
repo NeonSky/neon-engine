@@ -45,11 +45,11 @@ void DebugDrawer::render(const glm::mat4 &view_projection_matrix) {
   glBindVertexArray(vao);
 
   glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);
-  glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, nullptr);
   glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-	glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, nullptr);
   glEnableVertexAttribArray(1);
 
   glBindVertexArray(vao);

@@ -23,16 +23,16 @@ namespace engine::geometry {
     static constexpr glm::vec4 world_up      = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     static constexpr glm::vec4 world_forward = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
-    Transform operator+(const Transform &other) const;
+    auto operator+(const Transform &other) const -> Transform;
 
-    glm::mat4 matrix() const;
-    glm::vec3 forward() const;
-    glm::vec3 up() const;
-    glm::vec3 right() const;
+    [[nodiscard]] auto matrix() const -> glm::mat4;
+    [[nodiscard]] auto forward() const -> glm::vec3;
+    [[nodiscard]] auto up() const -> glm::vec3;
+    [[nodiscard]] auto right() const -> glm::vec3;
 
-    float yaw() const { return rotation.y; };
-    float pitch() const { return rotation.x; };
-    float roll() const { return rotation.z; };
+    [[nodiscard]] auto yaw() const -> float { return rotation.y; };
+    [[nodiscard]] auto pitch() const -> float { return rotation.x; };
+    [[nodiscard]] auto roll() const -> float { return rotation.z; };
 
     glm::vec3 position;
     glm::vec3 rotation;
@@ -40,6 +40,6 @@ namespace engine::geometry {
 
   private:
     // Accessors
-    glm::mat4 rotation_matrix() const;
+    [[nodiscard]] auto rotation_matrix() const -> glm::mat4;
   };
 }

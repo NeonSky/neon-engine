@@ -15,11 +15,11 @@
 #define LOG_ERROR(...)    { SPDLOG_ERROR(__VA_ARGS__); throw std::runtime_error(__VA_ARGS__); }
 #define LOG_CRITICAL(...) { SPDLOG_CRITICAL(__VA_ARGS__); throw std::runtime_error(__VA_ARGS__); }
 
-bool checkGLError(const char* file, int line);
+auto checkGLError(const char* file, int line) -> bool;
 
 #define CHECK_GL_ERROR() { checkGLError(__FILE__, __LINE__); }
 
-inline std::string ADDRESS(const void* ptr) {
+inline auto ADDRESS(const void* ptr) -> std::string {
   std::stringstream ss;
   ss << ptr;
   return ss.str();

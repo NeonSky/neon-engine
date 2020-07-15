@@ -13,14 +13,14 @@ namespace engine::geometry {
     Rectangle(Transform transform, float width = 1.0f, float height = 1.0f);
 
     // Accessors
-    Transform transform() const;
-    float width() const;
-    float height() const;
+    [[nodiscard]] auto transform() const -> Transform;
+    [[nodiscard]] auto width() const -> float;
+    [[nodiscard]] auto height() const -> float;
 
-    glm::vec3 topleft() const;
-    glm::vec3 topright() const;
-    glm::vec3 botleft() const;
-    glm::vec3 botright() const;
+    [[nodiscard]] auto topleft() const -> glm::vec3;
+    [[nodiscard]] auto topright() const -> glm::vec3;
+    [[nodiscard]] auto botleft() const -> glm::vec3;
+    [[nodiscard]] auto botright() const -> glm::vec3;
 
   private:
     Transform _transform;

@@ -12,20 +12,49 @@
 
 using namespace engine::debug;
 
-DebugCamera::DebugCamera(engine::gui::Window* window) : camera(engine::graphics::Camera()), window(window){}
-DebugCamera::DebugCamera(engine::gui::Window* window, engine::geometry::Transform transform) : camera(engine::graphics::Camera(transform)), window(window) {
-  this->window->add_on_key_callback(std::bind(&DebugCamera::on_key, this, std::placeholders::_1));
-  this->window->add_on_mouse_move_callback(std::bind(&DebugCamera::on_cursor, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  this->window->add_on_mouse_scroll_callback(std::bind(&DebugCamera::on_scroll, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+DebugCamera::DebugCamera(engine::gui::Window* window)
+  : camera(engine::graphics::Camera()),
+    window(window){}
+
+DebugCamera::DebugCamera(engine::gui::Window* window, engine::geometry::Transform transform)
+  : camera(engine::graphics::Camera(transform)),
+    window(window) {
+  this->window->add_on_key_callback(
+    [this](GLFWwindow* w, [[maybe_unused]] int n) { on_key(w); }
+  );
+  this->window->add_on_mouse_move_callback(
+    [this](GLFWwindow* w, float x, float y) { on_cursor(w, x, y); }
+  );
+  this->window->add_on_mouse_scroll_callback(
+    [this](GLFWwindow* w, float x, float y) { on_scroll(w, x, y); }
+  );
 }
 
-DebugCamera::~DebugCamera() {}
+DebugCamera::~DebugCamera() = default;
 
 // Mutators
 void DebugCamera::set_transform(engine::geometry::Transform transform) {
   this->camera.transform = transform;
 };
 
+// Accessors
+auto DebugCamera::transform() const -> engine::geometry::Transform {
+  return this->camera.transform;
+}
+
+auto DebugCamera::view_matrix() const -> glm::mat4 {
+  return this->camera.view_matrix();
+}
+
+auto DebugCamera::projection_matrix() const -> glm::mat4 {
+  return this->camera.projection_matrix(this->projection_type);
+}
+
+auto DebugCamera::mouse_ray() const -> glm::vec3 {
+  return this->_mouse_ray;
+}
+
+// Privates
 void DebugCamera::on_key(GLFWwindow* window) {
   if (glfwGetKey(window, GLFW_KEY_W))
     this->camera.move(engine::graphics::Direction::FORWARD);

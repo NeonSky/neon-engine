@@ -24,14 +24,14 @@ Image::Image(std::string img_path) {
 
 Image::~Image() = default;
 
-const unsigned char* Image::data() const {
+auto Image::data() const -> const unsigned char* {
   return _data.get();
 }
 
-unsigned int Image::width() const {
+auto Image::width() const -> unsigned int {
   return _width;
 }
 
-unsigned int Image::height() const {
+auto Image::height() const -> unsigned int {
   return _height;
 }

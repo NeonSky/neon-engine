@@ -17,7 +17,7 @@ Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
   this->scale = scale;
 }
 
-Transform::~Transform() {}
+Transform::~Transform() = default;
 
 void Transform::set_rotation(float yaw, float pitch, float roll) {
   this->rotation = glm::vec3(pitch, yaw, roll);
@@ -35,11 +35,11 @@ void Transform::flip_rotation() {
   set_rotation(yaw, pitch, roll);
 }
 
-Transform Transform::operator+(const Transform &other) const {
+auto Transform::operator+(const Transform &other) const -> Transform {
   return Transform(this->position + other.position, this->rotation + other.rotation, this->scale + other.scale);
 }
 
-glm::mat4 Transform::matrix() const {
+auto Transform::matrix() const -> glm::mat4 {
   glm::mat4 m = glm::mat4(1.0f);
 
   // Scale -> Rotate -> Translate
@@ -50,15 +50,15 @@ glm::mat4 Transform::matrix() const {
   return m;
 }
 
-glm::vec3 Transform::forward() const {
+auto Transform::forward() const -> glm::vec3 {
   return rotation_matrix() * this->world_forward;
 }
 
-glm::vec3 Transform::up() const {
+auto Transform::up() const -> glm::vec3 {
   return rotation_matrix() * this->world_up;
 }
 
-glm::vec3 Transform::right() const {
+auto Transform::right() const -> glm::vec3 {
   return rotation_matrix() * this->world_right;
 }
 
@@ -67,6 +67,6 @@ glm::vec3 Transform::right() const {
 // https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
 //
 // Here we apply y-rotation (yaw), then x-rotation (pitch), and finally z-rotation (roll).
-glm::mat4 Transform::rotation_matrix() const {
+auto Transform::rotation_matrix() const -> glm::mat4 {
   return glm::eulerAngleYXZ(-this->rotation.y, -this->rotation.x, -this->rotation.z);
 }

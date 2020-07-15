@@ -15,7 +15,7 @@
 
 using namespace engine::graphics;
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#define BUFFER_OFFSET(i) ((char*) (i))
 
 GLTFModel::GLTFModel(std::string model_path,
                     geometry::Transform transform,
@@ -57,34 +57,32 @@ void GLTFModel::bind_model() {
   glBindVertexArray(vao);
 
   const tinygltf::Scene &scene = _model.scenes[_model.defaultScene];
-  for (size_t i = 0; i < scene.nodes.size(); ++i) {
-    assert((scene.nodes[i] >= 0) && (scene.nodes[i] < (int)_model.nodes.size()));
-    bind_model_nodes(vbos, _model.nodes[scene.nodes[i]]);
+  for (int node : scene.nodes) {
+    assert((node >= 0) && (node < (int)_model.nodes.size()));
+    bind_model_nodes(vbos, _model.nodes[node]);
   }
 
   glBindVertexArray(0);
 
   // cleanup vbos
-  for (size_t i = 0; i < vbos.size(); ++i)
-    glDeleteBuffers(1, &vbos[i]);
+  for (auto& [key, val] : vbos)
+    glDeleteBuffers(1, &val);
 
   _vao = vao;
 }
 
-void GLTFModel::bind_model_nodes(std::map<int, GLuint> vbos,
-                             tinygltf::Node &node) {
+void GLTFModel::bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node &node) {
   if ((node.mesh >= 0) && (node.mesh < (int)_model.meshes.size())) {
     bind_mesh(vbos, _model.meshes[node.mesh]);
   }
 
-  for (size_t i = 0; i < node.children.size(); i++) {
-    assert((node.children[i] >= 0) && (node.children[i] < (int)_model.nodes.size()));
-    bind_model_nodes(vbos, _model.nodes[node.children[i]]);
+  for (int i : node.children) {
+    assert((i >= 0) && (i < (int)_model.nodes.size()));
+    bind_model_nodes(vbos, _model.nodes[i]);
   }
 }
 
-std::map<int, GLuint> GLTFModel::bind_mesh(std::map<int, GLuint> vbos,
-                                          tinygltf::Mesh &mesh) {
+auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> std::map<int, GLuint> {
   for (size_t i = 0; i < _model.bufferViews.size(); ++i) {
     const tinygltf::BufferView &bufferView = _model.bufferViews[i];
     if (bufferView.target == 0) {  // TODO impl drawarrays
@@ -108,8 +106,7 @@ std::map<int, GLuint> GLTFModel::bind_mesh(std::map<int, GLuint> vbos,
                  &buffer.data.at(0) + bufferView.byteOffset, GL_STATIC_DRAW);
   }
 
-  for (size_t i = 0; i < mesh.primitives.size(); ++i) {
-    tinygltf::Primitive primitive = mesh.primitives[i];
+  for (auto primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
     for (auto &attrib : primitive.attributes) {
@@ -185,8 +182,7 @@ std::map<int, GLuint> GLTFModel::bind_mesh(std::map<int, GLuint> vbos,
 }
 
 void GLTFModel::draw_mesh(tinygltf::Mesh &mesh) {
-  for (size_t i = 0; i < mesh.primitives.size(); ++i) {
-    tinygltf::Primitive primitive = mesh.primitives[i];
+  for (auto primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
     glDrawElements(primitive.mode, indexAccessor.count,
@@ -199,8 +195,8 @@ void GLTFModel::draw_model_nodes(tinygltf::Node &node) {
   if ((node.mesh >= 0) && (node.mesh < (int)_model.meshes.size())) {
     draw_mesh(_model.meshes[node.mesh]);
   }
-  for (size_t i = 0; i < node.children.size(); i++) {
-    draw_model_nodes(_model.nodes[node.children[i]]);
+  for (int i : node.children) {
+    draw_model_nodes(_model.nodes[i]);
   }
 }
 
@@ -208,8 +204,8 @@ void GLTFModel::draw_model() {
   glBindVertexArray(_vao);
 
   const tinygltf::Scene &scene = _model.scenes[_model.defaultScene];
-  for (size_t i = 0; i < scene.nodes.size(); ++i) {
-    draw_model_nodes(_model.nodes[scene.nodes[i]]);
+  for (int node : scene.nodes) {
+    draw_model_nodes(_model.nodes[node]);
   }
 
   glBindVertexArray(0);
@@ -225,7 +221,7 @@ void GLTFModel::render(const glm::mat4& projection_view) {
 
   glm::mat4 mvp = projection_view * model;
   glm::vec3 sun_position = glm::vec3(3.0, 10.0, -5.0);
-  glm::vec3 sun_color = glm::vec3(1.0);
+  auto sun_color = glm::vec3(1.0);
 
   _shader.use();
   _shader.set_uniform_mat4("MVP", &mvp[0][0]);

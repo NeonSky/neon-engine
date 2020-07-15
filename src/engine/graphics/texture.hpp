@@ -11,7 +11,7 @@ namespace engine::graphics {
     ~Texture();
 
     // Accessors
-    GLuint id() const { return _texture; }
+    [[nodiscard]] auto id() const -> GLuint;
   private:
     GLuint _texture;
   };

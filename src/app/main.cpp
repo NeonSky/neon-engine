@@ -57,8 +57,8 @@ void update(std::uint64_t dt,
                                            });
 }
 
-int main() {
-  srand(time(NULL));
+auto main() -> int {
+  srand(time(nullptr));
 
   engine::debug::Logger::set_profile(engine::debug::Logger::Profile::DEBUG);
   LOG_INFO("Program started.");

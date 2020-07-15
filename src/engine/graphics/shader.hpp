@@ -25,6 +25,6 @@ namespace engine::graphics {
     inline static std::map<std::string, GLuint> _cache = std::map<std::string, GLuint>();
 
     // Accessors
-    GLuint load_shader_file(std::string shader_path, GLenum shaderType);
+    auto load_shader_file(std::string shader_path, GLenum shaderType) -> GLuint;
   };
 }

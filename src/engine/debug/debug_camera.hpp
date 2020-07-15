@@ -15,10 +15,10 @@ namespace engine::debug {
     void set_transform(engine::geometry::Transform transform);
 
     // Accessors
-    engine::geometry::Transform transform() const { return this->camera.transform; };
-    glm::mat4 view_matrix() const { return this->camera.view_matrix(); };
-    glm::mat4 projection_matrix() const {return this->camera.projection_matrix(this->projection_type); };
-    glm::vec3 mouse_ray() const { return this->_mouse_ray; }
+    [[nodiscard]] auto transform() const -> engine::geometry::Transform;
+    [[nodiscard]] auto view_matrix() const -> glm::mat4;
+    [[nodiscard]] auto projection_matrix() const -> glm::mat4;
+    [[nodiscard]] auto mouse_ray() const -> glm::vec3;
 
   private:
     static constexpr float zoom_min = 0.0f;

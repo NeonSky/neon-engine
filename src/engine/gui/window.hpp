@@ -23,9 +23,9 @@ namespace engine::gui {
     void add_on_mouse_scroll_callback(std::function<void(GLFWwindow*, float, float)> callback);
 
     // Accessors
-    bool is_closing() const;
-    unsigned int width() const;
-    unsigned int height() const;
+    [[nodiscard]] auto is_closing() const -> bool;
+    [[nodiscard]] auto width() const -> unsigned int;
+    [[nodiscard]] auto height() const -> unsigned int;
 
   private:
     GLFWwindow* window;

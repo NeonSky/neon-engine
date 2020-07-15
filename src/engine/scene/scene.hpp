@@ -11,5 +11,5 @@ namespace engine::scene {
     virtual void gui() {}
   };
 
-  IScene::~IScene() {}
+  IScene::~IScene() = default;
 }

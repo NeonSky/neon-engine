@@ -10,12 +10,13 @@ namespace engine::geometry {
 
   class Intersection {
   public:
-    Intersection(glm::vec3 point);
     glm::vec3 point;
+
+    Intersection(glm::vec3 point);
   };
 
   // Accessors
-  Intersection* ray_plane_intersection(Ray ray, engine::geometry::Plane plane);
-  Intersection* ray_rectangle_intersection(Ray ray, Rectangle rectangle);
+  auto ray_plane_intersection(Ray ray, engine::geometry::Plane plane) -> Intersection*;
+  auto ray_rectangle_intersection(Ray ray, Rectangle rectangle) -> Intersection*;
 
 }

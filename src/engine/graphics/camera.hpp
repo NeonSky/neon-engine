@@ -37,8 +37,8 @@ namespace engine::graphics {
     void set_zoom(float zoom_level);
 
     // Accessors
-    glm::mat4 view_matrix() const;
-    glm::mat4 projection_matrix(ProjectionType projection_type) const;
+    [[nodiscard]] auto view_matrix() const -> glm::mat4;
+    [[nodiscard]] auto projection_matrix(ProjectionType projection_type) const -> glm::mat4;
 
   private:
     struct Perspective {

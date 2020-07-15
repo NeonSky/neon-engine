@@ -36,10 +36,8 @@ namespace engine::graphics {
     int _vao;
 
     void bind_model();
-    void bind_model_nodes(std::map<int, GLuint> vbos,
-                       tinygltf::Node &node);
-    std::map<int, GLuint> bind_mesh(std::map<int, GLuint> vbos,
-                                    tinygltf::Mesh &mesh);
+    void bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node &node);
+    auto bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> std::map<int, GLuint>;
     void draw_mesh(tinygltf::Mesh &mesh);
     void draw_model_nodes(tinygltf::Node &node);
     void draw_model();
