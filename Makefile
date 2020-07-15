@@ -12,7 +12,9 @@ help:
 	@ echo "- format"
 	@ echo "- help"
 	@ echo "- run"
+	@ echo "- run-tests"
 	@ echo "- setup"
+	@ echo "- static-analysis"
 	@ echo "- tidy"
 
 .PHONY: build
@@ -45,7 +47,11 @@ format:
 
 .PHONY: run
 run:
-	cd build && ./build/ECS_Scenes
+	./build/ECS_Scenes
+
+.PHONY: run-tests
+run-tests:
+	./build/ECS_Scenes_Test
 
 .PHONY: setup
 setup: dependencies build run
