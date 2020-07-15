@@ -47,10 +47,17 @@ Rectangle::Rectangle(geometry::Rectangle rectangle, const Texture* texture)
     glGenBuffers(1, &uv_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);
     const std::vector<float> uv_coords = {
-      0.0f, 0.0f, // (u,v) for v0
-      1.0f, 0.0f, // (u,v) for v1
-      1.0f, 1.0f, // (u,v) for v2
-      0.0f, 1.0f, // (u,v) for v3
+      0.0F,
+      0.0F,
+
+      1.0F,
+      0.0F,
+
+      1.0F,
+      1.0F,
+
+      0.0F,
+      1.0F,
     };
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * uv_coords.size(), uv_coords.data(), GL_STATIC_DRAW);
   }
@@ -61,8 +68,13 @@ Rectangle::Rectangle(geometry::Rectangle rectangle, const Texture* texture)
 
   unsigned int index_buffer;
   const std::vector<int> indices = {
-    0, 1, 2, // Triangle 1
-    2, 3, 0, // Triangle 2
+    0,
+    1,
+    2,
+
+    2,
+    3,
+    0,
   };
 
   glGenBuffers(1, &index_buffer);
@@ -71,12 +83,12 @@ Rectangle::Rectangle(geometry::Rectangle rectangle, const Texture* texture)
 
   // Assign position attribute of vertex shader
   glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);
-  glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, nullptr);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
   glEnableVertexAttribArray(0);
 
   if (_texture != nullptr) {
     glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);
-    glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, nullptr);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
   }
 

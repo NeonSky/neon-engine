@@ -21,8 +21,8 @@ namespace engine::debug {
     [[nodiscard]] auto mouse_ray() const -> glm::vec3;
 
   private:
-    static constexpr float zoom_min = 0.0f;
-    static constexpr float zoom_max = 45.0f;
+    static constexpr float zoom_min = 0.0F;
+    static constexpr float zoom_max = 45.0F;
 
     engine::graphics::Camera camera;
     engine::gui::Window* window;
@@ -30,7 +30,7 @@ namespace engine::debug {
     glm::vec3 _mouse_ray;
     engine::graphics::ProjectionType projection_type = engine::graphics::ProjectionType::PERSPECTIVE;
     bool free_look_mode                              = false;
-    float zoom                                       = 0.0f;
+    float zoom                                       = 0.0F;
 
     // Mutators
     void on_key(GLFWwindow* window);

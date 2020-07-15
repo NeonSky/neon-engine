@@ -13,8 +13,7 @@
 using namespace engine::debug;
 
 DebugCamera::DebugCamera(engine::gui::Window* window)
-        : camera(engine::graphics::Camera()),
-          window(window) {}
+        : window(window) {}
 
 DebugCamera::DebugCamera(engine::gui::Window* window, engine::geometry::Transform transform)
         : camera(engine::graphics::Camera(transform)),
@@ -50,27 +49,27 @@ auto DebugCamera::mouse_ray() const -> glm::vec3 {
 
 // Privates
 void DebugCamera::on_key(GLFWwindow* window) {
-  if (glfwGetKey(window, GLFW_KEY_W))
+  if (glfwGetKey(window, GLFW_KEY_W) != 0)
     this->camera.move(engine::graphics::Direction::FORWARD);
-  if (glfwGetKey(window, GLFW_KEY_S))
+  if (glfwGetKey(window, GLFW_KEY_S) != 0)
     this->camera.move(engine::graphics::Direction::BACKWARD);
-  if (glfwGetKey(window, GLFW_KEY_D))
+  if (glfwGetKey(window, GLFW_KEY_D) != 0)
     this->camera.move(engine::graphics::Direction::RIGHT);
-  if (glfwGetKey(window, GLFW_KEY_A))
+  if (glfwGetKey(window, GLFW_KEY_A) != 0)
     this->camera.move(engine::graphics::Direction::LEFT);
-  if (glfwGetKey(window, GLFW_KEY_E))
+  if (glfwGetKey(window, GLFW_KEY_E) != 0)
     this->camera.move(engine::graphics::Direction::UP);
-  if (glfwGetKey(window, GLFW_KEY_Q))
+  if (glfwGetKey(window, GLFW_KEY_Q) != 0)
     this->camera.move(engine::graphics::Direction::DOWN);
 
-  if (glfwGetKey(window, GLFW_KEY_P)) {
+  if (glfwGetKey(window, GLFW_KEY_P) != 0) {
     if (this->projection_type == engine::graphics::ProjectionType::PERSPECTIVE)
       this->projection_type = engine::graphics::ProjectionType::ORTHOGRAPHIC;
     else
       this->projection_type = engine::graphics::ProjectionType::PERSPECTIVE;
   }
 
-  if (glfwGetKey(window, GLFW_KEY_T)) {
+  if (glfwGetKey(window, GLFW_KEY_T) != 0) {
     this->free_look_mode = !this->free_look_mode;
     if (this->free_look_mode)
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -80,7 +79,8 @@ void DebugCamera::on_key(GLFWwindow* window) {
 }
 
 void DebugCamera::on_cursor(GLFWwindow* window, float xpos, float ypos) {
-  int width, height;
+  int width;
+  int height;
   glfwGetWindowSize(window, &width, &height);
 
   // Viewport Space [0:width, 0:height]
@@ -88,13 +88,13 @@ void DebugCamera::on_cursor(GLFWwindow* window, float xpos, float ypos) {
   float y = height - ypos; // In OpenGL, (0, 0) is top-left. We want (0, 0) to be bot-left.
 
   // Normalized Device Space [-1:1, -1:1, -1:1]
-  glm::vec3 ndc(2.0f * (x / width) - 1.0f, 2.0f * (y / height) - 1.0f, -1.0f); // z = -1.0f since cursor points along camera's forward direction.
+  glm::vec3 ndc(2.0F * (x / width) - 1.0F, 2.0F * (y / height) - 1.0F, -1.0F); // z = -1.0f since cursor points along camera's forward direction.
 
   // Homogeneous Clip Space [-1:1, -1:1, -1:1, -1:1]
-  glm::vec4 clip_coords(ndc.x, ndc.y, ndc.z, 1.0f);
+  glm::vec4 clip_coords(ndc.x, ndc.y, ndc.z, 1.0F);
 
   // View Space (Eye Space) [-inf:inf, -inf:inf, -inf:inf, -inf:inf]
-  glm::vec4 view_coords(glm::vec3(glm::inverse(projection_matrix()) * clip_coords), 0.0f);
+  glm::vec4 view_coords(glm::vec3(glm::inverse(projection_matrix()) * clip_coords), 0.0F);
 
   // World Space [-inf:inf, -inf:inf, -inf:inf, -inf:inf]
   glm::vec4 world_coords = glm::inverse(view_matrix()) * view_coords;
@@ -107,6 +107,6 @@ void DebugCamera::on_cursor(GLFWwindow* window, float xpos, float ypos) {
 }
 
 void DebugCamera::on_scroll([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] float xoffset, float yoffset) {
-  this->zoom = std::clamp(this->zoom + yoffset, this->zoom_min, this->zoom_max);
+  this->zoom = std::clamp(this->zoom + yoffset, engine::debug::DebugCamera::zoom_min, engine::debug::DebugCamera::zoom_max);
   this->camera.set_zoom(this->zoom);
 }

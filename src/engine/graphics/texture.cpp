@@ -12,7 +12,7 @@ using namespace engine::graphics;
 static std::map<std::string, GLuint> _cache;
 
 Texture::Texture(std::string img_path) {
-  if (_cache.count(img_path)) {
+  if (_cache.count(img_path) != 0U) {
     _texture = _cache[img_path];
     return;
   }
@@ -32,7 +32,7 @@ Texture::Texture(std::string img_path) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // Max samples (EXT stands for extension, and thus not from OpenGL specification)
-  float anisotropy = 16.0f;
+  float anisotropy = 16.0F;
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
 
   _cache[img_path] = _texture;

@@ -11,8 +11,8 @@ using namespace engine::graphics;
 bool firstMouse = true;
 double lastX;
 double lastY;
-double yaw   = 0.0f;
-double pitch = 0.0f;
+double yaw   = 0.0F;
+double pitch = 0.0F;
 
 Camera::Camera() : Camera(geometry::Transform()) {}
 Camera::Camera(const geometry::Transform& transform)
@@ -53,7 +53,7 @@ void Camera::move(Direction move_dir) {
 
 void Camera::set_zoom(float zoom_level) {
   // FIXME: name constant
-  this->perspective.fov = 45.0f - zoom_level;
+  this->perspective.fov = 45.0F - zoom_level;
 }
 
 void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
@@ -68,7 +68,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
   lastX         = mouse_xpos;
   lastY         = mouse_ypos;
 
-  float sensitivity = 0.003f;
+  float sensitivity = 0.003F;
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
@@ -77,7 +77,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 
   pitch = std::clamp(pitch, -glm::half_pi<double>(), glm::half_pi<double>());
 
-  this->transform.set_rotation(yaw, pitch, 0.0f);
+  this->transform.set_rotation(yaw, pitch, 0.0F);
 }
 
 auto Camera::view_matrix() const -> glm::mat4 {

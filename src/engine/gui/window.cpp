@@ -14,14 +14,15 @@ Window::Window()
 
 Window::Window(unsigned int width, unsigned int height, const char* title)
         : _width(width),
-          _height(height) {
+          _height(height),
+          _clear_color(glm::vec4(0.2F, 0.2F, 0.2F, 1.0)) {
 
-  if (!glfwInit()) {
+  if (glfwInit() == 0) {
     LOG_CRITICAL("Failed to init glfw.");
   }
 
   GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-  if (!window) {
+  if (window == nullptr) {
     glfwTerminate();
     LOG_CRITICAL("Failed to create glfw window.");
   }
@@ -77,13 +78,13 @@ void Window::update() {
   glfwPollEvents();
 }
 
-void Window::clear_screen() {
-  glClearColor(0.2f, 0.2f, 0.2f, 1.0);
+void Window::clear_screen() const {
+  glClearColor(_clear_color.r, _clear_color.g, _clear_color.b, _clear_color.a);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 auto Window::is_closing() const -> bool {
-  return glfwWindowShouldClose(this->window);
+  return glfwWindowShouldClose(this->window) != 0;
 }
 
 auto Window::width() const -> unsigned int {

@@ -102,8 +102,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
     //           << ", bufferview.byteOffset = " << bufferView.byteOffset
     //           << std::endl;
 
-    glBufferData(bufferView.target, bufferView.byteLength,
-                 &buffer.data.at(0) + bufferView.byteOffset, GL_STATIC_DRAW);
+    glBufferData(bufferView.target, bufferView.byteLength, &buffer.data.at(0) + bufferView.byteOffset, GL_STATIC_DRAW);
   }
 
   for (auto primitive : mesh.primitives) {
@@ -121,22 +120,20 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
       }
 
       int vaa = -1;
-      if (attrib.first.compare("POSITION") == 0)
+      if (attrib.first == "POSITION")
         vaa = 0;
-      if (attrib.first.compare("NORMAL") == 0)
+      if (attrib.first == "NORMAL")
         vaa = 1;
-      if (attrib.first.compare("TEXCOORD_0") == 0)
+      if (attrib.first == "TEXCOORD_0")
         vaa = 2;
       if (vaa > -1) {
         glEnableVertexAttribArray(vaa);
-        glVertexAttribPointer(vaa, size, accessor.componentType,
-                              accessor.normalized ? GL_TRUE : GL_FALSE,
-                              byteStride, BUFFER_OFFSET(accessor.byteOffset));
+        glVertexAttribPointer(vaa, size, accessor.componentType, accessor.normalized ? GL_TRUE : GL_FALSE, byteStride, BUFFER_OFFSET(accessor.byteOffset));
       } else
         LOG_WARNING("vaa missing: " + attrib.first);
     }
 
-    if (_model.textures.size() > 0) {
+    if (!_model.textures.empty()) {
       // fixme: Use material's baseColor
       tinygltf::Texture& tex = _model.textures[0];
 
@@ -175,8 +172,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
           // ???
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0,
-                     format, type, &image.image.at(0));
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, format, type, &image.image.at(0));
       }
     }
   }
@@ -188,9 +184,7 @@ void GLTFModel::draw_mesh(tinygltf::Mesh& mesh) {
   for (auto primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
-    glDrawElements(primitive.mode, indexAccessor.count,
-                   indexAccessor.componentType,
-                   BUFFER_OFFSET(indexAccessor.byteOffset));
+    glDrawElements(primitive.mode, indexAccessor.count, indexAccessor.componentType, BUFFER_OFFSET(indexAccessor.byteOffset));
   }
 }
 

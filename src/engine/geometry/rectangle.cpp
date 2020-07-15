@@ -3,7 +3,10 @@
 using namespace engine::geometry;
 
 Rectangle::Rectangle() : Rectangle(Transform()) {}
-Rectangle::Rectangle(Transform transform, float width, float height) : _transform(transform), _width(width), _height(height) {
+Rectangle::Rectangle(Transform transform, float width, float height)
+        : _transform(transform),
+          _width(width),
+          _height(height) {
   update_corners();
 }
 
@@ -19,11 +22,11 @@ auto Rectangle::botright() const -> glm::vec3 { return this->_botright; }
 
 // Mutators
 void Rectangle::update_corners() {
-  glm::vec3 xoffset = (this->_width / 2.0f) * Transform::world_right;
-  glm::vec3 yoffset = (this->_height / 2.0f) * Transform::world_up;
+  glm::vec3 xoffset = (this->_width / 2.0F) * Transform::world_right;
+  glm::vec3 yoffset = (this->_height / 2.0F) * Transform::world_up;
 
-  this->_topleft  = this->_transform.matrix() * glm::vec4(+xoffset + yoffset, 1.0f);
-  this->_topright = this->_transform.matrix() * glm::vec4(-xoffset + yoffset, 1.0f);
-  this->_botleft  = this->_transform.matrix() * glm::vec4(+xoffset - yoffset, 1.0f);
-  this->_botright = this->_transform.matrix() * glm::vec4(-xoffset - yoffset, 1.0f);
+  this->_topleft  = this->_transform.matrix() * glm::vec4(+xoffset + yoffset, 1.0F);
+  this->_topright = this->_transform.matrix() * glm::vec4(-xoffset + yoffset, 1.0F);
+  this->_botleft  = this->_transform.matrix() * glm::vec4(+xoffset - yoffset, 1.0F);
+  this->_botright = this->_transform.matrix() * glm::vec4(-xoffset - yoffset, 1.0F);
 }

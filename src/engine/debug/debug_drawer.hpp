@@ -14,8 +14,13 @@ namespace engine::debug {
     glm::vec3 A, B;
     glm::vec3 color;
 
-    Line(glm::vec3 A, glm::vec3 B) : A(A), B(B), color(glm::vec3(1.0f, 0.0f, 0.0f)) {}
-    Line(glm::vec3 A, glm::vec3 B, glm::vec3 color) : A(A), B(B), color(color) {}
+    Line(glm::vec3 A, glm::vec3 B)
+            : Line(A, B, glm::vec3(1.0F, 0.0F, 0.0F)) {}
+
+    Line(glm::vec3 A, glm::vec3 B, glm::vec3 color)
+            : A(A),
+              B(B),
+              color(color) {}
   };
 
   class DebugDrawer {
@@ -30,7 +35,7 @@ namespace engine::debug {
     void draw_rectangle(geometry::Rectangle rectangle);
 
   private:
-    const float line_width = 5.0f;
+    const float line_width = 5.0F;
 
     graphics::Shader shader;
 

@@ -73,7 +73,7 @@ auto main() -> int {
   }
 
   int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-  if (!status) {
+  if (status == 0) {
     LOG_ERROR("Failed to init GLAD");
     glfwTerminate();
     return -1;
@@ -101,14 +101,14 @@ auto main() -> int {
 
   for (auto i = 0; i < 10; ++i) {
     auto entity = registry.create();
-    registry.emplace<position>(entity, i * 1.f, i * 1.f);
+    registry.emplace<position>(entity, i * 1.F, i * 1.F);
     if (i % 2 == 0) {
-      registry.emplace<velocity>(entity, i * .1f, i * .1f);
+      registry.emplace<velocity>(entity, i * .1F, i * .1F);
     }
   }
 
   engine::graphics::GLTFModel model("cube/Cube.gltf", engine::geometry::Transform(glm::vec3(0, 0, 0)));
-  engine::debug::DebugCamera camera(window, engine::geometry::Transform(glm::vec3(0.0f, 0.0f, -20.0f)));
+  engine::debug::DebugCamera camera(window, engine::geometry::Transform(glm::vec3(0.0F, 0.0F, -20.0F)));
   engine::debug::DebugDrawer dd;
 
   CHECK_GL_ERROR();

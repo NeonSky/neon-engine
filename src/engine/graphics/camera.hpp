@@ -48,10 +48,10 @@ namespace engine::graphics {
       float far;
 
       Perspective() {
-        fov          = 45.0f;
-        aspect_ratio = 16.0f / 9.0f;
-        near         = 0.1f;
-        far          = 300.0f;
+        fov          = 45.0F;
+        aspect_ratio = 16.0F / 9.0F;
+        near         = 0.1F;
+        far          = 300.0F;
       }
     };
 
@@ -64,19 +64,19 @@ namespace engine::graphics {
       float far;
 
       Orthographic() {
-        left  = -1.0f;
-        right = 1.0f;
-        bot   = -1.0f;
-        top   = 1.0f;
-        near  = 0.1f;
-        far   = 300.0f;
+        left  = -1.0F;
+        right = 1.0F;
+        bot   = -1.0F;
+        top   = 1.0F;
+        near  = 0.1F;
+        far   = 300.0F;
       }
     };
 
     Perspective perspective;
     Orthographic orthographic;
-    float movement_speed = 0.5f;
-    float rotation_speed = 0.1f;
+    float movement_speed = 0.5F;
+    float rotation_speed = 0.1F;
   };
 
 };

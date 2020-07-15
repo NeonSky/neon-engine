@@ -19,9 +19,9 @@ namespace engine::geometry {
     void flip_rotation();
 
     // Accessors
-    static constexpr glm::vec4 world_right   = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-    static constexpr glm::vec4 world_up      = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-    static constexpr glm::vec4 world_forward = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+    static constexpr glm::vec4 world_right   = glm::vec4(1.0F, 0.0F, 0.0F, 0.0F);
+    static constexpr glm::vec4 world_up      = glm::vec4(0.0F, 1.0F, 0.0F, 0.0F);
+    static constexpr glm::vec4 world_forward = glm::vec4(0.0F, 0.0F, 1.0F, 0.0F);
 
     auto operator+(const Transform& other) const -> Transform;
 

@@ -1,5 +1,5 @@
 ---
-Checks:          'modernize-*'
+Checks:          'modernize-*,readability-*,-readability-braces-around-statements,-readability-magic-numbers'
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false

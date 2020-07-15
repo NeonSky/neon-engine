@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 #include <functional>
+#include <glm/vec4.hpp>
 #include <vector>
 
 namespace engine::gui {
@@ -17,7 +18,7 @@ namespace engine::gui {
     // Mutators
     void init_gui();
     void update();
-    void clear_screen();
+    void clear_screen() const;
     void add_on_key_callback(std::function<void(GLFWwindow*, int)> callback);
     void add_on_mouse_click_callback(std::function<void(GLFWwindow*, int, int)> callback);
     void add_on_mouse_move_callback(std::function<void(GLFWwindow*, float, float)> callback);
@@ -32,6 +33,7 @@ namespace engine::gui {
     GLFWwindow* window;
     unsigned int _width;
     unsigned int _height;
+    glm::vec4 _clear_color;
 
     std::vector<std::function<void(GLFWwindow*, int)>> on_key_callbacks;
     std::vector<std::function<void(GLFWwindow*, int, int)>> on_mouse_click_callbacks;

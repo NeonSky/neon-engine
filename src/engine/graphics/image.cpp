@@ -12,7 +12,7 @@
 using namespace engine::graphics;
 
 Image::Image(std::string img_path) {
-  stbi_set_flip_vertically_on_load(true); // Match OpenGL
+  stbi_set_flip_vertically_on_load(1); // Match OpenGL
 
   std::string res_path  = boost::dll::program_location().parent_path().string() + "/res/img/";
   std::string full_path = res_path + img_path;

@@ -22,28 +22,28 @@ Shader::Shader(std::string vertex_shader_path, std::string fragment_shader_path)
 
   GLint ok = 0;
   glGetProgramiv(this->program, GL_LINK_STATUS, &ok);
-  if (!ok)
+  if (ok == 0)
     LOG_ERROR("Could not link program.");
 }
 
 Shader::~Shader() = default;
 
-void Shader::use() {
+void Shader::use() const {
   glUseProgram(this->program);
 }
 
-void Shader::set_uniform_vec3(const GLchar* uniform, const GLfloat* data) {
+void Shader::set_uniform_vec3(const GLchar* uniform, const GLfloat* data) const {
   int loc = glGetUniformLocation(this->program, uniform);
   glUniform3fv(loc, 1, data);
 }
 
-void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat* data) {
+void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat* data) const {
   int loc = glGetUniformLocation(this->program, uniform);
-  glUniformMatrix4fv(loc, 1, false, data);
+  glUniformMatrix4fv(loc, 1, GL_FALSE, data);
 }
 
 auto Shader::load_shader_file(std::string shader_path, GLenum shader_type) -> GLuint {
-  if (_cache.count(shader_path))
+  if (_cache.count(shader_path) != 0U)
     return _cache[shader_path];
 
   GLuint shader = glCreateShader(shader_type);
@@ -61,7 +61,7 @@ auto Shader::load_shader_file(std::string shader_path, GLenum shader_type) -> GL
 
   int ok = 0;
   glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
-  if (!ok)
+  if (ok == 0)
     LOG_ERROR("Could not compile shader: " + shader_path);
 
   return _cache[shader_path] = shader;

@@ -45,11 +45,11 @@ void DebugDrawer::render(const glm::mat4& view_projection_matrix) {
   glBindVertexArray(vao);
 
   glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);
-  glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, nullptr);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
   glEnableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-  glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, nullptr);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
   glEnableVertexAttribArray(1);
 
   glBindVertexArray(vao);
@@ -66,9 +66,9 @@ void DebugDrawer::draw_line(glm::vec3 from, glm::vec3 to) {
 }
 
 void DebugDrawer::draw_transform(geometry::Transform transform) {
-  this->line_queue.emplace_back(transform.position, transform.position + transform.right(), glm::vec3(1.0f, 0.0f, 0.0f));
-  this->line_queue.emplace_back(transform.position, transform.position + transform.up(), glm::vec3(0.0f, 1.0f, 0.0f));
-  this->line_queue.emplace_back(transform.position, transform.position + transform.forward(), glm::vec3(0.0f, 0.0f, 1.0f));
+  this->line_queue.emplace_back(transform.position, transform.position + transform.right(), glm::vec3(1.0F, 0.0F, 0.0F));
+  this->line_queue.emplace_back(transform.position, transform.position + transform.up(), glm::vec3(0.0F, 1.0F, 0.0F));
+  this->line_queue.emplace_back(transform.position, transform.position + transform.forward(), glm::vec3(0.0F, 0.0F, 1.0F));
 }
 
 void DebugDrawer::draw_rectangle(geometry::Rectangle rectangle) {

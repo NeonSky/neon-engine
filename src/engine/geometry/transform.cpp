@@ -8,9 +8,15 @@
 
 using namespace engine::geometry;
 
-Transform::Transform() : Transform(glm::vec3(0.0f)) {}
-Transform::Transform(glm::vec3 position) : Transform(position, glm::vec3(0.0f)) {}
-Transform::Transform(glm::vec3 position, glm::vec3 rotation) : Transform(position, rotation, glm::vec3(1.0f)) {}
+Transform::Transform()
+        : Transform(glm::vec3(0.0F)) {}
+
+Transform::Transform(glm::vec3 position)
+        : Transform(position, glm::vec3(0.0F)) {}
+
+Transform::Transform(glm::vec3 position, glm::vec3 rotation)
+        : Transform(position, rotation, glm::vec3(1.0F)) {}
+
 Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
   this->position = position;
   this->rotation = rotation;
@@ -24,7 +30,7 @@ void Transform::set_rotation(float yaw, float pitch, float roll) {
 }
 
 void Transform::flip_rotation() {
-  glm::mat4 m = glm::rotate(rotation_matrix(), glm::pi<float>(), glm::vec3(this->world_up));
+  glm::mat4 m = glm::rotate(rotation_matrix(), glm::pi<float>(), glm::vec3(engine::geometry::Transform::world_up));
 
   // See: https://github.com/jzrake/glm/blob/d3313421c664db5bd1b672d39ba3faec0d430117/glm/gtx/euler_angles.inl#L213
   // NOTE: we negate each angle due to rotation_matrix() negating the angles.
@@ -40,26 +46,26 @@ auto Transform::operator+(const Transform& other) const -> Transform {
 }
 
 auto Transform::matrix() const -> glm::mat4 {
-  glm::mat4 m = glm::mat4(1.0f);
+  glm::mat4 m = glm::mat4(1.0F);
 
   // Scale -> Rotate -> Translate
   m = glm::scale(m, this->scale);
   m = rotation_matrix() * m;
-  m = glm::translate(glm::mat4(1.0f), this->position) * m;
+  m = glm::translate(glm::mat4(1.0F), this->position) * m;
 
   return m;
 }
 
 auto Transform::forward() const -> glm::vec3 {
-  return rotation_matrix() * this->world_forward;
+  return rotation_matrix() * engine::geometry::Transform::world_forward;
 }
 
 auto Transform::up() const -> glm::vec3 {
-  return rotation_matrix() * this->world_up;
+  return rotation_matrix() * engine::geometry::Transform::world_up;
 }
 
 auto Transform::right() const -> glm::vec3 {
-  return rotation_matrix() * this->world_right;
+  return rotation_matrix() * engine::geometry::Transform::world_right;
 }
 
 // https://www.wikiwand.com/en/Rotation_matrix
