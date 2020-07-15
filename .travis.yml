@@ -4,10 +4,10 @@ services: docker
 
 before_install:
   - docker pull neonsky/ecs-scenes
-  - make docker-tests-build
+  - make docker-linter-build
 
 script:
-  - make docker-tests-run
+  - make docker-linter-run
 
 notifications:
   email: false

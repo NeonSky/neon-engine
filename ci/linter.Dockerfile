@@ -2,6 +2,7 @@ FROM neonsky/ecs-scenes:latest
 
 USER aur
 
+RUN yay -S --noconfirm clang
 WORKDIR /home/aur/ecs-scenes/build
 WORKDIR /home/aur/ecs-scenes
 COPY res res
@@ -10,4 +11,4 @@ COPY CMakeLists.txt .
 COPY Makefile .
 RUN make build
 
-CMD ["/home/aur/ecs-scenes/build/ECS_Scenes_Test"]
+CMD ["make", "linter"]
