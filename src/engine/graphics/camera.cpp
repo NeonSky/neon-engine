@@ -22,8 +22,6 @@ Camera::Camera(const geometry::Transform& transform)
   pitch = this->transform.pitch();
 }
 
-Camera::~Camera() = default;
-
 void Camera::move(Direction move_dir) {
   glm::vec3 displacement_dir;
   switch (move_dir) {

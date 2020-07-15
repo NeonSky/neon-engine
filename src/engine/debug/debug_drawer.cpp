@@ -65,13 +65,13 @@ void DebugDrawer::draw_line(glm::vec3 from, glm::vec3 to) {
   this->line_queue.emplace_back(from, to);
 }
 
-void DebugDrawer::draw_transform(geometry::Transform transform) {
+void DebugDrawer::draw_transform(const geometry::Transform& transform) {
   this->line_queue.emplace_back(transform.position, transform.position + transform.right(), glm::vec3(1.0F, 0.0F, 0.0F));
   this->line_queue.emplace_back(transform.position, transform.position + transform.up(), glm::vec3(0.0F, 1.0F, 0.0F));
   this->line_queue.emplace_back(transform.position, transform.position + transform.forward(), glm::vec3(0.0F, 0.0F, 1.0F));
 }
 
-void DebugDrawer::draw_rectangle(geometry::Rectangle rectangle) {
+void DebugDrawer::draw_rectangle(const geometry::Rectangle& rectangle) {
   this->line_queue.emplace_back(rectangle.topleft(), rectangle.topright());
   this->line_queue.emplace_back(rectangle.topleft(), rectangle.botleft());
   this->line_queue.emplace_back(rectangle.botright(), rectangle.botleft());

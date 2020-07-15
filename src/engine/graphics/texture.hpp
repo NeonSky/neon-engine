@@ -7,8 +7,8 @@ namespace engine::graphics {
 
   class Texture {
   public:
-    Texture(std::string img_path);
-    ~Texture();
+    Texture(const std::string& img_path);
+    ~Texture() = default;
 
     // Accessors
     [[nodiscard]] auto id() const -> GLuint;

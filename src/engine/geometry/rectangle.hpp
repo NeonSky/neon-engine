@@ -10,7 +10,7 @@ namespace engine::geometry {
   class Rectangle {
   public:
     Rectangle();
-    Rectangle(Transform transform, float width = 1.0F, float height = 1.0F);
+    Rectangle(const Transform& transform, float width = 1.0F, float height = 1.0F);
 
     // Accessors
     [[nodiscard]] auto transform() const -> Transform;

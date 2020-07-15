@@ -19,10 +19,10 @@ namespace engine::gui {
     void init_gui();
     void update();
     void clear_screen() const;
-    void add_on_key_callback(std::function<void(GLFWwindow*, int)> callback);
-    void add_on_mouse_click_callback(std::function<void(GLFWwindow*, int, int)> callback);
-    void add_on_mouse_move_callback(std::function<void(GLFWwindow*, float, float)> callback);
-    void add_on_mouse_scroll_callback(std::function<void(GLFWwindow*, float, float)> callback);
+    void add_on_key_callback(const std::function<void(GLFWwindow*, int)>& callback);
+    void add_on_mouse_click_callback(const std::function<void(GLFWwindow*, int, int)>& callback);
+    void add_on_mouse_move_callback(const std::function<void(GLFWwindow*, float, float)>& callback);
+    void add_on_mouse_scroll_callback(const std::function<void(GLFWwindow*, float, float)>& callback);
 
     // Accessors
     [[nodiscard]] auto is_closing() const -> bool;

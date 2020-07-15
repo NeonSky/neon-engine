@@ -9,8 +9,8 @@ namespace engine::graphics {
 
   class Shader {
   public:
-    Shader(std::string vertex_shader_path, std::string fragment_shader_path);
-    ~Shader();
+    Shader(const std::string& vertex_shader_path, const std::string& fragment_shader_path);
+    ~Shader() = default;
 
     // Mutators
     void use() const;
@@ -25,6 +25,6 @@ namespace engine::graphics {
     inline static std::map<std::string, GLuint> _cache = std::map<std::string, GLuint>();
 
     // Accessors
-    static auto load_shader_file(std::string shader_path, GLenum shader_type) -> GLuint;
+    static auto load_shader_file(const std::string& shader_path, GLenum shader_type) -> GLuint;
   };
 }

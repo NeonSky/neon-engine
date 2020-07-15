@@ -20,8 +20,8 @@ namespace engine::graphics {
 
   class GLTFModel {
   public:
-    GLTFModel(std::string model_path,
-              geometry::Transform transform,
+    GLTFModel(const std::string& model_path,
+              const geometry::Transform& transform,
               bool invert           = true,
               GLTFFileFormat format = GLTFFileFormat::ASCII);
     ~GLTFModel();
@@ -36,7 +36,7 @@ namespace engine::graphics {
     int _vao;
 
     void bind_model();
-    void bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node& node);
+    void bind_model_nodes(const std::map<int, GLuint>& vbos, tinygltf::Node& node);
     auto bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> std::map<int, GLuint>;
     void draw_mesh(tinygltf::Mesh& mesh);
     void draw_model_nodes(tinygltf::Node& node);

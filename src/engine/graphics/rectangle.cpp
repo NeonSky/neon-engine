@@ -9,7 +9,7 @@
 using namespace engine::graphics;
 
 // TODO: Don't take a pointer. Simply have a function that doesn't take a texture as alternative.
-Rectangle::Rectangle(geometry::Rectangle rectangle, const Texture* texture)
+Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* texture)
         : _texture(texture) {
 
   _shader = std::make_unique<Shader>("texture.vert", "texture.frag");

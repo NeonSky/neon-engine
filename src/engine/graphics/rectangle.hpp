@@ -16,7 +16,7 @@ namespace engine::graphics {
 
   class Rectangle {
   public:
-    Rectangle(geometry::Rectangle rectangle, const Texture* texture = nullptr);
+    Rectangle(const geometry::Rectangle& rectangle, const Texture* texture = nullptr);
 
     geometry::Transform transform;
 

@@ -17,6 +17,6 @@ namespace engine::geometry {
 
   // Accessors
   auto ray_plane_intersection(Ray ray, engine::geometry::Plane plane) -> Intersection*;
-  auto ray_rectangle_intersection(Ray ray, Rectangle rectangle) -> Intersection*;
+  auto ray_rectangle_intersection(Ray ray, const Rectangle& rectangle) -> Intersection*;
 
 }

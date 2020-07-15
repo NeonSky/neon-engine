@@ -8,11 +8,11 @@ namespace engine::debug {
   class DebugCamera {
   public:
     DebugCamera(engine::gui::Window* window);
-    DebugCamera(engine::gui::Window* window, engine::geometry::Transform transform);
-    ~DebugCamera();
+    DebugCamera(engine::gui::Window* window, const engine::geometry::Transform& transform);
+    ~DebugCamera() = default;
 
     // Mutators
-    void set_transform(engine::geometry::Transform transform);
+    void set_transform(const engine::geometry::Transform& transform);
 
     // Accessors
     [[nodiscard]] auto transform() const -> engine::geometry::Transform;

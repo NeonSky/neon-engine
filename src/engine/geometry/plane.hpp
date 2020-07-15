@@ -16,7 +16,7 @@ namespace engine::geometry {
       this->normal         = glm::vec3(0.0F, 1.0F, 0.0F);
     }
 
-    Plane(Rectangle rectangle) {
+    Plane(const Rectangle& rectangle) {
       this->point_on_plane = rectangle.botleft();
       this->normal         = rectangle.transform().forward();
     }

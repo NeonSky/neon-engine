@@ -11,7 +11,7 @@ using namespace engine::graphics;
 
 static std::map<std::string, GLuint> _cache;
 
-Texture::Texture(std::string img_path) {
+Texture::Texture(const std::string& img_path) {
   if (_cache.count(img_path) != 0U) {
     _texture = _cache[img_path];
     return;
@@ -37,7 +37,5 @@ Texture::Texture(std::string img_path) {
 
   _cache[img_path] = _texture;
 }
-
-Texture::~Texture() = default;
 
 auto Texture::id() const -> GLuint { return _texture; }

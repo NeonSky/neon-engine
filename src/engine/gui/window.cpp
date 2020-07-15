@@ -32,25 +32,25 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
 
   glfwSetKeyCallback(window, [](GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-    for (std::function<void(GLFWwindow*, int)> c : w->on_key_callbacks)
+    for (const std::function<void(GLFWwindow*, int)>& c : w->on_key_callbacks)
       c(window, action);
   });
 
   glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, [[maybe_unused]] int mods) {
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-    for (std::function<void(GLFWwindow*, int, int)> c : w->on_mouse_click_callbacks)
+    for (const std::function<void(GLFWwindow*, int, int)>& c : w->on_mouse_click_callbacks)
       c(window, button, action);
   });
 
   glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-    for (std::function<void(GLFWwindow*, float, float)> c : w->on_mouse_move_callbacks)
+    for (const std::function<void(GLFWwindow*, float, float)>& c : w->on_mouse_move_callbacks)
       c(window, xpos, ypos);
   });
 
   glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-    for (std::function<void(GLFWwindow*, float, float)> c : w->on_mouse_scroll_callbacks)
+    for (const std::function<void(GLFWwindow*, float, float)>& c : w->on_mouse_scroll_callbacks)
       c(window, xoffset, yoffset);
   });
 
@@ -95,18 +95,18 @@ auto Window::height() const -> unsigned int {
   return _height;
 }
 
-void Window::add_on_key_callback(std::function<void(GLFWwindow*, int)> callback) {
+void Window::add_on_key_callback(const std::function<void(GLFWwindow*, int)>& callback) {
   this->on_key_callbacks.push_back(callback);
 }
 
-void Window::add_on_mouse_click_callback(std::function<void(GLFWwindow*, int, int)> callback) {
+void Window::add_on_mouse_click_callback(const std::function<void(GLFWwindow*, int, int)>& callback) {
   this->on_mouse_click_callbacks.push_back(callback);
 }
 
-void Window::add_on_mouse_move_callback(std::function<void(GLFWwindow*, float, float)> callback) {
+void Window::add_on_mouse_move_callback(const std::function<void(GLFWwindow*, float, float)>& callback) {
   this->on_mouse_move_callbacks.push_back(callback);
 }
 
-void Window::add_on_mouse_scroll_callback(std::function<void(GLFWwindow*, float, float)> callback) {
+void Window::add_on_mouse_scroll_callback(const std::function<void(GLFWwindow*, float, float)>& callback) {
   this->on_mouse_scroll_callbacks.push_back(callback);
 }

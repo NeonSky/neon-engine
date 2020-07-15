@@ -4,10 +4,11 @@
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <fstream>
 #include <stdexcept>
+#include <utility>
 
 using namespace engine::graphics;
 
-Shader::Shader(std::string vertex_shader_path, std::string fragment_shader_path) {
+Shader::Shader(const std::string& vertex_shader_path, const std::string& fragment_shader_path) {
   this->vertex_shader   = load_shader_file(vertex_shader_path, GL_VERTEX_SHADER);
   this->fragment_shader = load_shader_file(fragment_shader_path, GL_FRAGMENT_SHADER);
 
@@ -26,8 +27,6 @@ Shader::Shader(std::string vertex_shader_path, std::string fragment_shader_path)
     LOG_ERROR("Could not link program.");
 }
 
-Shader::~Shader() = default;
-
 void Shader::use() const {
   glUseProgram(this->program);
 }
@@ -42,7 +41,7 @@ void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat* data) const 
   glUniformMatrix4fv(loc, 1, GL_FALSE, data);
 }
 
-auto Shader::load_shader_file(std::string shader_path, GLenum shader_type) -> GLuint {
+auto Shader::load_shader_file(const std::string& shader_path, GLenum shader_type) -> GLuint {
   if (_cache.count(shader_path) != 0U)
     return _cache[shader_path];
 

@@ -17,8 +17,8 @@ using namespace engine::graphics;
 
 #define BUFFER_OFFSET(i) ((char*) (i))
 
-GLTFModel::GLTFModel(std::string model_path,
-                     geometry::Transform transform,
+GLTFModel::GLTFModel(const std::string& model_path,
+                     const geometry::Transform& transform,
                      bool invert,
                      GLTFFileFormat format)
         : _transform(transform),
@@ -71,7 +71,7 @@ void GLTFModel::bind_model() {
   _vao = vao;
 }
 
-void GLTFModel::bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node& node) {
+void GLTFModel::bind_model_nodes(const std::map<int, GLuint>& vbos, tinygltf::Node& node) {
   if ((node.mesh >= 0) && (node.mesh < (int) _model.meshes.size())) {
     bind_mesh(vbos, _model.meshes[node.mesh]);
   }
@@ -105,10 +105,10 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
     glBufferData(bufferView.target, bufferView.byteLength, &buffer.data.at(0) + bufferView.byteOffset, GL_STATIC_DRAW);
   }
 
-  for (auto primitive : mesh.primitives) {
+  for (const auto& primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
-    for (auto& attrib : primitive.attributes) {
+    for (const auto& attrib : primitive.attributes) {
       tinygltf::Accessor accessor = _model.accessors[attrib.second];
       int byteStride =
         accessor.ByteStride(_model.bufferViews[accessor.bufferView]);
@@ -181,7 +181,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
 }
 
 void GLTFModel::draw_mesh(tinygltf::Mesh& mesh) {
-  for (auto primitive : mesh.primitives) {
+  for (const auto& primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
     glDrawElements(primitive.mode, indexAccessor.count, indexAccessor.componentType, BUFFER_OFFSET(indexAccessor.byteOffset));

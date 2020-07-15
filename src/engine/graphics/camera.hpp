@@ -26,7 +26,7 @@ namespace engine::graphics {
   public:
     Camera();
     explicit Camera(const geometry::Transform&);
-    ~Camera();
+    ~Camera() = default;
 
     geometry::Transform transform;
 

@@ -23,8 +23,6 @@ Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
   this->scale    = scale;
 }
 
-Transform::~Transform() = default;
-
 void Transform::set_rotation(float yaw, float pitch, float roll) {
   this->rotation = glm::vec3(pitch, yaw, roll);
 }

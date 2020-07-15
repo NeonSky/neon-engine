@@ -15,7 +15,7 @@ using namespace engine::debug;
 DebugCamera::DebugCamera(engine::gui::Window* window)
         : window(window) {}
 
-DebugCamera::DebugCamera(engine::gui::Window* window, engine::geometry::Transform transform)
+DebugCamera::DebugCamera(engine::gui::Window* window, const engine::geometry::Transform& transform)
         : camera(engine::graphics::Camera(transform)),
           window(window) {
   this->window->add_on_key_callback([this](GLFWwindow* w, [[maybe_unused]] int n) { on_key(w); });
@@ -23,10 +23,8 @@ DebugCamera::DebugCamera(engine::gui::Window* window, engine::geometry::Transfor
   this->window->add_on_mouse_scroll_callback([this](GLFWwindow* w, float x, float y) { on_scroll(w, x, y); });
 }
 
-DebugCamera::~DebugCamera() = default;
-
 // Mutators
-void DebugCamera::set_transform(engine::geometry::Transform transform) {
+void DebugCamera::set_transform(const engine::geometry::Transform& transform) {
   this->camera.transform = transform;
 };
 

@@ -10,7 +10,7 @@ namespace engine::graphics {
 
   class Image {
   public:
-    Image(std::string img_path);
+    Image(const std::string& img_path);
     ~Image();
 
     [[nodiscard]] auto data() const -> const unsigned char*;

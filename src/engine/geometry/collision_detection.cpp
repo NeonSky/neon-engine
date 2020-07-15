@@ -29,7 +29,7 @@ auto engine::geometry::ray_plane_intersection(Ray ray, Plane plane) -> Intersect
   return new Intersection(hit);
 }
 
-auto engine::geometry::ray_rectangle_intersection(Ray ray, Rectangle rectangle) -> Intersection* {
+auto engine::geometry::ray_rectangle_intersection(Ray ray, const Rectangle& rectangle) -> Intersection* {
   Intersection* hit = ray_plane_intersection(ray, Plane(rectangle));
   if (hit == nullptr)
     return nullptr;
