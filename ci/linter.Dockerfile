@@ -8,6 +8,8 @@ WORKDIR /home/aur/ecs-scenes
 COPY res res
 COPY src src
 COPY CMakeLists.txt .
+COPY .clang-format .
+COPY .clang-tidy .
 COPY Makefile .
 RUN make build
 
