@@ -19,8 +19,8 @@ auto Rectangle::botright() const -> glm::vec3 { return this->_botright; }
 
 // Mutators
 void Rectangle::update_corners() {
-  glm::vec3 xoffset = (this->_width/2.0f) * Transform::world_right;
-  glm::vec3 yoffset = (this->_height/2.0f) * Transform::world_up;
+  glm::vec3 xoffset = (this->_width / 2.0f) * Transform::world_right;
+  glm::vec3 yoffset = (this->_height / 2.0f) * Transform::world_up;
 
   this->_topleft  = this->_transform.matrix() * glm::vec4(+xoffset + yoffset, 1.0f);
   this->_topright = this->_transform.matrix() * glm::vec4(-xoffset + yoffset, 1.0f);

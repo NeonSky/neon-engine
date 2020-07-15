@@ -14,7 +14,7 @@ Transform::Transform(glm::vec3 position, glm::vec3 rotation) : Transform(positio
 Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
   this->position = position;
   this->rotation = rotation;
-  this->scale = scale;
+  this->scale    = scale;
 }
 
 Transform::~Transform() = default;
@@ -35,7 +35,7 @@ void Transform::flip_rotation() {
   set_rotation(yaw, pitch, roll);
 }
 
-auto Transform::operator+(const Transform &other) const -> Transform {
+auto Transform::operator+(const Transform& other) const -> Transform {
   return Transform(this->position + other.position, this->rotation + other.rotation, this->scale + other.scale);
 }
 

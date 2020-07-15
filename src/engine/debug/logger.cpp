@@ -1,17 +1,17 @@
 #include "logger.hpp"
 
-#include <string>
 #include <glad/glad.h>
+#include <string>
 
 using namespace engine::debug;
 
 auto checkGLError(const char* file, int line) -> bool {
-	bool wasError = false;
-	for (GLenum glErr = glGetError(); glErr != GL_NO_ERROR; glErr = glGetError()) {
-    LOG_ERROR("OpenGL error #" + std::to_string(glErr) + " in " + file + " at line: " + std::to_string(line));
-    wasError = true;
+  bool was_error = false;
+  for (GLenum gl_err = glGetError(); gl_err != GL_NO_ERROR; gl_err = glGetError()) {
+    LOG_ERROR("OpenGL error #" + std::to_string(gl_err) + " in " + file + " at line: " + std::to_string(line));
+    was_error = true;
   }
-	return wasError;
+  return was_error;
 }
 
 void Logger::set_profile(Logger::Profile profile) {

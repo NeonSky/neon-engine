@@ -1,6 +1,6 @@
 #include "collision_detection.hpp"
-#include "rectangle.hpp"
 #include "plane.hpp"
+#include "rectangle.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/scalar_constants.hpp>
@@ -12,18 +12,18 @@
 using namespace engine::geometry;
 
 Intersection::Intersection(glm::vec3 point)
-  : point(point) {}
+        : point(point) {}
 
 auto engine::geometry::ray_plane_intersection(Ray ray, Plane plane) -> Intersection* {
-  glm::vec3 from = ray.origin;
-  glm::vec3 dir = ray.direction;
+  glm::vec3 from   = ray.origin;
+  glm::vec3 dir    = ray.direction;
   glm::vec3 normal = plane.normal;
 
   if (glm::dot(normal, dir) == 0)
     return nullptr;
 
-  float d0 = -glm::dot(normal, plane.point_on_plane);
-  float t = -(glm::dot(normal, from) + d0) / glm::dot(normal, dir);
+  float d0      = -glm::dot(normal, plane.point_on_plane);
+  float t       = -(glm::dot(normal, from) + d0) / glm::dot(normal, dir);
   glm::vec3 hit = from + t * dir;
 
   return new Intersection(hit);

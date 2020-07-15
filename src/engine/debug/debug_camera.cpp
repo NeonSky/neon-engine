@@ -13,21 +13,15 @@
 using namespace engine::debug;
 
 DebugCamera::DebugCamera(engine::gui::Window* window)
-  : camera(engine::graphics::Camera()),
-    window(window){}
+        : camera(engine::graphics::Camera()),
+          window(window) {}
 
 DebugCamera::DebugCamera(engine::gui::Window* window, engine::geometry::Transform transform)
-  : camera(engine::graphics::Camera(transform)),
-    window(window) {
-  this->window->add_on_key_callback(
-    [this](GLFWwindow* w, [[maybe_unused]] int n) { on_key(w); }
-  );
-  this->window->add_on_mouse_move_callback(
-    [this](GLFWwindow* w, float x, float y) { on_cursor(w, x, y); }
-  );
-  this->window->add_on_mouse_scroll_callback(
-    [this](GLFWwindow* w, float x, float y) { on_scroll(w, x, y); }
-  );
+        : camera(engine::graphics::Camera(transform)),
+          window(window) {
+  this->window->add_on_key_callback([this](GLFWwindow* w, [[maybe_unused]] int n) { on_key(w); });
+  this->window->add_on_mouse_move_callback([this](GLFWwindow* w, float x, float y) { on_cursor(w, x, y); });
+  this->window->add_on_mouse_scroll_callback([this](GLFWwindow* w, float x, float y) { on_scroll(w, x, y); });
 }
 
 DebugCamera::~DebugCamera() = default;

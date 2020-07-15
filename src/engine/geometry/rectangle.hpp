@@ -34,6 +34,5 @@ namespace engine::geometry {
 
     // Mutators
     void update_corners();
-
   };
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ray.hpp"
 #include "plane.hpp"
+#include "ray.hpp"
 #include "rectangle.hpp"
 
 #include <glm/vec3.hpp>

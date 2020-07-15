@@ -1,8 +1,8 @@
 #pragma once
 
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
 
 namespace engine::geometry {
 
@@ -23,7 +23,7 @@ namespace engine::geometry {
     static constexpr glm::vec4 world_up      = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     static constexpr glm::vec4 world_forward = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
-    auto operator+(const Transform &other) const -> Transform;
+    auto operator+(const Transform& other) const -> Transform;
 
     [[nodiscard]] auto matrix() const -> glm::mat4;
     [[nodiscard]] auto forward() const -> glm::vec3;

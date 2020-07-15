@@ -2,19 +2,19 @@
 #include "../debug/logger.hpp"
 
 #include <imgui.h>
-#include <imgui_internal.h>
-#include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_internal.h>
 #include <stdexcept>
 
 using namespace engine::gui;
 
 Window::Window()
-  : Window(1920, 1080, "Application") {}
+        : Window(1920, 1080, "Application") {}
 
 Window::Window(unsigned int width, unsigned int height, const char* title)
-  : _width(width),
-    _height(height) {
+        : _width(width),
+          _height(height) {
 
   if (!glfwInit()) {
     LOG_CRITICAL("Failed to init glfw.");
@@ -27,7 +27,7 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
   }
 
   glfwMakeContextCurrent(window);
-  glfwSetWindowUserPointer(window, reinterpret_cast<void *>(this));
+  glfwSetWindowUserPointer(window, reinterpret_cast<void*>(this));
 
   glfwSetKeyCallback(window, [](GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -59,7 +59,8 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
 void Window::init_gui() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
-  ImGuiIO& io = ImGui::GetIO(); (void)io;
+  ImGuiIO& io = ImGui::GetIO();
+  (void) io; // FIXME
   ImGui::StyleColorsDark();
 
   std::string glsl_version = "#version 420";

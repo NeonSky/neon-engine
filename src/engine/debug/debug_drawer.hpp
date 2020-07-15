@@ -24,7 +24,7 @@ namespace engine::debug {
     ~DebugDrawer();
 
     // Mutators
-    void render(const glm::mat4 &view_projection_matrix);
+    void render(const glm::mat4& view_projection_matrix);
     void draw_line(glm::vec3 from, glm::vec3 to);
     void draw_transform(geometry::Transform transform);
     void draw_rectangle(geometry::Rectangle rectangle);

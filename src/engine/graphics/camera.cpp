@@ -11,14 +11,14 @@ using namespace engine::graphics;
 bool firstMouse = true;
 double lastX;
 double lastY;
-double yaw = 0.0f;
+double yaw   = 0.0f;
 double pitch = 0.0f;
 
-Camera::Camera() : Camera(geometry::Transform()){}
+Camera::Camera() : Camera(geometry::Transform()) {}
 Camera::Camera(const geometry::Transform& transform)
-  : transform(transform) {
+        : transform(transform) {
 
-  yaw = this->transform.yaw();
+  yaw   = this->transform.yaw();
   pitch = this->transform.pitch();
 }
 
@@ -58,21 +58,21 @@ void Camera::set_zoom(float zoom_level) {
 
 void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
   if (firstMouse) {
-    lastX = mouse_xpos;
-    lastY = mouse_ypos;
+    lastX      = mouse_xpos;
+    lastY      = mouse_ypos;
     firstMouse = false;
   }
 
   float xoffset = mouse_xpos - lastX;
   float yoffset = mouse_ypos - lastY;
-  lastX = mouse_xpos;
-  lastY = mouse_ypos;
+  lastX         = mouse_xpos;
+  lastY         = mouse_ypos;
 
   float sensitivity = 0.003f;
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
-  yaw   -= xoffset;
+  yaw -= xoffset;
   pitch += yoffset;
 
   pitch = std::clamp(pitch, -glm::half_pi<double>(), glm::half_pi<double>());
@@ -101,8 +101,7 @@ auto Camera::projection_matrix(ProjectionType projection_type) const -> glm::mat
       glm::radians(this->perspective.fov),
       this->perspective.aspect_ratio,
       this->perspective.near,
-      this->perspective.far
-    );
+      this->perspective.far);
   case ProjectionType::ORTHOGRAPHIC:
     return glm::ortho(
       this->orthographic.left,
@@ -110,8 +109,7 @@ auto Camera::projection_matrix(ProjectionType projection_type) const -> glm::mat
       this->orthographic.bot,
       this->orthographic.top,
       this->orthographic.near,
-      this->orthographic.far
-    );
+      this->orthographic.far);
   default:
     LOG_ERROR("Projection type not supported: " + std::to_string(projection_type));
     assert(false);

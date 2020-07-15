@@ -8,21 +8,21 @@
 using namespace engine::graphics;
 
 Shader::Shader(std::string vertex_shader_path, std::string fragment_shader_path) {
-  this->vertex_shader = load_shader_file(vertex_shader_path, GL_VERTEX_SHADER);
+  this->vertex_shader   = load_shader_file(vertex_shader_path, GL_VERTEX_SHADER);
   this->fragment_shader = load_shader_file(fragment_shader_path, GL_FRAGMENT_SHADER);
 
   this->program = glCreateProgram();
 
-	glAttachShader(this->program, vertex_shader);
-	glDeleteShader(vertex_shader);
-	glAttachShader(this->program, fragment_shader);
-	glDeleteShader(fragment_shader);
+  glAttachShader(this->program, vertex_shader);
+  glDeleteShader(vertex_shader);
+  glAttachShader(this->program, fragment_shader);
+  glDeleteShader(fragment_shader);
 
-	glLinkProgram(this->program);
+  glLinkProgram(this->program);
 
-	GLint ok = 0;
-	glGetProgramiv(this->program, GL_LINK_STATUS, &ok);
-	if (!ok)
+  GLint ok = 0;
+  glGetProgramiv(this->program, GL_LINK_STATUS, &ok);
+  if (!ok)
     LOG_ERROR("Could not link program.");
 }
 
@@ -32,12 +32,12 @@ void Shader::use() {
   glUseProgram(this->program);
 }
 
-void Shader::set_uniform_vec3(const GLchar* uniform, const GLfloat *data) {
+void Shader::set_uniform_vec3(const GLchar* uniform, const GLfloat* data) {
   int loc = glGetUniformLocation(this->program, uniform);
   glUniform3fv(loc, 1, data);
 }
 
-void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat *data) {
+void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat* data) {
   int loc = glGetUniformLocation(this->program, uniform);
   glUniformMatrix4fv(loc, 1, false, data);
 }
@@ -46,22 +46,22 @@ auto Shader::load_shader_file(std::string shader_path, GLenum shader_type) -> GL
   if (_cache.count(shader_path))
     return _cache[shader_path];
 
-	GLuint shader = glCreateShader(shader_type);
+  GLuint shader = glCreateShader(shader_type);
 
-  std::string res_path = boost::dll::program_location().parent_path().string() + "/../res/shaders/";
+  std::string res_path         = boost::dll::program_location().parent_path().string() + "/../res/shaders/";
   std::string full_shader_path = res_path + shader_path;
 
-	std::ifstream file(full_shader_path);
-	std::string src((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+  std::ifstream file(full_shader_path);
+  std::string src((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	const char* raw_shader = src.c_str();
-	glShaderSource(shader, 1, &raw_shader, nullptr);
+  const char* raw_shader = src.c_str();
+  glShaderSource(shader, 1, &raw_shader, nullptr);
 
-	glCompileShader(shader);
+  glCompileShader(shader);
 
-	int ok = 0;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
-	if(!ok)
+  int ok = 0;
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
+  if (!ok)
     LOG_ERROR("Could not compile shader: " + shader_path);
 
   return _cache[shader_path] = shader;

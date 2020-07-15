@@ -14,8 +14,8 @@ namespace engine::graphics {
 
     // Mutators
     void use();
-    void set_uniform_vec3(const GLchar* uniform, const GLfloat *data);
-    void set_uniform_mat4(const GLchar* uniform, const GLfloat *data);
+    void set_uniform_vec3(const GLchar* uniform, const GLfloat* data);
+    void set_uniform_mat4(const GLchar* uniform, const GLfloat* data);
 
   private:
     GLuint program;

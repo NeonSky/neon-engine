@@ -29,8 +29,8 @@ namespace engine::debug {
 
     glm::vec3 _mouse_ray;
     engine::graphics::ProjectionType projection_type = engine::graphics::ProjectionType::PERSPECTIVE;
-    bool free_look_mode = false;
-    float zoom = 0.0f;
+    bool free_look_mode                              = false;
+    float zoom                                       = 0.0f;
 
     // Mutators
     void on_key(GLFWwindow* window);

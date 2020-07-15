@@ -1,7 +1,7 @@
 #pragma once
 
-#include "shader.hpp"
 #include "../geometry/transform.hpp"
+#include "shader.hpp"
 
 #include <glad/glad.h>
 #include <tiny_gltf.h>
@@ -22,7 +22,7 @@ namespace engine::graphics {
   public:
     GLTFModel(std::string model_path,
               geometry::Transform transform,
-              bool invert = true,
+              bool invert           = true,
               GLTFFileFormat format = GLTFFileFormat::ASCII);
     ~GLTFModel();
 
@@ -36,11 +36,10 @@ namespace engine::graphics {
     int _vao;
 
     void bind_model();
-    void bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node &node);
-    auto bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> std::map<int, GLuint>;
-    void draw_mesh(tinygltf::Mesh &mesh);
-    void draw_model_nodes(tinygltf::Node &node);
+    void bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node& node);
+    auto bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> std::map<int, GLuint>;
+    void draw_mesh(tinygltf::Mesh& mesh);
+    void draw_model_nodes(tinygltf::Node& node);
     void draw_model();
-
   };
 }

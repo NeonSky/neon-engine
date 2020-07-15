@@ -2,8 +2,8 @@
 
 #include "../debug/logger.hpp"
 
-#include <nlohmann/json.hpp>
 #include "image.hpp"
+#include <nlohmann/json.hpp>
 
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_INCLUDE_JSON
@@ -18,14 +18,14 @@ using namespace engine::graphics;
 #define BUFFER_OFFSET(i) ((char*) (i))
 
 GLTFModel::GLTFModel(std::string model_path,
-                    geometry::Transform transform,
-                    bool invert,
-                    GLTFFileFormat format)
-  : _transform(transform),
-    _shader(Shader("gltf.vert", "gltf.frag")),
-    _invert(invert) {
+                     geometry::Transform transform,
+                     bool invert,
+                     GLTFFileFormat format)
+        : _transform(transform),
+          _shader(Shader("gltf.vert", "gltf.frag")),
+          _invert(invert) {
 
-  std::string res_path = boost::dll::program_location().parent_path().string() + "/../res/models/";
+  std::string res_path  = boost::dll::program_location().parent_path().string() + "/../res/models/";
   std::string full_path = res_path + model_path;
 
   tinygltf::TinyGLTF loader;
@@ -56,9 +56,9 @@ void GLTFModel::bind_model() {
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
-  const tinygltf::Scene &scene = _model.scenes[_model.defaultScene];
+  const tinygltf::Scene& scene = _model.scenes[_model.defaultScene];
   for (int node : scene.nodes) {
-    assert((node >= 0) && (node < (int)_model.nodes.size()));
+    assert((node >= 0) && (node < (int) _model.nodes.size()));
     bind_model_nodes(vbos, _model.nodes[node]);
   }
 
@@ -71,26 +71,26 @@ void GLTFModel::bind_model() {
   _vao = vao;
 }
 
-void GLTFModel::bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node &node) {
-  if ((node.mesh >= 0) && (node.mesh < (int)_model.meshes.size())) {
+void GLTFModel::bind_model_nodes(std::map<int, GLuint> vbos, tinygltf::Node& node) {
+  if ((node.mesh >= 0) && (node.mesh < (int) _model.meshes.size())) {
     bind_mesh(vbos, _model.meshes[node.mesh]);
   }
 
   for (int i : node.children) {
-    assert((i >= 0) && (i < (int)_model.nodes.size()));
+    assert((i >= 0) && (i < (int) _model.nodes.size()));
     bind_model_nodes(vbos, _model.nodes[i]);
   }
 }
 
-auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> std::map<int, GLuint> {
+auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> std::map<int, GLuint> {
   for (size_t i = 0; i < _model.bufferViews.size(); ++i) {
-    const tinygltf::BufferView &bufferView = _model.bufferViews[i];
-    if (bufferView.target == 0) {  // TODO impl drawarrays
+    const tinygltf::BufferView& bufferView = _model.bufferViews[i];
+    if (bufferView.target == 0) { // TODO impl drawarrays
       LOG_WARNING("bufferView.target is zero.");
-      continue;  // Unsupported bufferView.
+      continue; // Unsupported bufferView.
     }
 
-    const tinygltf::Buffer &buffer = _model.buffers[bufferView.buffer];
+    const tinygltf::Buffer& buffer = _model.buffers[bufferView.buffer];
     // std::cout << "bufferview.target " << bufferView.target << std::endl;
 
     GLuint vbo;
@@ -109,10 +109,10 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> s
   for (auto primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
-    for (auto &attrib : primitive.attributes) {
+    for (auto& attrib : primitive.attributes) {
       tinygltf::Accessor accessor = _model.accessors[attrib.second];
       int byteStride =
-          accessor.ByteStride(_model.bufferViews[accessor.bufferView]);
+        accessor.ByteStride(_model.bufferViews[accessor.bufferView]);
       glBindBuffer(GL_ARRAY_BUFFER, vbos[accessor.bufferView]);
 
       int size = 1;
@@ -121,9 +121,12 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> s
       }
 
       int vaa = -1;
-      if (attrib.first.compare("POSITION") == 0) vaa = 0;
-      if (attrib.first.compare("NORMAL") == 0) vaa = 1;
-      if (attrib.first.compare("TEXCOORD_0") == 0) vaa = 2;
+      if (attrib.first.compare("POSITION") == 0)
+        vaa = 0;
+      if (attrib.first.compare("NORMAL") == 0)
+        vaa = 1;
+      if (attrib.first.compare("TEXCOORD_0") == 0)
+        vaa = 2;
       if (vaa > -1) {
         glEnableVertexAttribArray(vaa);
         glVertexAttribPointer(vaa, size, accessor.componentType,
@@ -135,14 +138,14 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> s
 
     if (_model.textures.size() > 0) {
       // fixme: Use material's baseColor
-      tinygltf::Texture &tex = _model.textures[0];
+      tinygltf::Texture& tex = _model.textures[0];
 
       if (tex.source > -1) {
 
         GLuint texid;
         glGenTextures(1, &texid);
 
-        tinygltf::Image &image = _model.images[tex.source];
+        tinygltf::Image& image = _model.images[tex.source];
 
         glBindTexture(GL_TEXTURE_2D, texid);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -181,7 +184,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh &mesh) -> s
   return vbos;
 }
 
-void GLTFModel::draw_mesh(tinygltf::Mesh &mesh) {
+void GLTFModel::draw_mesh(tinygltf::Mesh& mesh) {
   for (auto primitive : mesh.primitives) {
     tinygltf::Accessor indexAccessor = _model.accessors[primitive.indices];
 
@@ -191,8 +194,8 @@ void GLTFModel::draw_mesh(tinygltf::Mesh &mesh) {
   }
 }
 
-void GLTFModel::draw_model_nodes(tinygltf::Node &node) {
-  if ((node.mesh >= 0) && (node.mesh < (int)_model.meshes.size())) {
+void GLTFModel::draw_model_nodes(tinygltf::Node& node) {
+  if ((node.mesh >= 0) && (node.mesh < (int) _model.meshes.size())) {
     draw_mesh(_model.meshes[node.mesh]);
   }
   for (int i : node.children) {
@@ -203,7 +206,7 @@ void GLTFModel::draw_model_nodes(tinygltf::Node &node) {
 void GLTFModel::draw_model() {
   glBindVertexArray(_vao);
 
-  const tinygltf::Scene &scene = _model.scenes[_model.defaultScene];
+  const tinygltf::Scene& scene = _model.scenes[_model.defaultScene];
   for (int node : scene.nodes) {
     draw_model_nodes(_model.nodes[node]);
   }
@@ -219,9 +222,9 @@ void GLTFModel::render(const glm::mat4& projection_view) {
     model[2][2] *= -1;
   }
 
-  glm::mat4 mvp = projection_view * model;
+  glm::mat4 mvp          = projection_view * model;
   glm::vec3 sun_position = glm::vec3(3.0, 10.0, -5.0);
-  auto sun_color = glm::vec3(1.0);
+  auto sun_color         = glm::vec3(1.0);
 
   _shader.use();
   _shader.set_uniform_mat4("MVP", &mvp[0][0]);

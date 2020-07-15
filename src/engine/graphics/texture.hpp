@@ -12,6 +12,7 @@ namespace engine::graphics {
 
     // Accessors
     [[nodiscard]] auto id() const -> GLuint;
+
   private:
     GLuint _texture;
   };

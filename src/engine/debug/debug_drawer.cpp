@@ -7,12 +7,12 @@ using namespace engine::debug;
 DebugDrawer::DebugDrawer() : shader(graphics::Shader("color.vert", "color.frag")) {}
 DebugDrawer::~DebugDrawer() = default;
 
-void DebugDrawer::render(const glm::mat4 &view_projection_matrix) {
+void DebugDrawer::render(const glm::mat4& view_projection_matrix) {
 
   this->shader.use();
 
   std::vector<float> positions;
-  for (auto &line : this->line_queue) {
+  for (auto& line : this->line_queue) {
     positions.emplace_back(line.A.x);
     positions.emplace_back(line.A.y);
     positions.emplace_back(line.A.z);
@@ -27,7 +27,7 @@ void DebugDrawer::render(const glm::mat4 &view_projection_matrix) {
   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * positions.size(), positions.data(), GL_STATIC_DRAW);
 
   std::vector<float> colors;
-  for (auto &line : this->line_queue) {
+  for (auto& line : this->line_queue) {
     for (int i = 0; i < 2; i++) {
       colors.emplace_back(line.color.x);
       colors.emplace_back(line.color.y);
@@ -48,8 +48,8 @@ void DebugDrawer::render(const glm::mat4 &view_projection_matrix) {
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, nullptr);
   glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-	glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, nullptr);
+  glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
+  glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, nullptr);
   glEnableVertexAttribArray(1);
 
   glBindVertexArray(vao);
@@ -66,8 +66,8 @@ void DebugDrawer::draw_line(glm::vec3 from, glm::vec3 to) {
 }
 
 void DebugDrawer::draw_transform(geometry::Transform transform) {
-  this->line_queue.emplace_back(transform.position, transform.position + transform.right()  , glm::vec3(1.0f, 0.0f, 0.0f));
-  this->line_queue.emplace_back(transform.position, transform.position + transform.up()     , glm::vec3(0.0f, 1.0f, 0.0f));
+  this->line_queue.emplace_back(transform.position, transform.position + transform.right(), glm::vec3(1.0f, 0.0f, 0.0f));
+  this->line_queue.emplace_back(transform.position, transform.position + transform.up(), glm::vec3(0.0f, 1.0f, 0.0f));
   this->line_queue.emplace_back(transform.position, transform.position + transform.forward(), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 

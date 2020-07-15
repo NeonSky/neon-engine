@@ -9,9 +9,8 @@
 using namespace engine::graphics;
 
 // TODO: Don't take a pointer. Simply have a function that doesn't take a texture as alternative.
-Rectangle::Rectangle(geometry::Rectangle rectangle,
-                    const Texture *texture)
-  : _texture(texture) {
+Rectangle::Rectangle(geometry::Rectangle rectangle, const Texture* texture)
+        : _texture(texture) {
 
   _shader = std::make_unique<Shader>("texture.vert", "texture.frag");
 
@@ -21,11 +20,21 @@ Rectangle::Rectangle(geometry::Rectangle rectangle,
   glm::vec3 topright = rectangle.topright();
 
   std::vector<float> positions = {
-    //	 X      Y     Z
-      botleft.x , botleft.y , botleft.z,
-      botright.x, botright.y, botright.z,
-      topright.x, topright.y, topright.z,
-      topleft.x , topleft.y , topleft.z,
+    botleft.x,
+    botleft.y,
+    botleft.z,
+
+    botright.x,
+    botright.y,
+    botright.z,
+
+    topright.x,
+    topright.y,
+    topright.z,
+
+    topleft.x,
+    topleft.y,
+    topleft.z,
   };
 
   unsigned int pos_buffer;
@@ -47,8 +56,8 @@ Rectangle::Rectangle(geometry::Rectangle rectangle,
   }
 
   GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
 
   unsigned int index_buffer;
   const std::vector<int> indices = {
@@ -56,8 +65,8 @@ Rectangle::Rectangle(geometry::Rectangle rectangle,
     2, 3, 0, // Triangle 2
   };
 
-	glGenBuffers(1, &index_buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+  glGenBuffers(1, &index_buffer);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
 
   // Assign position attribute of vertex shader
@@ -74,7 +83,7 @@ Rectangle::Rectangle(geometry::Rectangle rectangle,
   _vao = vao;
 }
 
-void Rectangle::render(const glm::mat4 &view_projection_matrix) {
+void Rectangle::render(const glm::mat4& view_projection_matrix) {
   _shader->use();
 
   glm::mat4 model_view_projection = view_projection_matrix * this->transform.matrix();

@@ -1,7 +1,7 @@
-#include "../engine/graphics/gltf_model.hpp"
 #include "../engine/debug/debug_camera.hpp"
-#include "../engine/debug/logger.hpp"
 #include "../engine/debug/debug_drawer.hpp"
+#include "../engine/debug/logger.hpp"
+#include "../engine/graphics/gltf_model.hpp"
 #include "../engine/gui/window.hpp"
 
 #include <GLFW/glfw3.h>
@@ -30,13 +30,13 @@ struct velocity {
   float dy;
 };
 
-void update(entt::registry &registry) {
+void update(entt::registry& registry) {
   auto view = registry.view<position, velocity>();
 
-  for(auto entity: view) {
+  for (auto entity : view) {
     // gets only the components that are going to be used ...
 
-    auto &vel = view.get<velocity>(entity);
+    auto& vel = view.get<velocity>(entity);
 
     vel.dx = 0.;
     vel.dy = 0.;
@@ -46,15 +46,15 @@ void update(entt::registry &registry) {
 }
 
 void update(std::uint64_t dt,
-         entt::registry &registry) {
-  registry.view<position, velocity>().each([dt](auto &pos, auto &vel) {
-                                             // gets all the components of the view at once ...
+            entt::registry& registry) {
+  registry.view<position, velocity>().each([dt](auto& pos, auto& vel) {
+    // gets all the components of the view at once ...
 
-                                             pos.x += vel.dx * dt;
-                                             pos.y += vel.dy * dt;
+    pos.x += vel.dx * dt;
+    pos.y += vel.dy * dt;
 
-                                             // ...
-                                           });
+    // ...
+  });
 }
 
 auto main() -> int {
@@ -64,10 +64,10 @@ auto main() -> int {
   LOG_INFO("Program started.");
   auto start = std::chrono::system_clock::now();
 
-  engine::gui::Window *window;
+  engine::gui::Window* window;
   try {
     window = new engine::gui::Window(1920, 1080, "Application");
-  } catch(const std::exception& e) {
+  } catch (const std::exception& e) {
     LOG_ERROR(e.what());
     return -1;
   }
@@ -79,9 +79,9 @@ auto main() -> int {
     return -1;
   }
 
-  LOG_INFO("OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
-  LOG_INFO("OpenGL renderer: " + std::string((const char*)glGetString(GL_RENDERER)));
-  LOG_INFO("OpenGL vendor: " + std::string((const char*)glGetString(GL_VENDOR)));
+  LOG_INFO("OpenGL version: " + std::string((const char*) glGetString(GL_VERSION)));
+  LOG_INFO("OpenGL renderer: " + std::string((const char*) glGetString(GL_RENDERER)));
+  LOG_INFO("OpenGL vendor: " + std::string((const char*) glGetString(GL_VENDOR)));
 
   CHECK_GL_ERROR();
 
@@ -99,10 +99,12 @@ auto main() -> int {
   entt::registry registry;
   std::uint64_t dt = 16;
 
-  for(auto i = 0; i < 10; ++i) {
+  for (auto i = 0; i < 10; ++i) {
     auto entity = registry.create();
     registry.emplace<position>(entity, i * 1.f, i * 1.f);
-    if (i % 2 == 0) { registry.emplace<velocity>(entity, i * .1f, i * .1f); }
+    if (i % 2 == 0) {
+      registry.emplace<velocity>(entity, i * .1f, i * .1f);
+    }
   }
 
   engine::graphics::GLTFModel model("cube/Cube.gltf", engine::geometry::Transform(glm::vec3(0, 0, 0)));
@@ -137,4 +139,3 @@ auto main() -> int {
   std::chrono::duration<double> elapsed_seconds = end - start;
   LOG_INFO("Uptime: " + std::to_string(elapsed_seconds.count()) + " seconds.");
 }
-

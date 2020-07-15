@@ -2,8 +2,8 @@
 
 #include "../geometry/transform.hpp"
 
-#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
 
 namespace engine::graphics {
 
@@ -48,10 +48,10 @@ namespace engine::graphics {
       float far;
 
       Perspective() {
-        fov = 45.0f;
+        fov          = 45.0f;
         aspect_ratio = 16.0f / 9.0f;
-        near = 0.1f;
-        far = 300.0f;
+        near         = 0.1f;
+        far          = 300.0f;
       }
     };
 
@@ -64,12 +64,12 @@ namespace engine::graphics {
       float far;
 
       Orthographic() {
-        left = -1.0f;
+        left  = -1.0f;
         right = 1.0f;
-        bot = -1.0f;
-        top = 1.0f;
-        near = 0.1f;
-        far = 300.0f;
+        bot   = -1.0f;
+        top   = 1.0f;
+        near  = 0.1f;
+        far   = 300.0f;
       }
     };
 

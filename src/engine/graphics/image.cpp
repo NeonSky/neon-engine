@@ -14,9 +14,9 @@ using namespace engine::graphics;
 Image::Image(std::string img_path) {
   stbi_set_flip_vertically_on_load(true); // Match OpenGL
 
-  std::string res_path = boost::dll::program_location().parent_path().string() + "/res/img/";
+  std::string res_path  = boost::dll::program_location().parent_path().string() + "/res/img/";
   std::string full_path = res_path + img_path;
-  _data = std::make_unique<unsigned char>(*stbi_load(full_path.c_str(), &_width, &_height, &_components, STBI_rgb_alpha));
+  _data                 = std::make_unique<unsigned char>(*stbi_load(full_path.c_str(), &_width, &_height, &_components, STBI_rgb_alpha));
 
   if (_data == nullptr)
     LOG_ERROR("Failed to load image: " + full_path);

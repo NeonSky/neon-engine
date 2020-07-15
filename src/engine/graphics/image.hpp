@@ -22,6 +22,5 @@ namespace engine::graphics {
     int _width;
     int _height;
     int _components;
-
   };
 }
