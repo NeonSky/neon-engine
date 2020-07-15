@@ -10,12 +10,14 @@ help:
 	@ echo "- docker-tests-build"
 	@ echo "- docker-tests-run"
 	@ echo "- format"
+	@ echo "- format-check"
 	@ echo "- help"
 	@ echo "- run"
 	@ echo "- run-tests"
 	@ echo "- setup"
 	@ echo "- static-analysis"
 	@ echo "- tidy"
+	@ echo "- tidy-check"
 
 .PHONY: build
 build:
@@ -43,10 +45,16 @@ docker-linter-run:
 
 .PHONY: format
 format:
-	clang-format -i $(shell find src/ -name '*.[ch]pp' -not -path 'src/vendor/*')
+	clang-format -i $(shell find src/ -name '*.[ch]pp' -not -path 'src/vendor/*') --Werror
+
+.PHONY: format-check
+format-check:
+	$(eval PRE_HASH = $(shell ls -alR --full-time ./src | sha1sum))
+	$(eval POST_HASH = $(shell clang-format -i $(shell find src/ -name '*.[ch]pp' -not -path 'src/vendor/*') --Werror && ls -alR --full-time ./src | sha1sum))
+	@if [ "$(POST_HASH)" != "$(PRE_HASH)" ]; then exit 1; fi
 
 .PHONY: linter
-linter: tidy-check run-tests
+linter: format-check tidy-check run-tests
 
 .PHONY: run
 run:
