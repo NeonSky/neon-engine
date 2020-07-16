@@ -1,5 +1,5 @@
 ---
-Checks:          'bugprone-*,-bugprone-exception-escape,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-type-union-access,-cppcoreguidelines-macro-usage,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-type-cstyle-cast,-cppcoreguidelines-pro-type-reinterpret-cast,modernize-*,performance-*,readability-*,-readability-braces-around-statements,-readability-magic-numbers'
+Checks:          'boost-*,bugprone-*,-bugprone-exception-escape,clang-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-type-union-access,-cppcoreguidelines-macro-usage,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-type-cstyle-cast,-cppcoreguidelines-pro-type-reinterpret-cast,modernize-*,performance-*,readability-*,-readability-braces-around-statements,-readability-magic-numbers'
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
