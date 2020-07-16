@@ -24,7 +24,6 @@ namespace engine::graphics {
               const geometry::Transform& transform,
               bool invert           = true,
               GLTFFileFormat format = GLTFFileFormat::ASCII);
-    ~GLTFModel();
 
     void render(const glm::mat4& projection_view);
 
@@ -33,7 +32,7 @@ namespace engine::graphics {
     engine::graphics::Shader _shader;
     bool _invert;
     tinygltf::Model _model;
-    int _vao;
+    int _vao = 0;
 
     void bind_model();
     void bind_model_nodes(const std::map<int, GLuint>& vbos, tinygltf::Node& node);

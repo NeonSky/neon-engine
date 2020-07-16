@@ -14,7 +14,7 @@ using namespace engine::geometry;
 Intersection::Intersection(glm::vec3 point)
         : point(point) {}
 
-auto engine::geometry::ray_plane_intersection(Ray ray, Plane plane) -> Intersection* {
+auto engine::geometry::ray_plane_intersection(Ray ray, Plane plane) -> std::unique_ptr<Intersection> {
   glm::vec3 from   = ray.origin;
   glm::vec3 dir    = ray.direction;
   glm::vec3 normal = plane.normal;
@@ -26,11 +26,11 @@ auto engine::geometry::ray_plane_intersection(Ray ray, Plane plane) -> Intersect
   float t       = -(glm::dot(normal, from) + d0) / glm::dot(normal, dir);
   glm::vec3 hit = from + t * dir;
 
-  return new Intersection(hit);
+  return std::make_unique<Intersection>(hit);
 }
 
-auto engine::geometry::ray_rectangle_intersection(Ray ray, const Rectangle& rectangle) -> Intersection* {
-  Intersection* hit = ray_plane_intersection(ray, Plane(rectangle));
+auto engine::geometry::ray_rectangle_intersection(Ray ray, const Rectangle& rectangle) -> std::unique_ptr<Intersection> {
+  std::unique_ptr<Intersection> hit = ray_plane_intersection(ray, Plane(rectangle));
   if (hit == nullptr)
     return nullptr;
 
@@ -44,9 +44,5 @@ auto engine::geometry::ray_rectangle_intersection(Ray ray, const Rectangle& rect
   bool check1 = glm::dot(botleft, OA) < glm::dot(hit->point, OA) && glm::dot(hit->point, OA) < glm::dot(topleft, OA);
   bool check2 = glm::dot(botleft, OB) < glm::dot(hit->point, OB) && glm::dot(hit->point, OB) < glm::dot(botright, OB);
 
-  if (check1 && check2)
-    return hit;
-
-  delete hit;
-  return nullptr;
+  return (check1 && check2) ? std::move(hit) : nullptr;
 }

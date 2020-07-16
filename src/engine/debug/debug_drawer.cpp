@@ -4,8 +4,8 @@
 
 using namespace engine::debug;
 
-DebugDrawer::DebugDrawer() : shader(graphics::Shader("color.vert", "color.frag")) {}
-DebugDrawer::~DebugDrawer() = default;
+DebugDrawer::DebugDrawer()
+        : shader(graphics::Shader("color.vert", "color.frag")) {}
 
 void DebugDrawer::render(const glm::mat4& view_projection_matrix) {
 
@@ -21,7 +21,7 @@ void DebugDrawer::render(const glm::mat4& view_projection_matrix) {
     positions.emplace_back(line.B.z);
   }
 
-  unsigned int pos_buffer;
+  unsigned int pos_buffer = 0;
   glGenBuffers(1, &pos_buffer);
   glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * positions.size(), positions.data(), GL_STATIC_DRAW);
@@ -35,12 +35,12 @@ void DebugDrawer::render(const glm::mat4& view_projection_matrix) {
     }
   }
 
-  unsigned int color_buffer;
+  unsigned int color_buffer = 0;
   glGenBuffers(1, &color_buffer);
   glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * colors.size(), colors.data(), GL_STATIC_DRAW);
 
-  GLuint vao;
+  GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 

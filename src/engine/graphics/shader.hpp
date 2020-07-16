@@ -10,7 +10,6 @@ namespace engine::graphics {
   class Shader {
   public:
     Shader(const std::string& vertex_shader_path, const std::string& fragment_shader_path);
-    ~Shader() = default;
 
     // Mutators
     void use() const;

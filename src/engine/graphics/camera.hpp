@@ -26,11 +26,9 @@ namespace engine::graphics {
   public:
     Camera();
     explicit Camera(const geometry::Transform&);
-    ~Camera() = default;
-
-    geometry::Transform transform;
 
     // Mutators
+    auto transform() -> geometry::Transform&;
     void move(Direction dir);
     void look_at(glm::vec3 target);
     void lookat_mouse(float mouse_xpos, float mouse_ypos);
@@ -73,10 +71,11 @@ namespace engine::graphics {
       }
     };
 
-    Perspective perspective;
-    Orthographic orthographic;
-    float movement_speed = 0.5F;
-    float rotation_speed = 0.1F;
+    geometry::Transform _transform;
+    Perspective _perspective;
+    Orthographic _orthographic;
+    float _movement_speed = 0.5F;
+    float _rotation_speed = 0.1F;
   };
 
 };

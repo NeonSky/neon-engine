@@ -27,10 +27,10 @@ namespace engine::geometry {
     float _width;
     float _height;
 
-    glm::vec3 _topleft;
-    glm::vec3 _topright;
-    glm::vec3 _botleft;
-    glm::vec3 _botright;
+    glm::vec3 _topleft{};
+    glm::vec3 _topright{};
+    glm::vec3 _botleft{};
+    glm::vec3 _botright{};
 
     // Mutators
     void update_corners();

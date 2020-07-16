@@ -64,13 +64,7 @@ auto main() -> int {
   LOG_INFO("Program started.");
   auto start = std::chrono::system_clock::now();
 
-  engine::gui::Window* window;
-  try {
-    window = new engine::gui::Window(1920, 1080, "Application");
-  } catch (const std::exception& e) {
-    LOG_ERROR(e.what());
-    return -1;
-  }
+  std::unique_ptr<engine::gui::Window> window = std::make_unique<engine::gui::Window>(1920, 1080, "Application");
 
   int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
   if (status == 0) {
@@ -108,7 +102,7 @@ auto main() -> int {
   }
 
   engine::graphics::GLTFModel model("cube/Cube.gltf", engine::geometry::Transform(glm::vec3(0, 0, 0)));
-  engine::debug::DebugCamera camera(window, engine::geometry::Transform(glm::vec3(0.0F, 0.0F, -20.0F)));
+  engine::debug::DebugCamera camera(window.get(), engine::geometry::Transform(glm::vec3(0.0F, 0.0F, -20.0F)));
   engine::debug::DebugDrawer dd;
 
   CHECK_GL_ERROR();

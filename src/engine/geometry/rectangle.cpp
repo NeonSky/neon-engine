@@ -2,7 +2,9 @@
 
 using namespace engine::geometry;
 
-Rectangle::Rectangle() : Rectangle(Transform()) {}
+Rectangle::Rectangle()
+        : Rectangle(Transform()) {}
+
 Rectangle::Rectangle(const Transform& transform, float width, float height)
         : _transform(transform),
           _width(width),

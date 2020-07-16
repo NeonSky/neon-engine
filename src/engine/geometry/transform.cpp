@@ -17,11 +17,10 @@ Transform::Transform(glm::vec3 position)
 Transform::Transform(glm::vec3 position, glm::vec3 rotation)
         : Transform(position, rotation, glm::vec3(1.0F)) {}
 
-Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
-  this->position = position;
-  this->rotation = rotation;
-  this->scale    = scale;
-}
+Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+        : position(position),
+          rotation(rotation),
+          scale(scale) {}
 
 void Transform::set_rotation(float yaw, float pitch, float roll) {
   this->rotation = glm::vec3(pitch, yaw, roll);

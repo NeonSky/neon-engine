@@ -9,13 +9,11 @@ namespace engine::debug {
   public:
     DebugCamera(engine::gui::Window* window);
     DebugCamera(engine::gui::Window* window, const engine::geometry::Transform& transform);
-    ~DebugCamera() = default;
 
     // Mutators
-    void set_transform(const engine::geometry::Transform& transform);
+    auto transform() -> engine::geometry::Transform&;
 
     // Accessors
-    [[nodiscard]] auto transform() const -> engine::geometry::Transform;
     [[nodiscard]] auto view_matrix() const -> glm::mat4;
     [[nodiscard]] auto projection_matrix() const -> glm::mat4;
     [[nodiscard]] auto mouse_ray() const -> glm::vec3;
@@ -24,13 +22,13 @@ namespace engine::debug {
     static constexpr float zoom_min = 0.0F;
     static constexpr float zoom_max = 45.0F;
 
-    engine::graphics::Camera camera;
-    engine::gui::Window* window;
+    engine::graphics::Camera _camera;
+    engine::gui::Window* _window;
 
-    glm::vec3 _mouse_ray;
-    engine::graphics::ProjectionType projection_type = engine::graphics::ProjectionType::PERSPECTIVE;
-    bool free_look_mode                              = false;
-    float zoom                                       = 0.0F;
+    glm::vec3 _mouse_ray                              = glm::vec3(0.0F);
+    engine::graphics::ProjectionType _projection_type = engine::graphics::ProjectionType::PERSPECTIVE;
+    bool _free_look_mode                              = false;
+    float _zoom                                       = 0.0F;
 
     // Mutators
     void on_key(GLFWwindow* window);

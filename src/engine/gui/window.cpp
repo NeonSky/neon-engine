@@ -73,6 +73,12 @@ Window::~Window() {
   glfwTerminate();
 }
 
+Window::Window(Window const&) = default;
+auto Window::operator=(Window const&) -> Window& = default;
+
+Window::Window(Window&& other) noexcept = default;
+auto Window::operator=(Window&& other) noexcept -> Window& = default;
+
 void Window::update() {
   glfwSwapBuffers(window);
   glfwPollEvents();

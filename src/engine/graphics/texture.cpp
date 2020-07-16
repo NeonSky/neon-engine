@@ -18,7 +18,7 @@ Texture::Texture(const std::string& img_path) {
   }
 
   Image image(img_path);
-  glGenTextures(1, &_texture);
+  glGenTextures(1, &_texture); // TODO: Decide when to run glDeleteTextures. Maybe ref count cache?
   glBindTexture(GL_TEXTURE_2D, _texture);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.data());
 

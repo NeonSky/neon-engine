@@ -37,12 +37,12 @@ Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* textur
     topleft.z,
   };
 
-  unsigned int pos_buffer;
+  unsigned int pos_buffer = 0;
   glGenBuffers(1, &pos_buffer); // Gen buffer object and store buffer id
   glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * positions.size(), positions.data(), GL_STATIC_DRAW);
 
-  unsigned int uv_buffer;
+  unsigned int uv_buffer = 0;
   if (_texture != nullptr) {
     glGenBuffers(1, &uv_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);
@@ -62,11 +62,11 @@ Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* textur
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * uv_coords.size(), uv_coords.data(), GL_STATIC_DRAW);
   }
 
-  GLuint vao;
+  GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
-  unsigned int index_buffer;
+  unsigned int index_buffer      = 0;
   const std::vector<int> indices = {
     0,
     1,
@@ -95,10 +95,14 @@ Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* textur
   _vao = vao;
 }
 
+auto Rectangle::transform() -> geometry::Transform& {
+  return _transform;
+}
+
 void Rectangle::render(const glm::mat4& view_projection_matrix) {
   _shader->use();
 
-  glm::mat4 model_view_projection = view_projection_matrix * this->transform.matrix();
+  glm::mat4 model_view_projection = view_projection_matrix * _transform.matrix();
   _shader->set_uniform_mat4("mvp_matrix", &model_view_projection[0].x);
 
   if (_texture != nullptr) {

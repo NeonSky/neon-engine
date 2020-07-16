@@ -14,6 +14,10 @@ namespace engine::gui {
     Window();
     Window(unsigned int width, unsigned int height, const char* title);
     ~Window();
+    Window(Window const&);
+    auto operator=(Window const&) -> Window&;
+    Window(Window&& other) noexcept;
+    auto operator=(Window&& other) noexcept -> Window&;
 
     // Mutators
     void init_gui();
@@ -30,10 +34,10 @@ namespace engine::gui {
     [[nodiscard]] auto height() const -> unsigned int;
 
   private:
-    GLFWwindow* window;
-    unsigned int _width;
-    unsigned int _height;
-    glm::vec4 _clear_color;
+    GLFWwindow* window     = nullptr;
+    unsigned int _width    = 0;
+    unsigned int _height   = 0;
+    glm::vec4 _clear_color = glm::vec4(0.0F);
 
     std::vector<std::function<void(GLFWwindow*, int)>> on_key_callbacks;
     std::vector<std::function<void(GLFWwindow*, int, int)>> on_mouse_click_callbacks;

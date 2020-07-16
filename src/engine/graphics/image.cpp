@@ -22,8 +22,6 @@ Image::Image(const std::string& img_path) {
     LOG_ERROR("Failed to load image: " + full_path);
 }
 
-Image::~Image() = default;
-
 auto Image::data() const -> const unsigned char* {
   return _data.get();
 }

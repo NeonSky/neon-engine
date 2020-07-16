@@ -4,12 +4,15 @@ namespace engine::scene {
 
   class IScene {
   public:
-    virtual ~IScene() = 0;
-
     virtual void update() {}
     virtual void render() {}
     virtual void gui() {}
-  };
 
-  IScene::~IScene() = default;
+  protected:
+    ~IScene()             = default;
+    IScene(IScene const&) = default;
+    auto operator=(IScene const&) -> IScene& = default;
+    IScene(IScene&&)                         = default;
+    auto operator=(IScene &&) -> IScene& = default;
+  };
 }

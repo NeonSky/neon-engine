@@ -11,7 +11,6 @@ namespace engine::graphics {
   class Image {
   public:
     Image(const std::string& img_path);
-    ~Image();
 
     [[nodiscard]] auto data() const -> const unsigned char*;
     [[nodiscard]] auto width() const -> unsigned int;
@@ -19,8 +18,8 @@ namespace engine::graphics {
 
   private:
     std::unique_ptr<unsigned char> _data;
-    int _width;
-    int _height;
-    int _components;
+    int _width      = 0;
+    int _height     = 0;
+    int _components = 0;
   };
 }

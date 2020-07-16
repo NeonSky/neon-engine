@@ -26,7 +26,6 @@ namespace engine::debug {
   class DebugDrawer {
   public:
     DebugDrawer();
-    ~DebugDrawer();
 
     // Mutators
     void render(const glm::mat4& view_projection_matrix);

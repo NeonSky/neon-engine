@@ -48,17 +48,16 @@ GLTFModel::GLTFModel(const std::string& model_path,
   bind_model();
 }
 
-GLTFModel::~GLTFModel() = default;
-
 void GLTFModel::bind_model() {
   std::map<int, GLuint> vbos;
-  GLuint vao;
+  GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
   const tinygltf::Scene& scene = _model.scenes[_model.defaultScene];
   for (int node : scene.nodes) {
-    assert((node >= 0) && (node < (int) _model.nodes.size()));
+    if (!((node >= 0) && (node < (int) _model.nodes.size())))
+      LOG_ERROR("Nodes are incorrect.");
     bind_model_nodes(vbos, _model.nodes[node]);
   }
 
@@ -77,7 +76,8 @@ void GLTFModel::bind_model_nodes(const std::map<int, GLuint>& vbos, tinygltf::No
   }
 
   for (int i : node.children) {
-    assert((i >= 0) && (i < (int) _model.nodes.size()));
+    if (!((i >= 0) && (i < (int) _model.nodes.size())))
+      LOG_ERROR("Nodes are incorrect.");
     bind_model_nodes(vbos, _model.nodes[i]);
   }
 }
@@ -93,7 +93,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
     const tinygltf::Buffer& buffer = _model.buffers[bufferView.buffer];
     // std::cout << "bufferview.target " << bufferView.target << std::endl;
 
-    GLuint vbo;
+    GLuint vbo = 0;
     glGenBuffers(1, &vbo);
     vbos[i] = vbo;
     glBindBuffer(bufferView.target, vbo);
@@ -139,7 +139,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
 
       if (tex.source > -1) {
 
-        GLuint texid;
+        GLuint texid = 0;
         glGenTextures(1, &texid);
 
         tinygltf::Image& image = _model.images[tex.source];

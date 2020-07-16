@@ -11,15 +11,13 @@ namespace engine::geometry {
     glm::vec3 point_on_plane;
     glm::vec3 normal;
 
-    Plane() {
-      this->point_on_plane = glm::vec3(0.0F);
-      this->normal         = glm::vec3(0.0F, 1.0F, 0.0F);
-    }
+    Plane()
+            : point_on_plane(glm::vec3(0.0F)),
+              normal(glm::vec3(0.0F, 1.0F, 0.0F)) {}
 
-    Plane(const Rectangle& rectangle) {
-      this->point_on_plane = rectangle.botleft();
-      this->normal         = rectangle.transform().forward();
-    }
+    Plane(const Rectangle& rectangle)
+            : point_on_plane(rectangle.botleft()),
+              normal(rectangle.transform().forward()) {}
   };
 
 }

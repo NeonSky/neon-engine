@@ -16,42 +16,46 @@ float pitch = 0.0F;
 
 Camera::Camera() : Camera(geometry::Transform()) {}
 Camera::Camera(const geometry::Transform& transform)
-        : transform(transform) {
+        : _transform(transform) {
 
-  yaw   = this->transform.yaw();
-  pitch = this->transform.pitch();
+  yaw   = _transform.yaw();
+  pitch = _transform.pitch();
+}
+
+auto Camera::transform() -> geometry::Transform& {
+  return _transform;
 }
 
 void Camera::move(Direction move_dir) {
   glm::vec3 displacement_dir;
   switch (move_dir) {
   case Direction::FORWARD:
-    displacement_dir = +this->transform.forward();
+    displacement_dir = +_transform.forward();
     break;
   case Direction::BACKWARD:
-    displacement_dir = -this->transform.forward();
+    displacement_dir = -_transform.forward();
     break;
   case Direction::RIGHT:
-    displacement_dir = +this->transform.right();
+    displacement_dir = +_transform.right();
     break;
   case Direction::LEFT:
-    displacement_dir = -this->transform.right();
+    displacement_dir = -_transform.right();
     break;
   case Direction::UP:
-    displacement_dir = +this->transform.up();
+    displacement_dir = +_transform.up();
     break;
   case Direction::DOWN:
-    displacement_dir = -this->transform.up();
+    displacement_dir = -_transform.up();
     break;
   default:
     LOG_ERROR("Direction type not supported: " + std::to_string(move_dir));
   }
-  this->transform.position += this->movement_speed * displacement_dir;
+  _transform.position += _movement_speed * displacement_dir;
 }
 
 void Camera::set_zoom(float zoom_level) {
   // FIXME: name constant
-  this->perspective.fov = 45.0F - zoom_level;
+  _perspective.fov = 45.0F - zoom_level;
 }
 
 void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
@@ -75,41 +79,40 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 
   pitch = std::clamp(pitch, -glm::half_pi<float>(), glm::half_pi<float>());
 
-  this->transform.set_rotation(yaw, pitch, 0.0F);
+  _transform.set_rotation(yaw, pitch, 0.0F);
 }
 
 auto Camera::view_matrix() const -> glm::mat4 {
 
   glm::mat3 base_vectors_in_world_space(
-    this->transform.right(),  // (R_x, R_y, R_z)
-    this->transform.up(),     // (U_x, U_y, U_z)
-    this->transform.forward() // (F_x, F_y, F_z)
+    _transform.right(),  // (R_x, R_y, R_z)
+    _transform.up(),     // (U_x, U_y, U_z)
+    _transform.forward() // (F_x, F_y, F_z)
   );
 
   // NOTE: transpose = inverse, since the matrix is an orthonormal base.
   glm::mat3 inverse_base = glm::transpose(base_vectors_in_world_space);
 
-  return glm::mat4(inverse_base) * glm::translate(-this->transform.position);
+  return glm::mat4(inverse_base) * glm::translate(-_transform.position);
 }
 
 auto Camera::projection_matrix(ProjectionType projection_type) const -> glm::mat4 {
   switch (projection_type) {
   case ProjectionType::PERSPECTIVE:
     return glm::perspectiveLH(
-      glm::radians(this->perspective.fov),
-      this->perspective.aspect_ratio,
-      this->perspective.near,
-      this->perspective.far);
+      glm::radians(_perspective.fov),
+      _perspective.aspect_ratio,
+      _perspective.near,
+      _perspective.far);
   case ProjectionType::ORTHOGRAPHIC:
     return glm::ortho(
-      this->orthographic.left,
-      this->orthographic.right,
-      this->orthographic.bot,
-      this->orthographic.top,
-      this->orthographic.near,
-      this->orthographic.far);
+      _orthographic.left,
+      _orthographic.right,
+      _orthographic.bot,
+      _orthographic.top,
+      _orthographic.near,
+      _orthographic.far);
   default:
     LOG_ERROR("Projection type not supported: " + std::to_string(projection_type));
-    assert(false);
   }
 }

@@ -18,12 +18,12 @@ namespace engine::graphics {
   public:
     Rectangle(const geometry::Rectangle& rectangle, const Texture* texture = nullptr);
 
-    geometry::Transform transform;
-
     // Mutators
+    auto transform() -> geometry::Transform&;
     void render(const glm::mat4& view_projection_matrix);
 
   private:
+    geometry::Transform _transform;
     GLuint _vao;
     const Texture* _texture;
     std::unique_ptr<Shader> _shader;
