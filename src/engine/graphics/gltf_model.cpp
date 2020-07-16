@@ -169,7 +169,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
         } else if (image.bits == 16) {
           type = GL_UNSIGNED_SHORT;
         } else {
-          // ???
+          LOG_DEBUG("FIXME");
         }
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, format, type, &image.image.at(0));

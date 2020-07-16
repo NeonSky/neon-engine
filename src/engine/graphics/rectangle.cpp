@@ -79,7 +79,7 @@ Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* textur
 
   glGenBuffers(1, &index_buffer);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.size(), indices.data(), GL_STATIC_DRAW);
 
   // Assign position attribute of vertex shader
   glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);

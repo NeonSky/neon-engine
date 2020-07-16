@@ -83,10 +83,10 @@ void DebugCamera::on_cursor(GLFWwindow* window, float xpos, float ypos) {
 
   // Viewport Space [0:width, 0:height]
   float x = xpos;
-  float y = height - ypos; // In OpenGL, (0, 0) is top-left. We want (0, 0) to be bot-left.
+  float y = ((float) height) - ypos; // In OpenGL, (0, 0) is top-left. We want (0, 0) to be bot-left.
 
   // Normalized Device Space [-1:1, -1:1, -1:1]
-  glm::vec3 ndc(2.0F * (x / width) - 1.0F, 2.0F * (y / height) - 1.0F, -1.0F); // z = -1.0f since cursor points along camera's forward direction.
+  glm::vec3 ndc(2.0F * (x / (float) width) - 1.0F, 2.0F * (y / (float) height) - 1.0F, -1.0F); // z = -1.0f since cursor points along camera's forward direction.
 
   // Homogeneous Clip Space [-1:1, -1:1, -1:1, -1:1]
   glm::vec4 clip_coords(ndc.x, ndc.y, ndc.z, 1.0F);

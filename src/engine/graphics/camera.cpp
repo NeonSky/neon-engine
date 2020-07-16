@@ -9,10 +9,10 @@ using namespace engine::graphics;
 
 // FIXME
 bool firstMouse = true;
-double lastX;
-double lastY;
-double yaw   = 0.0F;
-double pitch = 0.0F;
+float lastX;
+float lastY;
+float yaw   = 0.0F;
+float pitch = 0.0F;
 
 Camera::Camera() : Camera(geometry::Transform()) {}
 Camera::Camera(const geometry::Transform& transform)
@@ -73,7 +73,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
   yaw -= xoffset;
   pitch += yoffset;
 
-  pitch = std::clamp(pitch, -glm::half_pi<double>(), glm::half_pi<double>());
+  pitch = std::clamp(pitch, -glm::half_pi<float>(), glm::half_pi<float>());
 
   this->transform.set_rotation(yaw, pitch, 0.0F);
 }

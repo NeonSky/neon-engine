@@ -21,7 +21,7 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
     LOG_CRITICAL("Failed to init glfw.");
   }
 
-  GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+  GLFWwindow* window = glfwCreateWindow((int) width, (int) height, title, nullptr, nullptr);
   if (window == nullptr) {
     glfwTerminate();
     LOG_CRITICAL("Failed to create glfw window.");
