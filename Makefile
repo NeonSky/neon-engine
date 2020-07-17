@@ -5,6 +5,7 @@ help:
 	@ echo ""
 	@ echo "Options"
 	@ echo "- build"
+	@ echo "- coverage"
 	@ echo "- dependencies"
 	@ echo "- docker-hub-push"
 	@ echo "- docker-tests-build"
@@ -22,6 +23,24 @@ help:
 .PHONY: build
 build:
 	cd build && cmake .. && make
+
+# Produces coverage report: ./build/CODE_COVERAGE/index.html
+#
+# Explanation:
+# 1. Generates a baseline report through --intial (this makes sure that files with no test coverage are also included).
+# 2. Generates a test report without --intial, and then merges it with the baseline.
+# 3. Generates a HTML document from the final report, in order to better visualize the report.
+.PHONY: coverage
+coverage: build
+	rm -rf build/CODE_COVERAGE
+	lcov --directory build --zerocounters
+	lcov --initial --directory build --capture --output-file build/code_coverage_base.info --rc lcov_branch_coverage=1
+	make run-tests
+	lcov --directory build --capture --output-file build/code_coverage_test.info --rc lcov_branch_coverage=1
+	lcov --add-tracefile build/code_coverage_base.info --add-tracefile build/code_coverage_test.info -o build/code_coverage.info
+	lcov --remove build/code_coverage.info "/usr/*" "include*" "*test*" "*vendor*" -o build/code_coverage.info
+	rm build/code_coverage_base.info build/code_coverage_test.info
+	genhtml build/code_coverage.info --branch-coverage --output-directory build/CODE_COVERAGE
 
 .PHONY: dependencies
 dependencies:

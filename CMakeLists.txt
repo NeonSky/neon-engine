@@ -35,6 +35,10 @@ add_library(Engine "${src_files}")
 target_compile_options(Engine PUBLIC -Werror -Wall -Wextra)
 file(COPY "res" DESTINATION ".")
 
+# Code coverage
+target_compile_options(Engine PRIVATE -fprofile-arcs -ftest-coverage)
+target_link_libraries(Engine PRIVATE -lgcov)
+
 # Link dependencies.
 target_link_libraries(Engine PUBLIC glfw)
 target_link_libraries(Engine PUBLIC glm)
