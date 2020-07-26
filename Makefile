@@ -22,6 +22,10 @@ help:
 
 .PHONY: build
 build:
+	cd build && cmake .. && make
+
+.PHONY: rebuild
+rebuild:
 	cd build && make rebuild_cache && cmake .. && make
 
 # Produces coverage report: ./build/CODE_COVERAGE/index.html
