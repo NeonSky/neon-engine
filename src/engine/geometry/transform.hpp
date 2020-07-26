@@ -1,44 +1,45 @@
 #pragma once
 
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
+#include "angle.hpp"
+#include "matrix.hpp"
+#include "vector.hpp"
 
 namespace engine::geometry {
 
   class Transform {
   public:
     Transform();
-    Transform(glm::vec3 position);
-    Transform(glm::vec3 position, glm::vec3 rotation);
-    Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+    Transform(const Vector<3>& position);
+    Transform(const Vector<3>& position, const Vector<3>& rotation);
+    Transform(Vector<3> position, Vector<3> rotation, Vector<3> scale);
 
     // Mutators
     void set_rotation(float yaw, float pitch, float roll);
     void flip_rotation();
 
     // Accessors
-    static constexpr glm::vec4 world_right   = glm::vec4(1.0F, 0.0F, 0.0F, 0.0F);
-    static constexpr glm::vec4 world_up      = glm::vec4(0.0F, 1.0F, 0.0F, 0.0F);
-    static constexpr glm::vec4 world_forward = glm::vec4(0.0F, 0.0F, 1.0F, 0.0F);
+    static const Vector<4> world_right;
+    static const Vector<4> world_up;
+    static const Vector<4> world_forward;
 
     auto operator+(const Transform& other) const -> Transform;
 
-    [[nodiscard]] auto matrix() const -> glm::mat4;
-    [[nodiscard]] auto forward() const -> glm::vec3;
-    [[nodiscard]] auto up() const -> glm::vec3;
-    [[nodiscard]] auto right() const -> glm::vec3;
+    [[nodiscard]] auto matrix() const -> Matrix<4>;
+    [[nodiscard]] auto forward() const -> Vector<3>;
+    [[nodiscard]] auto up() const -> Vector<3>;
+    [[nodiscard]] auto right() const -> Vector<3>;
 
-    [[nodiscard]] auto yaw() const -> float { return rotation.y; };
-    [[nodiscard]] auto pitch() const -> float { return rotation.x; };
-    [[nodiscard]] auto roll() const -> float { return rotation.z; };
+    [[nodiscard]] auto yaw() const -> float;
+    [[nodiscard]] auto pitch() const -> float;
+    [[nodiscard]] auto roll() const -> float;
 
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec3 scale;
+    Vector<3> position;
+    Vector<3> rotation;
+    Vector<3> scale;
 
   private:
     // Accessors
-    [[nodiscard]] auto rotation_matrix() const -> glm::mat4;
+    [[nodiscard]] auto rotation_matrix() const -> Matrix<4>;
+    [[nodiscard]] auto rotation_matrix_slow() const -> Matrix<4>;
   };
 }
