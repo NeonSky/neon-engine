@@ -6,10 +6,6 @@
 #include "../geometry/rectangle.hpp"
 #include "../geometry/transform.hpp"
 
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-
 #include <memory>
 
 namespace engine::graphics {
@@ -20,7 +16,7 @@ namespace engine::graphics {
 
     // Mutators
     auto transform() -> geometry::Transform&;
-    void render(const glm::mat4& view_projection_matrix);
+    void render(const geometry::Matrix<4>& view_projection_matrix);
 
   private:
     geometry::Transform _transform;

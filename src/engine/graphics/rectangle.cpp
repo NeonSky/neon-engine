@@ -2,8 +2,6 @@
 
 #include "../debug/logger.hpp"
 
-#include <glm/vec3.hpp>
-
 #include <vector>
 
 using namespace engine::graphics;
@@ -14,10 +12,10 @@ Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* textur
 
   _shader = std::make_unique<Shader>("texture.vert", "texture.frag");
 
-  glm::vec3 botleft  = rectangle.botleft();
-  glm::vec3 botright = rectangle.botright();
-  glm::vec3 topleft  = rectangle.topleft();
-  glm::vec3 topright = rectangle.topright();
+  geometry::Vector<3> botleft  = rectangle.botleft();
+  geometry::Vector<3> botright = rectangle.botright();
+  geometry::Vector<3> topleft  = rectangle.topleft();
+  geometry::Vector<3> topright = rectangle.topright();
 
   std::vector<float> positions = {
     botleft.x,
@@ -99,11 +97,11 @@ auto Rectangle::transform() -> geometry::Transform& {
   return _transform;
 }
 
-void Rectangle::render(const glm::mat4& view_projection_matrix) {
+void Rectangle::render(const geometry::Matrix<4>& view_projection_matrix) {
   _shader->use();
 
-  glm::mat4 model_view_projection = view_projection_matrix * _transform.matrix();
-  _shader->set_uniform_mat4("mvp_matrix", &model_view_projection[0].x);
+  geometry::Matrix<4> model_view_projection = view_projection_matrix * geometry::Matrix<4>(_transform.matrix());
+  _shader->set_uniform_mat4("mvp_matrix", model_view_projection);
 
   if (_texture != nullptr) {
     glActiveTexture(GL_TEXTURE0);
