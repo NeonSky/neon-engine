@@ -44,7 +44,7 @@ coverage: build
 
 .PHONY: dependencies
 dependencies:
-	sudo vcpkg install glfw3 glm boost stb imgui[bindings] spdlog cpp-httplib nlohmann-json entt tinygltf gtest
+	sudo vcpkg install glfw3 boost stb imgui[bindings] spdlog cpp-httplib nlohmann-json entt tinygltf gtest
 
 # FIXME: Takes ages when including all the paths
 # docker-slim build ecs-scenes --http-probe=false --tag=neonsky/ecs-scenes --include-path=/usr/share/cmake-3.17 --include-path=/usr/share/vcpkg/scripts/buildsystems/vcpkg.cmake --include-bin=/usr/sbin/make --include-bin=/usr/sbin/cmake --include-bin=/usr/bin/ls --include-shell

@@ -1,6 +1,8 @@
 #include "../engine/debug/debug_camera.hpp"
 #include "../engine/debug/debug_drawer.hpp"
 #include "../engine/debug/logger.hpp"
+#include "../engine/geometry/matrix.hpp"
+#include "../engine/geometry/ray.hpp"
 #include "../engine/graphics/gltf_model.hpp"
 #include "../engine/gui/window.hpp"
 
@@ -17,8 +19,6 @@
 
 // #include <entt/entt.hpp>
 #include <entt/entity/registry.hpp>
-
-#include <glm/gtc/matrix_transform.hpp>
 
 struct position {
   float x;
@@ -101,8 +101,8 @@ auto main() -> int {
     }
   }
 
-  engine::graphics::GLTFModel model("cube/Cube.gltf", engine::geometry::Transform(glm::vec3(0, 0, 0)));
-  engine::debug::DebugCamera camera(window.get(), engine::geometry::Transform(glm::vec3(0.0F, 0.0F, -20.0F)));
+  engine::graphics::GLTFModel model("cube/Cube.gltf", engine::geometry::Transform());
+  engine::debug::DebugCamera camera(window.get(), engine::geometry::Transform(engine::geometry::Vector<3>(0.0F, 0.0F, -20.0F)));
   engine::debug::DebugDrawer dd;
 
   CHECK_GL_ERROR();
@@ -116,7 +116,7 @@ auto main() -> int {
     glUseProgram(0);
 
     CHECK_GL_ERROR();
-    glm::mat4 view_projection = camera.projection_matrix() * camera.view_matrix();
+    engine::geometry::Matrix<4> view_projection = camera.projection_matrix() * camera.view_matrix();
 
     model.render(view_projection);
 

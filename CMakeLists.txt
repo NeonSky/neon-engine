@@ -14,7 +14,6 @@ set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 
 # Load configuration cmake files from dependencies.
 find_package(glfw3 3.3.2 CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(spdlog 1.4.2 CONFIG REQUIRED)
 find_package(nlohmann_json 3.7.3 CONFIG REQUIRED)
@@ -41,7 +40,6 @@ target_link_libraries(Engine PRIVATE -lgcov)
 
 # Link dependencies.
 target_link_libraries(Engine PUBLIC glfw)
-target_link_libraries(Engine PUBLIC glm)
 target_link_libraries(Engine PUBLIC eventpp)
 target_link_libraries(Engine PUBLIC glad)
 target_link_libraries(Engine PUBLIC imgui::imgui)
