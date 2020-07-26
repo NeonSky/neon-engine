@@ -8,21 +8,21 @@ help:
 	@ echo "- coverage"
 	@ echo "- dependencies"
 	@ echo "- docker-hub-push"
-	@ echo "- docker-tests-build"
-	@ echo "- docker-tests-run"
+	@ echo "- docker-linter-build"
+	@ echo "- docker-linter-run"
 	@ echo "- format"
 	@ echo "- format-check"
+	@ echo "- linter"
 	@ echo "- help"
 	@ echo "- run"
 	@ echo "- run-tests"
 	@ echo "- setup"
-	@ echo "- static-analysis"
 	@ echo "- tidy"
 	@ echo "- tidy-check"
 
 .PHONY: build
 build:
-	cd build && cmake .. && make
+	cd build && make rebuild_cache && cmake .. && make
 
 # Produces coverage report: ./build/CODE_COVERAGE/index.html
 #
@@ -54,11 +54,11 @@ docker-hub-push:
 	docker tag ecs-scenes neonsky/ecs-scenes
 	docker push neonsky/ecs-scenes
 
-.PHONY: docker-tests-build
+.PHONY: docker-linter-build
 docker-linter-build:
 	docker build -t ecs-scenes-linter -f ci/linter.Dockerfile .
 
-.PHONY: docker-tests-run
+.PHONY: docker-linter-run
 docker-linter-run:
 	docker run ecs-scenes-linter
 
