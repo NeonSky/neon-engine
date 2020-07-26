@@ -1,12 +1,21 @@
 #pragma once
 
-#include <glm/vec3.hpp>
+#include "../debug/json.hpp"
+#include "vector.hpp"
+
+#include "glm/gtx/string_cast.hpp"
 
 namespace engine::geometry {
 
   struct Ray {
-    glm::vec3 origin;
-    glm::vec3 direction;
+    Vector<3> origin;
+    Vector<3> direction; // TODO: Use a UnitVector<3> here instead.
+
+    [[nodiscard]] auto to_json() const -> debug::JSON {
+      return {
+        {"origin", origin.to_json()},
+        {"direction", direction.to_json()}};
+    };
   };
 
 }
