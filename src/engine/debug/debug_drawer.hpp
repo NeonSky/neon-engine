@@ -1,26 +1,26 @@
 #pragma once
 
+#include "../geometry/matrix.hpp"
 #include "../geometry/rectangle.hpp"
 #include "../geometry/transform.hpp"
 #include "../graphics/shader.hpp"
 
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
+#include <utility>
 #include <vector>
 
 namespace engine::debug {
 
   struct Line {
-    glm::vec3 A, B;
-    glm::vec3 color;
+    geometry::Vector<3> A, B;
+    geometry::Vector<3> color;
 
-    Line(glm::vec3 A, glm::vec3 B)
-            : Line(A, B, glm::vec3(1.0F, 0.0F, 0.0F)) {}
+    Line(const geometry::Vector<3>& A, const geometry::Vector<3>& B)
+            : Line(A, B, geometry::Vector<3>(1.0F, 0.0F, 0.0F)) {}
 
-    Line(glm::vec3 A, glm::vec3 B, glm::vec3 color)
-            : A(A),
-              B(B),
-              color(color) {}
+    Line(geometry::Vector<3> A, geometry::Vector<3> B, geometry::Vector<3> color)
+            : A(std::move(A)),
+              B(std::move(B)),
+              color(std::move(color)) {}
   };
 
   class DebugDrawer {
@@ -28,8 +28,8 @@ namespace engine::debug {
     DebugDrawer();
 
     // Mutators
-    void render(const glm::mat4& view_projection_matrix);
-    void draw_line(glm::vec3 from, glm::vec3 to);
+    void render(const geometry::Matrix<4>& view_projection_matrix);
+    void draw_line(const geometry::Vector<3>& from, const geometry::Vector<3>& to);
     void draw_transform(const geometry::Transform& transform);
     void draw_rectangle(const geometry::Rectangle& rectangle);
 
