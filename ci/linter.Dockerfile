@@ -2,6 +2,7 @@ FROM neonsky/ecs-scenes:latest
 
 USER aur
 
+RUN yay -Syu --noconfirm
 RUN yay -S --noconfirm clang
 WORKDIR /home/aur/ecs-scenes/build
 WORKDIR /home/aur/ecs-scenes
