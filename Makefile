@@ -14,6 +14,7 @@ help:
 	@ echo "- format-check"
 	@ echo "- linter"
 	@ echo "- help"
+	@ echo "- rebuild"
 	@ echo "- run"
 	@ echo "- run-tests"
 	@ echo "- setup"
@@ -23,10 +24,6 @@ help:
 .PHONY: build
 build:
 	cd build && cmake .. && make
-
-.PHONY: rebuild
-rebuild:
-	cd build && make rebuild_cache && cmake .. && make
 
 # Produces coverage report: ./build/CODE_COVERAGE/index.html
 #
@@ -78,6 +75,10 @@ format-check:
 
 .PHONY: linter
 linter: format-check tidy-check run-tests
+
+.PHONY: rebuild
+rebuild:
+	cd build && make rebuild_cache && cmake .. && make
 
 .PHONY: run
 run:
