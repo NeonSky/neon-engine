@@ -2,8 +2,7 @@
 #include "../debug/logger.hpp"
 
 #include <algorithm>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
+#include <utility>
 
 using namespace engine::graphics;
 
@@ -15,8 +14,8 @@ float yaw   = 0.0F;
 float pitch = 0.0F;
 
 Camera::Camera() : Camera(geometry::Transform()) {}
-Camera::Camera(const geometry::Transform& transform)
-        : _transform(transform) {
+Camera::Camera(geometry::Transform transform)
+        : _transform(std::move(transform)) {
 
   yaw   = _transform.yaw();
   pitch = _transform.pitch();
@@ -27,7 +26,7 @@ auto Camera::transform() -> geometry::Transform& {
 }
 
 void Camera::move(Direction move_dir) {
-  glm::vec3 displacement_dir;
+  geometry::Vector<3> displacement_dir;
   switch (move_dir) {
   case Direction::FORWARD:
     displacement_dir = +_transform.forward();
@@ -77,42 +76,62 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
   yaw -= xoffset;
   pitch += yoffset;
 
-  pitch = std::clamp(pitch, -glm::half_pi<float>(), glm::half_pi<float>());
+  pitch = std::clamp(pitch, -pi / 2.0F, pi / 2.0F);
 
   _transform.set_rotation(yaw, pitch, 0.0F);
 }
 
-auto Camera::view_matrix() const -> glm::mat4 {
-
-  glm::mat3 base_vectors_in_world_space(
-    _transform.right(),  // (R_x, R_y, R_z)
-    _transform.up(),     // (U_x, U_y, U_z)
-    _transform.forward() // (F_x, F_y, F_z)
+auto Camera::view_matrix() const -> geometry::Matrix<4> {
+  geometry::Matrix<4> base_vectors_in_world_space = geometry::Matrix<3>(
+    (std::array<float, 3>) geometry::Vector<3>(_transform.right()),  // (R_x, R_y, R_z)
+    (std::array<float, 3>) geometry::Vector<3>(_transform.up()),     // (U_x, U_y, U_z)
+    (std::array<float, 3>) geometry::Vector<3>(_transform.forward()) // (F_x, F_y, F_z)
   );
 
-  // NOTE: transpose = inverse, since the matrix is an orthonormal base.
-  glm::mat3 inverse_base = glm::transpose(base_vectors_in_world_space);
-
-  return glm::mat4(inverse_base) * glm::translate(-_transform.position);
+  return base_vectors_in_world_space.translate(-_transform.position);
 }
 
-auto Camera::projection_matrix(ProjectionType projection_type) const -> glm::mat4 {
+auto Camera::projection_matrix(ProjectionType projection_type) const -> geometry::Matrix<4> {
   switch (projection_type) {
   case ProjectionType::PERSPECTIVE:
-    return glm::perspectiveLH(
-      glm::radians(_perspective.fov),
-      _perspective.aspect_ratio,
-      _perspective.near,
-      _perspective.far);
+    return perspective_projection_matrix();
   case ProjectionType::ORTHOGRAPHIC:
-    return glm::ortho(
-      _orthographic.left,
-      _orthographic.right,
-      _orthographic.bot,
-      _orthographic.top,
-      _orthographic.near,
-      _orthographic.far);
+    return orthographic_projection_matrix();
   default:
     LOG_ERROR("Projection type not supported: " + std::to_string(projection_type));
   }
+}
+
+auto Camera::perspective_projection_matrix() const -> geometry::Matrix<4> {
+  float f = _perspective.far;
+  float n = _perspective.near;
+
+  float horizontal_fov = _perspective.aspect_ratio * (_perspective.fov / 2.0F);
+  float r              = std::tan(horizontal_fov) * n;
+  float l              = -r;
+
+  float vertical_fov = (_perspective.fov / 2.0F);
+  float t            = std::tan(vertical_fov) * n;
+  float b            = -t;
+
+  return {
+    {2.0F * n / (r - l), 0.0F, -((r + l) / (r - l)), 0.0F},
+    {0.0F, 2.0F * n / (t - b), -((t + b) / (t - b)), 0.0F},
+    {0.0F, 0.0F, (f + n) / (f - n), -(2.0F * f * n) / (f - n)},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+  };
+}
+
+auto Camera::orthographic_projection_matrix() const -> geometry::Matrix<4> {
+  geometry::Matrix<4> scale_matrix;
+  scale_matrix[0][0] = 2.0F / (_orthographic.right - _orthographic.left);
+  scale_matrix[1][1] = 2.0F / (_orthographic.top - _orthographic.bot);
+  scale_matrix[2][2] = 2.0F / (_orthographic.far - _orthographic.near);
+
+  geometry::Vector<3> translation(
+    -(_orthographic.left + _orthographic.right) / 2.0F,
+    -(_orthographic.bot + _orthographic.top) / 2.0F,
+    -(_orthographic.near + _orthographic.far) / 2.0F);
+
+  return scale_matrix.translate(translation);
 }

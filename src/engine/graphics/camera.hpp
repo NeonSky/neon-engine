@@ -1,9 +1,7 @@
 #pragma once
 
+#include "../geometry/matrix.hpp"
 #include "../geometry/transform.hpp"
-
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
 
 namespace engine::graphics {
 
@@ -25,18 +23,18 @@ namespace engine::graphics {
   class Camera {
   public:
     Camera();
-    explicit Camera(const geometry::Transform&);
+    explicit Camera(geometry::Transform);
 
     // Mutators
     auto transform() -> geometry::Transform&;
     void move(Direction dir);
-    void look_at(glm::vec3 target);
+    void look_at(geometry::Vector<3> target);
     void lookat_mouse(float mouse_xpos, float mouse_ypos);
     void set_zoom(float zoom_level);
 
     // Accessors
-    [[nodiscard]] auto view_matrix() const -> glm::mat4;
-    [[nodiscard]] auto projection_matrix(ProjectionType projection_type) const -> glm::mat4;
+    [[nodiscard]] auto view_matrix() const -> geometry::Matrix<4>;
+    [[nodiscard]] auto projection_matrix(ProjectionType projection_type) const -> geometry::Matrix<4>;
 
   private:
     struct Perspective {
@@ -46,7 +44,7 @@ namespace engine::graphics {
       float far;
 
       Perspective() {
-        fov          = 45.0F;
+        fov          = deg2rad(45.0F);
         aspect_ratio = 16.0F / 9.0F;
         near         = 0.1F;
         far          = 300.0F;
@@ -76,6 +74,9 @@ namespace engine::graphics {
     Orthographic _orthographic;
     float _movement_speed = 0.5F;
     float _rotation_speed = 0.1F;
+
+    [[nodiscard]] auto perspective_projection_matrix() const -> geometry::Matrix<4>;
+    [[nodiscard]] auto orthographic_projection_matrix() const -> geometry::Matrix<4>;
   };
 
 };
