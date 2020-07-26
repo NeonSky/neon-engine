@@ -1,9 +1,9 @@
 #include "gltf_model.hpp"
 
+#include "../debug/json.hpp"
 #include "../debug/logger.hpp"
 
 #include "image.hpp"
-#include <nlohmann/json.hpp>
 
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_INCLUDE_JSON
@@ -12,16 +12,17 @@
 #include <tiny_gltf.h>
 
 #include <boost/dll/runtime_symbol_info.hpp>
+#include <utility>
 
 using namespace engine::graphics;
 
 #define BUFFER_OFFSET(i) ((char*) (i))
 
 GLTFModel::GLTFModel(const std::string& model_path,
-                     const geometry::Transform& transform,
+                     geometry::Transform transform,
                      bool invert,
                      GLTFFileFormat format)
-        : _transform(transform),
+        : _transform(std::move(transform)),
           _shader(Shader("gltf.vert", "gltf.frag")),
           _invert(invert) {
 
@@ -208,21 +209,21 @@ void GLTFModel::draw_model() {
   glBindVertexArray(0);
 }
 
-void GLTFModel::render(const glm::mat4& projection_view) {
-  glm::mat4 model = _transform.matrix();
+void GLTFModel::render(const geometry::Matrix<4>& projection_view) {
+  geometry::Matrix<4> model(_transform.matrix());
   if (_invert) {
     model[0][0] *= -1;
     model[1][1] *= -1;
     model[2][2] *= -1;
   }
 
-  glm::mat4 mvp          = projection_view * model;
-  glm::vec3 sun_position = glm::vec3(3.0, 10.0, -5.0);
-  auto sun_color         = glm::vec3(1.0);
+  geometry::Matrix<4> mvp = projection_view * model;
+  geometry::Vector<3> sun_position(3.0F, 10.0F, -5.0F);
+  geometry::Vector<3> sun_color(1.0F, 1.0F, 1.0F);
 
   _shader.use();
-  _shader.set_uniform_mat4("MVP", &mvp[0][0]);
-  _shader.set_uniform_vec3("sun_position", &sun_position[0]);
-  _shader.set_uniform_vec3("sun_color", &sun_color[0]);
+  _shader.set_uniform_mat4("MVP", mvp);
+  _shader.set_uniform_vec3("sun_position", sun_position);
+  _shader.set_uniform_vec3("sun_color", sun_color);
   draw_model();
 }
