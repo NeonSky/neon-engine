@@ -15,7 +15,7 @@ Window::Window()
 Window::Window(unsigned int width, unsigned int height, const char* title)
         : _width(width),
           _height(height),
-          _clear_color(glm::vec4(0.2F, 0.2F, 0.2F, 1.0)) {
+          _clear_color(0.2F, 0.2F, 0.2F, 1.0F) {
 
   if (glfwInit() == 0) {
     LOG_CRITICAL("Failed to init glfw.");

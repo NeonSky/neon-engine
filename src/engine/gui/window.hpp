@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../geometry/vector.hpp"
+
 #include <glad/glad.h>
 
 #include <GLFW/glfw3.h>
 #include <functional>
-#include <glm/vec4.hpp>
 #include <vector>
 
 namespace engine::gui {
@@ -34,10 +35,10 @@ namespace engine::gui {
     [[nodiscard]] auto height() const -> unsigned int;
 
   private:
-    GLFWwindow* window     = nullptr;
-    unsigned int _width    = 0;
-    unsigned int _height   = 0;
-    glm::vec4 _clear_color = glm::vec4(0.0F);
+    GLFWwindow* window   = nullptr;
+    unsigned int _width  = 0;
+    unsigned int _height = 0;
+    geometry::Vector<4> _clear_color;
 
     std::vector<std::function<void(GLFWwindow*, int)>> on_key_callbacks;
     std::vector<std::function<void(GLFWwindow*, int, int)>> on_mouse_click_callbacks;
