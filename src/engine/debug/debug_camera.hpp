@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../geometry/matrix.hpp"
 #include "../graphics/camera.hpp"
 #include "../gui/window.hpp"
 
@@ -7,28 +8,28 @@ namespace engine::debug {
 
   class DebugCamera {
   public:
-    DebugCamera(engine::gui::Window* window);
-    DebugCamera(engine::gui::Window* window, const engine::geometry::Transform& transform);
+    DebugCamera(gui::Window* window);
+    DebugCamera(gui::Window* window, const geometry::Transform& transform);
 
     // Mutators
-    auto transform() -> engine::geometry::Transform&;
+    auto transform() -> geometry::Transform&;
 
     // Accessors
-    [[nodiscard]] auto view_matrix() const -> glm::mat4;
-    [[nodiscard]] auto projection_matrix() const -> glm::mat4;
-    [[nodiscard]] auto mouse_ray() const -> glm::vec3;
+    [[nodiscard]] auto view_matrix() const -> geometry::Matrix<4>;
+    [[nodiscard]] auto projection_matrix() const -> geometry::Matrix<4>;
+    [[nodiscard]] auto mouse_ray() const -> geometry::Vector<3>;
 
   private:
     static constexpr float zoom_min = 0.0F;
     static constexpr float zoom_max = 45.0F;
 
-    engine::graphics::Camera _camera;
-    engine::gui::Window* _window;
+    graphics::Camera _camera;
+    gui::Window* _window;
 
-    glm::vec3 _mouse_ray                              = glm::vec3(0.0F);
-    engine::graphics::ProjectionType _projection_type = engine::graphics::ProjectionType::PERSPECTIVE;
-    bool _free_look_mode                              = false;
-    float _zoom                                       = 0.0F;
+    geometry::Vector<3> _mouse_ray;
+    graphics::ProjectionType _projection_type = graphics::ProjectionType::PERSPECTIVE;
+    bool _free_look_mode                      = false;
+    float _zoom                               = 0.0F;
 
     // Mutators
     void on_key(GLFWwindow* window);

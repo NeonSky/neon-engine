@@ -3,10 +3,6 @@
 #include "../../engine/debug/logger.hpp"
 
 #include <GLFW/glfw3.h>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include <algorithm>
 
@@ -30,15 +26,15 @@ auto DebugCamera::transform() -> engine::geometry::Transform& {
 }
 
 // Accessors
-auto DebugCamera::view_matrix() const -> glm::mat4 {
+auto DebugCamera::view_matrix() const -> geometry::Matrix<4> {
   return _camera.view_matrix();
 }
 
-auto DebugCamera::projection_matrix() const -> glm::mat4 {
+auto DebugCamera::projection_matrix() const -> geometry::Matrix<4> {
   return _camera.projection_matrix(_projection_type);
 }
 
-auto DebugCamera::mouse_ray() const -> glm::vec3 {
+auto DebugCamera::mouse_ray() const -> geometry::Vector<3> {
   return _mouse_ray;
 }
 
@@ -56,6 +52,9 @@ void DebugCamera::on_key(GLFWwindow* window) {
     _camera.move(engine::graphics::Direction::UP);
   if (glfwGetKey(window, GLFW_KEY_Q) != 0)
     _camera.move(engine::graphics::Direction::DOWN);
+
+  if (glfwGetKey(window, GLFW_KEY_F) != 0)
+    _camera.transform().flip_rotation();
 
   if (glfwGetKey(window, GLFW_KEY_P) != 0) {
     if (_projection_type == engine::graphics::ProjectionType::PERSPECTIVE)
@@ -83,19 +82,19 @@ void DebugCamera::on_cursor(GLFWwindow* window, float xpos, float ypos) {
   float y = ((float) height) - ypos; // In OpenGL, (0, 0) is top-left. We want (0, 0) to be bot-left.
 
   // Normalized Device Space [-1:1, -1:1, -1:1]
-  glm::vec3 ndc(2.0F * (x / (float) width) - 1.0F, 2.0F * (y / (float) height) - 1.0F, -1.0F); // z = -1.0f since cursor points along camera's forward direction.
+  geometry::Vector<3> ndc(2.0F * (x / (float) width) - 1.0F, 2.0F * (y / (float) height) - 1.0F, -1.0F); // z = -1.0f since cursor points along camera's forward direction.
 
   // Homogeneous Clip Space [-1:1, -1:1, -1:1, -1:1]
-  glm::vec4 clip_coords(ndc.x, ndc.y, ndc.z, 1.0F);
+  geometry::Vector<4> clip_coords(ndc.x, ndc.y, ndc.z, 1.0F);
 
   // View Space (Eye Space) [-inf:inf, -inf:inf, -inf:inf, -inf:inf]
-  glm::vec4 view_coords(glm::vec3(glm::inverse(projection_matrix()) * clip_coords), 0.0F);
+  geometry::Vector<4> view_coords(geometry::Vector<3>(projection_matrix().inverse() * clip_coords), 0.0F);
 
   // World Space [-inf:inf, -inf:inf, -inf:inf, -inf:inf]
-  glm::vec4 world_coords = glm::inverse(view_matrix()) * view_coords;
+  geometry::Vector<4> world_coords = view_matrix().inverse() * view_coords;
 
   // Normalized 3D vector form
-  _mouse_ray = glm::normalize(glm::vec3(world_coords));
+  _mouse_ray = geometry::Vector<3>(world_coords).normalized();
 
   if (_free_look_mode)
     _camera.lookat_mouse(x, y);
