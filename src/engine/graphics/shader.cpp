@@ -31,14 +31,18 @@ void Shader::use() const {
   glUseProgram(this->program);
 }
 
-void Shader::set_uniform_vec3(const GLchar* uniform, const GLfloat* data) const {
+void Shader::set_uniform_vec3(const GLchar* uniform, const geometry::Vector<3>& data) const {
   int loc = glGetUniformLocation(this->program, uniform);
-  glUniform3fv(loc, 1, data);
+  glUniform3fv(loc, 1, &data[0]);
 }
 
-void Shader::set_uniform_mat4(const GLchar* uniform, const GLfloat* data) const {
+void Shader::set_uniform_mat4(const GLchar* uniform, const geometry::Matrix<4>& data) const {
   int loc = glGetUniformLocation(this->program, uniform);
-  glUniformMatrix4fv(loc, 1, GL_FALSE, data);
+
+  // NOTE: OpenGL wants matrices in column-by-column, which means we have to transpose.
+  geometry::Matrix<4> transposed_data = data.transpose();
+
+  glUniformMatrix4fv(loc, 1, GL_FALSE, &transposed_data[0][0]);
 }
 
 auto Shader::load_shader_file(const std::string& shader_path, GLenum shader_type) -> GLuint {

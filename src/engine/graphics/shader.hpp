@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../geometry/matrix.hpp"
+
 #include <glad/glad.h>
 
 #include <map>
@@ -13,8 +15,8 @@ namespace engine::graphics {
 
     // Mutators
     void use() const;
-    void set_uniform_vec3(const GLchar* uniform, const GLfloat* data) const;
-    void set_uniform_mat4(const GLchar* uniform, const GLfloat* data) const;
+    void set_uniform_vec3(const GLchar* uniform, const geometry::Vector<3>& data) const;
+    void set_uniform_mat4(const GLchar* uniform, const geometry::Matrix<4>& data) const;
 
   private:
     GLuint program;
