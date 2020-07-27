@@ -24,6 +24,13 @@ TEST(MatrixTest, MinorMatrix1) {
 }
 
 TEST(MatrixTest, Determinant1) {
+  Matrix<1> m({
+    {-17.3F},
+  });
+  EXPECT_EQ(m.determinant(), -17.3F);
+}
+
+TEST(MatrixTest, Determinant2) {
   Matrix<2> m({
     {1, 2},
     {3, 4},
@@ -31,7 +38,7 @@ TEST(MatrixTest, Determinant1) {
   EXPECT_EQ(m.determinant(), -2.0F);
 }
 
-TEST(MatrixTest, Determinant2) {
+TEST(MatrixTest, Determinant3) {
   Matrix<2> m({
     {-5, -4},
     {-2, -3},
@@ -39,7 +46,7 @@ TEST(MatrixTest, Determinant2) {
   EXPECT_EQ(m.determinant(), 7.0F);
 }
 
-TEST(MatrixTest, Determinant3) {
+TEST(MatrixTest, Determinant4) {
   Matrix<3> m({
     {2, -3, 1},
     {2, 0, -1},

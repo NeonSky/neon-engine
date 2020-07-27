@@ -8,14 +8,18 @@
 
 namespace engine::geometry {
 
-  template <unsigned int R, unsigned int C = R, bool S = (R == C)>
-  struct Matrix {};
-
-  template <unsigned int R, unsigned int C>
-  struct Matrix<R, C, false> {
+  template <unsigned int R, unsigned int C = R>
+  struct Matrix {
     std::array<std::array<float, C>, R> elements;
 
-    Matrix() : elements() {}
+    // template <unsigned int N = R>
+    Matrix()
+            : elements() {
+
+      if constexpr (R == C)
+        for (unsigned int i = 0; i < R; i++)
+          elements[i][i] = 1.0F;
+    }
 
     Matrix(std::initializer_list<std::array<float, C>> elements) {
       if (elements.size() != R)
@@ -152,22 +156,13 @@ namespace engine::geometry {
 
       return json;
     };
-  };
 
-  template <unsigned int N>
-  struct Matrix<N, N, true> {
-    std::array<std::array<float, N>, N> elements;
-
-    Matrix() : elements() {
-      for (unsigned int i = 0; i < N; i++)
-        elements[i][i] = 1.0F;
-    }
-
-    template <unsigned int M>
+    //////////////////////////
+    // Square matrix functions
+    //////////////////////////
+    template <unsigned int N = R, unsigned int M, class Enable = std::enable_if_t<(N == R && R == C && M <= N)>>
     Matrix(const Matrix<M>& other)
             : elements() {
-
-      static_assert(M < N, "Provided matrix must be smaller in size.");
 
       for (unsigned int r = 0; r < M; r++)
         for (unsigned int c = 0; c < M; c++)
@@ -177,106 +172,8 @@ namespace engine::geometry {
         elements[i][i] = 1.0F;
     }
 
-    Matrix(std::initializer_list<std::array<float, N>> elements) {
-      if (elements.size() != N)
-        LOG_ERROR("Must provide exactly N elements.");
-
-      std::copy(elements.begin(), elements.end(), this->elements.begin());
-    }
-
-    Matrix(std::array<std::array<float, N>, N> elements)
-            : elements(elements) {}
-
-    template <class... Args,
-              class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, std::array<float, N>>::value)>>
-    Matrix(Args... args)
-            : elements({args...}) {
-      static_assert(sizeof...(args) == N, "Must provide exactly N elements.");
-    }
-
-    auto operator[](unsigned int index) const -> const std::array<float, N>& {
-      return elements[index];
-    }
-
-    auto operator[](unsigned int index) -> std::array<float, N>& {
-      return elements[index];
-    }
-
-    auto operator==(const Matrix<N>& other) const -> bool {
-      const float tolerance = 0.00001F;
-      for (unsigned int r = 0; r < N; r++)
-        for (unsigned int c = 0; c < N; c++)
-          if (std::abs(elements[r][c] - other[r][c]) > tolerance)
-            return false;
-
-      return true;
-    }
-
-    auto operator!=(const Matrix<N>& other) const -> bool {
-      return !(*this == other);
-    }
-
-    auto operator-() const -> Matrix<N> {
-      Matrix<N> res(elements);
-      for (unsigned int r = 0; r < N; r++)
-        for (unsigned int c = 0; c < N; c++)
-          res[r][c] *= -1;
-
-      return res;
-    }
-
-    auto operator*(float scalar) const -> Matrix<N> {
-      Matrix<N> res(elements);
-      for (unsigned int r = 0; r < N; r++)
-        for (unsigned int c = 0; c < N; c++)
-          res[r][c] *= scalar;
-
-      return res;
-    }
-
-    auto operator/(float scalar) const -> Matrix<N> {
-      Matrix<N> res(elements);
-      for (unsigned int r = 0; r < N; r++)
-        for (unsigned int c = 0; c < N; c++)
-          res[r][c] /= scalar;
-
-      return res;
-    }
-
-    auto operator*(const Vector<N>& vector) const -> Vector<N> {
-      Vector<N> res;
-      for (unsigned int r = 0; r < N; r++) {
-
-        float sum = 0.0F;
-        for (unsigned int c = 0; c < N; c++)
-          sum += elements[r][c] * vector[c];
-
-        res[r] = sum;
-      }
-
-      return res;
-    }
-
-    template <unsigned int C>
-    auto operator*(const Matrix<N, C>& other) const -> Matrix<N, C> {
-      Matrix<N, C> res;
-      for (unsigned int r = 0; r < N; r++)
-        for (unsigned int c = 0; c < C; c++)
-          res[r][c] = row_vector(r).inner_product(other.column_vector(c));
-
-      return res;
-    }
-
-    [[nodiscard]] auto transpose() const -> Matrix<N> {
-      Matrix<N> res;
-      for (unsigned int r = 0; r < N; r++)
-        for (unsigned int c = 0; c < N; c++)
-          res[c][r] = elements[r][c];
-
-      return res;
-    }
-
-    [[nodiscard]] auto main_diagonal() const -> Vector<N> {
+    template <unsigned int N = R>
+    auto main_diagonal() const -> std::enable_if_t<(N == R && R == C), Vector<N>> {
       Vector<N> res;
       for (unsigned int i = 0; i < N; i++)
         res[i] = elements[i][i];
@@ -284,7 +181,8 @@ namespace engine::geometry {
       return res;
     }
 
-    [[nodiscard]] auto trace() const -> float {
+    template <unsigned int N = R>
+    auto trace() const -> std::enable_if_t<(N == R && R == C), float> {
       float res = 0.0F;
       for (unsigned int i = 0; i < N; i++)
         res += elements[i][i];
@@ -292,7 +190,8 @@ namespace engine::geometry {
       return res;
     }
 
-    [[nodiscard]] auto minor_matrix(unsigned int r, unsigned int c) const -> Matrix<N - 1, N - 1> {
+    template <unsigned int N = R>
+    auto minor_matrix(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), Matrix<N - 1, N - 1>> {
       Matrix<N - 1, N - 1> res;
       for (unsigned int i = 0; i < N; i++)
         for (unsigned int j = 0; j < N; j++)
@@ -302,24 +201,19 @@ namespace engine::geometry {
       return res;
     }
 
-    [[nodiscard]] auto determinant() const -> float {
-      float res = 0.0F;
-      for (unsigned int c = 0; c < N; c++)
-        res += elements[0][c] * cofactor(0, c);
-
-      return res;
-    }
-
-    [[nodiscard]] auto minor(unsigned int r, unsigned int c) const -> float {
+    template <unsigned int N = R>
+    auto minor(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), float> {
       return minor_matrix(r, c).determinant();
     }
 
-    [[nodiscard]] auto cofactor(unsigned int r, unsigned int c) const -> float {
+    template <unsigned int N = R>
+    auto cofactor(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), float> {
       int sign = ((r + c) & 1) != 0 ? -1 : 1;
       return sign * minor(r, c);
     }
 
-    [[nodiscard]] auto cofactor_matrix() const -> Matrix<N> {
+    template <unsigned int N = R>
+    auto cofactor_matrix() const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
       Matrix<N> res;
       for (unsigned int r = 0; r < N; r++)
         for (unsigned int c = 0; c < N; c++)
@@ -328,11 +222,13 @@ namespace engine::geometry {
       return res;
     }
 
-    [[nodiscard]] auto adjugate() const -> Matrix<N> {
+    template <unsigned int N = R>
+    auto adjugate() const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
       return cofactor_matrix().transpose();
     }
 
-    [[nodiscard]] auto inverse() const -> Matrix<N> {
+    template <unsigned int N = R>
+    auto inverse() const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
       float d = determinant();
       if (d == 0.0F)
         LOG_ERROR("Determinant is 0, which means that this matrix is singular/degenerate.");
@@ -340,7 +236,8 @@ namespace engine::geometry {
       return cofactor_matrix() / d;
     }
 
-    [[nodiscard]] auto translate(Vector<N - 1> translation) const -> Matrix<N> {
+    template <unsigned int N = R>
+    auto translate(Vector<N - 1> translation) const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
       Matrix<N> m;
       for (unsigned int r = 0; r < N - 1; r++)
         m[r][N - 1] += translation[r];
@@ -349,7 +246,8 @@ namespace engine::geometry {
     }
 
     // See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
-    [[nodiscard]] auto rotate(float angle, Vector<N - 1> axis) const -> Matrix<N> {
+    template <unsigned int N = R>
+    auto rotate(float angle, Vector<N - 1> axis) const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
       static_assert(N == 4, "Rotation only defined for 4D matrices.");
 
       axis = axis.normalized();
@@ -390,7 +288,8 @@ namespace engine::geometry {
       return (*this) * m;
     }
 
-    [[nodiscard]] auto scale(Vector<N - 1> scale) const -> Matrix<N> {
+    template <unsigned int N = R>
+    auto scale(Vector<N - 1> scale) const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
       Matrix<N> m;
       for (unsigned int i = 0; i < N - 1; i++)
         m[i][i] *= scale[i];
@@ -398,49 +297,18 @@ namespace engine::geometry {
       return (*this) * m;
     }
 
-    [[nodiscard]] auto row_vector(unsigned int r) const -> Vector<N> {
-      return Vector<N>(elements[r]);
-    }
-
-    [[nodiscard]] auto column_vector(unsigned int c) const -> Vector<N> {
-      Vector<N> res;
-      for (unsigned int r = 0; r < N; r++)
-        res[r] = elements[r][c];
-
-      return res;
-    }
-
-    // TODO: Convert from either row or column depending on dimensions.
-    // Maybe remove?
-    [[nodiscard]] auto to_vector() const -> Vector<N> {
-      static_assert(N == 1, "Matrix must have a single column to be converted to vector.");
-      return column_vector(0);
-    }
-
-    [[nodiscard]] auto to_json() const -> debug::JSON {
-      debug::JSON json = debug::JSON::array();
-      for (auto& row : elements)
-        json.emplace_back(row);
-
-      return json;
-    };
-  };
-
-  template <>
-  struct Matrix<1, 1> {
-    std::array<std::array<float, 1>, 1> elements{};
-
-    Matrix() = default;
-
-    Matrix(std::array<std::array<float, 1>, 1> elements)
-            : elements(elements) {}
-
-    auto operator[](unsigned int index) -> std::array<float, 1>& {
-      return elements[index];
-    }
-
-    auto determinant() -> float {
+    template <unsigned int N = R>
+    auto determinant() const -> std::enable_if_t<(N == R && R == C && N == 1), float> {
       return elements[0][0];
     }
+
+    template <unsigned int N = R>
+    auto determinant() const -> std::enable_if_t<(N == R && R == C && N > 1), float> {
+      float res = 0.0F;
+      for (unsigned int c = 0; c < N; c++)
+        res += elements[0][c] * cofactor(0, c);
+      return res;
+    }
   };
+
 }
