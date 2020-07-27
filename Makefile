@@ -15,6 +15,7 @@ help:
 	@ echo "- linter"
 	@ echo "- help"
 	@ echo "- rebuild"
+	@ echo "- retidy"
 	@ echo "- run"
 	@ echo "- run-tests"
 	@ echo "- setup"
@@ -79,6 +80,13 @@ linter: format-check tidy-check run-tests
 .PHONY: rebuild
 rebuild:
 	cd build && make rebuild_cache && cmake .. && make
+
+.PHONY: retidy
+retidy:
+	$(eval CHANGED_FILES=$(shell git diff HEAD --name-only | grep -E "*.[ch]pp" | grep -Ev "*/(vendor|test)/*" || echo 0))
+	@if [ $(CHANGED_FILES) != 0 ]; then \
+		clang-tidy --fix -p build/compile_commands.json $(CHANGED_FILES); \
+	fi
 
 .PHONY: run
 run:
