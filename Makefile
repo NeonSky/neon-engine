@@ -10,6 +10,7 @@ help:
 	@ echo "- docker-hub-push"
 	@ echo "- docker-linter-build"
 	@ echo "- docker-linter-run"
+	@ echo "- docs"
 	@ echo "- format"
 	@ echo "- format-check"
 	@ echo "- linter"
@@ -63,6 +64,10 @@ docker-linter-build:
 .PHONY: docker-linter-run
 docker-linter-run:
 	docker run ecs-scenes-linter
+
+.PHONY: docs
+docs:
+	cd docs && make html
 
 .PHONY: format
 format:

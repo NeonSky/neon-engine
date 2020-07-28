@@ -50,7 +50,7 @@ namespace engine::geometry {
     template <bool>
     struct Range;
 
-    template <unsigned int M, typename = Range<M >= N>>
+    template <unsigned int M, typename = Range<(M >= N)>>
     Vector(const Vector<M>& other) {
       // static_assert(M >= N, "Given vector may not have fewer dimensions than this vector.");
 
