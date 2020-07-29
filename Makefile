@@ -68,6 +68,8 @@ docker-linter-run:
 .PHONY: docs
 docs:
 	cd docs && make html
+	$(eval WARNINGS = $(shell cat docs/doxygen/warnings.log | wc -l))
+	@if (( $(WARNINGS) > 0)); then echo "There were warnings! See warnings.log"; fi
 
 .PHONY: format
 format:
