@@ -38,13 +38,13 @@ namespace engine::graphics {
 
   private:
     struct Perspective {
-      float fov;
+      geometry::Angle fov;
       float aspect_ratio;
       float near;
       float far;
 
       Perspective() {
-        fov          = deg2rad(45.0F);
+        fov          = geometry::Angle(45.0F, geometry::Angle::Unit::DEGREES);
         aspect_ratio = 16.0F / 9.0F;
         near         = 0.1F;
         far          = 300.0F;

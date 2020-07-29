@@ -54,7 +54,7 @@ void Camera::move(Direction move_dir) {
 
 void Camera::set_zoom(float zoom_level) {
   // FIXME: name constant
-  _perspective.fov = 45.0F - zoom_level;
+  _perspective.fov.set(45.0F - zoom_level, geometry::Angle::Unit::DEGREES);
 }
 
 void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
@@ -76,7 +76,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
   yaw -= xoffset;
   pitch += yoffset;
 
-  pitch = std::clamp(pitch, -pi / 2.0F, pi / 2.0F);
+  pitch = std::clamp(pitch, -geometry::pi / 2.0F, geometry::pi / 2.0F);
 
   _transform.set_rotation(yaw, pitch, 0.0F);
 }
@@ -106,11 +106,11 @@ auto Camera::perspective_projection_matrix() const -> geometry::Matrix<4> {
   float f = _perspective.far;
   float n = _perspective.near;
 
-  float horizontal_fov = _perspective.aspect_ratio * (_perspective.fov / 2.0F);
+  float horizontal_fov = _perspective.aspect_ratio * (_perspective.fov.radians() / 2.0F);
   float r              = std::tan(horizontal_fov) * n;
   float l              = -r;
 
-  float vertical_fov = (_perspective.fov / 2.0F);
+  float vertical_fov = (_perspective.fov.radians() / 2.0F);
   float t            = std::tan(vertical_fov) * n;
   float b            = -t;
 
