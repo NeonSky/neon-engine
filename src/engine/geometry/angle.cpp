@@ -1,5 +1,7 @@
 #include "angle.hpp"
 
+#include "../debug/logger.hpp"
+
 using namespace engine::geometry;
 
 Angle::Angle() = default;
@@ -22,6 +24,8 @@ void Angle::set(float angle, Unit unit) {
   case Unit::GRADIANS:
     _angle_in_radians = angle * (pi / 200.0F);
     break;
+  default:
+    LOG_ERROR("Unknown unit was provided."); // LCOV_EXCL_LINE
   }
 }
 

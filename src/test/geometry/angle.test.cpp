@@ -90,3 +90,8 @@ TEST(AngleTest, ReassignsWithDifferentUnits1) {
   angle.set(1080.0F, Angle::Unit::GRADIANS);
   EXPECT_EQ(angle.gradians(), 1080.0F);
 }
+
+TEST(AngleTest, ReassignWithInvalidUnit1) {
+  Angle angle;
+  ASSERT_THROW(angle.set(-15.0F, (Angle::Unit) -1), std::runtime_error);
+}

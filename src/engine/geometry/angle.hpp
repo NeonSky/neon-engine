@@ -42,7 +42,7 @@ namespace engine::geometry {
 
     /// @brief Sets the current angle.
     ///
-    /// Sets the angle to \p angle amount in the \p unit angle unit.
+    /// The new angle will be set to \p angle amount in the \p unit angle unit.
     void set(float angle, Unit unit = Unit::RADIANS);
 
     /// @}
@@ -64,8 +64,10 @@ namespace engine::geometry {
     /// @}
 
   private:
-    /// @brief Current angle in radians.
+    /// @{
+    /// Private state.
     float _angle_in_radians = 0.0F;
+    /// @}
   };
 
 }
