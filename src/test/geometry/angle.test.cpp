@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include "../util.hpp"
 
 #include "../../engine/geometry/angle.hpp"
 using namespace engine::geometry;

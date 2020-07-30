@@ -1,5 +1,4 @@
-#include "../../engine/debug/logger.hpp"
-#include <gtest/gtest.h>
+#include "../util.hpp"
 
 #include "../../engine/geometry/matrix.hpp"
 using namespace engine::geometry;
