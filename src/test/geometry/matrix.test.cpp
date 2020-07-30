@@ -145,3 +145,31 @@ TEST(MatrixTest, CofactorMatrix1) {
   });
   EXPECT_EQ(m.cofactor_matrix(), expected);
 }
+
+TEST(MatrixTest, ReducedRowEchelonForm1) {
+  Matrix<3, 4> m({
+    {2, 1, -1, 8},
+    {-3, -1, 2, -11},
+    {-2, 1, 2, -3},
+  });
+  Matrix<3, 4> expected({
+    {1, 0, 0, 2},
+    {0, 1, 0, 3},
+    {0, 0, 1, -1},
+  });
+  EXPECT_EQ(m.reduced_row_echelon_form(), expected);
+}
+
+TEST(MatrixTest, ReducedRowEchelonForm2) {
+  Matrix<3, 4> m({
+    {1, 2, -4, 2},
+    {7, 6, -2, -5},
+    {0, -3, -5, -8},
+  });
+  Matrix<3, 4> expected({
+    {1, 0, 0, -2.8983051F},
+    {0, 1, 0, 2.5677967F},
+    {0, 0, 1, 0.0593220F},
+  });
+  EXPECT_EQ(m.reduced_row_echelon_form(), expected);
+}

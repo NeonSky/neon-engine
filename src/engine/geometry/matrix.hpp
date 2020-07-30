@@ -40,6 +40,10 @@ namespace engine::geometry {
 
     [[nodiscard]] auto transpose() const -> Matrix<C, R>;
 
+    /// @see https://www.wikiwand.com/en/Gaussian_elimination
+    template <unsigned int N = R>
+    [[nodiscard]] auto reduced_row_echelon_form() const -> std::enable_if_t<(N < C), Matrix<R, C>>;
+
     [[nodiscard]] auto row_vector(unsigned int r) const -> Vector<C>;
 
     [[nodiscard]] auto column_vector(unsigned int c) const -> Vector<R>;
@@ -219,6 +223,50 @@ namespace engine::geometry {
     return res;
   }
 
+  template <unsigned int R, unsigned int C>
+  template <unsigned int N>
+  [[nodiscard]] auto Matrix<R, C>::reduced_row_echelon_form() const -> std::enable_if_t<(N < C), Matrix<R, C>> {
+    Matrix<R, C> res = *this;
+
+    // Convert to echelon/triangular form (clear lower triangle)
+    for (unsigned int d = 0; d < R - 1; d++) {   // `d` represents the diagonal index.
+      for (unsigned int r = d + 1; r < R; r++) { // `r` represents the row index.
+
+        // To make res[r][d] = 0, we need to add row `d` to row `r` by a factor of ...
+        float factor = -(res[r][d] / res[d][d]);
+
+        // Now we perform the addition.
+        for (unsigned int c = d; c < C; c++)
+          res[r][c] += factor * res[d][c];
+      }
+    }
+
+    // Form leading 1:s
+    for (unsigned int d = 0; d < R; d++) {
+      for (unsigned int c = d + 1; c < C; c++)
+        res[d][c] /= res[d][d];
+      res[d][d] = 1.0F;
+    }
+
+    // Clear upper triangle
+    for (int d = R - 1; d > 0; d--) {    // `d` represents the diagonal index.
+      for (int r = d - 1; r >= 0; r--) { // `r` represents the row index.
+
+        // To make res[r][d] = 0, we need to add row `d` to row `r` by a factor of ...
+        float factor = -res[r][d]; // we know that row[d][d] = 1 here
+
+        // Now we perform the addition.
+        for (unsigned int c = d; c < C; c++)
+          res[r][c] += factor * res[d][c];
+      }
+    }
+
+    Vector<R> v;
+    for (unsigned int i = 0; i < R; i++)
+      v[i] = res[i][C] / res[i][i];
+
+    return res;
+  }
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::row_vector(unsigned int r) const -> Vector<C> {
     return Vector<C>(elements[r]);
