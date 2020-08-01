@@ -3,6 +3,18 @@
 #include "../../engine/geometry/point.hpp"
 using namespace engine::geometry;
 
+TEST(PointTest, Size1) {
+  Point<1> p1;
+  Point<2> p2;
+  Point<3> p3;
+  Point<4> p4;
+
+  EXPECT_EQ(sizeof(p1), 1 * sizeof(float));
+  EXPECT_EQ(sizeof(p2), 2 * sizeof(float));
+  EXPECT_EQ(sizeof(p3), 3 * sizeof(float));
+  EXPECT_EQ(sizeof(p4), 4 * sizeof(float));
+}
+
 TEST(PointTest, ConstructsIdentityPoint1) {
   Point<1> point1;
   EXPECT_EQ(point1[0], 0.0F);
@@ -80,6 +92,15 @@ TEST(PointTest, ConvertsToHigherDimension1) {
 }
 
 TEST(PointTest, Iterates1) {
+  Point<3> point({1.4F, 3.8F, 0.1F});
+
+  int i = 0;
+  for (auto& c : point)
+    EXPECT_EQ(c, point[i++]);
+  EXPECT_EQ(i, 3);
+}
+
+TEST(PointTest, Iterates2) {
   Point<3> point1({1.4F, 3.8F, 0.1F});
   Point<3> point2({2.4F, 4.8F, 1.1F});
   EXPECT_NE(point1, point2);
@@ -89,7 +110,7 @@ TEST(PointTest, Iterates1) {
   EXPECT_EQ(point1, point2);
 }
 
-TEST(PointTest, Iterates2) {
+TEST(PointTest, Iterates3) {
   Point<3> point1({1.4F, 3.8F, 0.1F});
   Point<3> point2({2.4F, 4.8F, 1.1F});
   EXPECT_NE(point1, point2);
@@ -100,7 +121,7 @@ TEST(PointTest, Iterates2) {
   EXPECT_EQ(point1, point2);
 }
 
-TEST(PointTest, Iterates3) {
+TEST(PointTest, Iterates4) {
   Point<4> point({1.4F, 3.8F, 0.1F, 33.22F});
 
   unsigned int i = 0;
@@ -108,7 +129,7 @@ TEST(PointTest, Iterates3) {
     EXPECT_EQ((*it), point[i++]);
 }
 
-TEST(PointTest, Iterates4) {
+TEST(PointTest, Iterates5) {
   Point<4> point({1.4F, 3.8F, 0.1F, 33.22F});
   EXPECT_EQ((float*) point.begin(), &point[0]);
 }

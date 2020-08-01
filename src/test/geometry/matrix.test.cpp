@@ -3,6 +3,30 @@
 #include "../../engine/geometry/matrix.hpp"
 using namespace engine::geometry;
 
+TEST(MatrixTest, Size1) {
+  Matrix<1> m1;
+  Matrix<2> m2;
+  Matrix<3> m3;
+  Matrix<4> m4;
+
+  EXPECT_EQ(sizeof(m1), 1 * 1 * sizeof(float));
+  EXPECT_EQ(sizeof(m2), 2 * 2 * sizeof(float));
+  EXPECT_EQ(sizeof(m3), 3 * 3 * sizeof(float));
+  EXPECT_EQ(sizeof(m4), 4 * 4 * sizeof(float));
+}
+
+TEST(MatrixTest, Size2) {
+  Matrix<1, 3> m1;
+  Matrix<3, 1> m2;
+  Matrix<2, 4> m3;
+  Matrix<4, 2> m4;
+
+  EXPECT_EQ(sizeof(m1), 1 * 3 * sizeof(float));
+  EXPECT_EQ(sizeof(m2), 3 * 1 * sizeof(float));
+  EXPECT_EQ(sizeof(m3), 2 * 4 * sizeof(float));
+  EXPECT_EQ(sizeof(m4), 4 * 2 * sizeof(float));
+}
+
 TEST(MatrixTest, Trace1) {
   Matrix<2> m({
     {1, 2},
@@ -240,4 +264,39 @@ TEST(MatrixTest, Rank4) {
   int rank = m.rank();
   EXPECT_EQ(rank, 3);
   EXPECT_EQ(rank, m.transpose().rank());
+}
+
+TEST(MatrixTest, Iterates1) {
+  Matrix<3, 3> m({
+    {0, 1, 2},
+    {3, 4, 5},
+    {6, 7, 8},
+  });
+
+  int i = 0;
+  for (auto& e : m) {
+    EXPECT_EQ(e, m[(i / 3)][(i % 3)]);
+    i++;
+  }
+
+  EXPECT_EQ(i, 9);
+}
+
+TEST(MatrixTest, Iterates2) {
+  Matrix<3, 3> m({
+    {0, 1, 2},
+    {3, 4, 5},
+    {6, 7, 8},
+  });
+  Matrix<3, 3> expected({
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9},
+  });
+  EXPECT_NE(m, expected);
+
+  for (auto& e : m)
+    e += 1.0F;
+
+  EXPECT_EQ(m, expected);
 }

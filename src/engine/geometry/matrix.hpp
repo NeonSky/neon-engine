@@ -21,6 +21,12 @@ namespace engine::geometry {
     template <class... Args, class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, std::array<float, C>>::value)>>
     Matrix(Args... args);
 
+    /// @brief The memory address of the top-left most element.
+    [[nodiscard]] auto begin() -> float*;
+
+    /// @brief The memory address following the bottom-right most element.
+    [[nodiscard]] auto end() -> float*;
+
     /// @brief Swaps the rows indexed by \p i and \p j.
     auto swap_rows(unsigned int i, unsigned int j);
 
@@ -145,6 +151,16 @@ namespace engine::geometry {
   Matrix<R, C>::Matrix(Args... args)
           : elements({args...}) {
     static_assert(sizeof...(args) == R, "Must provide exactly R elements.");
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::begin() -> float* {
+    return &elements[0][0];
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::end() -> float* {
+    return elements[R - 1].end();
   }
 
   template <unsigned int R, unsigned int C>
