@@ -1,5 +1,7 @@
 #pragma once
 
+#include "point.hpp"
+
 #include "../data/templates.hpp"
 #include "../debug/json.hpp"
 #include "../debug/logger.hpp"
@@ -8,10 +10,10 @@
 
 namespace engine::geometry {
 
+  /// @todo Add cross product. Preferably generalized to N dimensions.
   template <unsigned int N>
   class Vector {
   public:
-
     Vector()
             : elements() {}
 
@@ -22,8 +24,19 @@ namespace engine::geometry {
       std::copy(elements.begin(), elements.end(), this->elements.begin());
     }
 
+    Vector(Point<N> tip)
+            : elements(tip) {}
+
+    Vector(Point<N> from, Point<N> to) {
+      if (from == to)
+        LOG_ERROR("The provided points may not coincide.");
+
+      for (unsigned int i = 0; i < N; i++)
+        elements[i] = to[i] - from[i];
+    }
+
     Vector(std::array<float, N> elements)
-            : elements(elements) {}
+            : elements(Point<N>(elements)) {}
 
     template <class... Args,
               class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, float>::value)>>
@@ -37,9 +50,8 @@ namespace engine::geometry {
 
     template <unsigned int M, typename = Range<(M >= N)>>
     Vector(const Vector<M>& other) {
-      // static_assert(M >= N, "Given vector may not have fewer dimensions than this vector.");
-
-      std::copy(other.elements.begin(), other.elements.begin() + N, elements.begin());
+      for (unsigned int i = 0; i < N; i++)
+        elements[i] = other[i];
     }
 
     // FIXME: https://stackoverflow.com/questions/9510514/integer-range-based-template-specialisation
@@ -48,7 +60,8 @@ namespace engine::geometry {
             : elements(other.elements) {}
 
     auto operator=(const Vector<N>& other) -> Vector<N>& {
-      std::copy(other.elements.begin(), other.elements.begin() + N, elements.begin());
+      for (unsigned int i = 0; i < N; i++)
+        elements[i] = other[i];
       return *this;
     }
 
@@ -65,7 +78,8 @@ namespace engine::geometry {
     Vector(const Vector<M>& other, Args... args) {
       static_assert(M + sizeof...(args) == N, "Dimensions must match.");
 
-      std::copy(other.elements.begin(), other.elements.begin() + M, elements.begin());
+      for (unsigned int i = 0; i < M; i++)
+        elements[i] = other[i];
 
       int i = M;
       for (auto& arg : {args...})
@@ -74,7 +88,7 @@ namespace engine::geometry {
 
     ~Vector() = default;
 
-    auto operator[](unsigned int index) const -> const float& {
+    auto operator[](unsigned int index) const -> float {
       return elements[index];
     }
 
@@ -83,12 +97,7 @@ namespace engine::geometry {
     }
 
     auto operator==(const Vector<N>& other) const -> bool {
-      const float tolerance = 0.00001F;
-      for (unsigned int i = 0; i < N; i++)
-        if (std::abs(elements[i] - other[i]) > tolerance)
-          return false;
-
-      return true;
+      return elements == other.elements;
     }
 
     auto operator!=(const Vector<N>& other) const -> bool {
@@ -209,6 +218,14 @@ namespace engine::geometry {
       return elements[3];
     }
 
+    auto begin() const -> const float* {
+      return elements.begin();
+    }
+
+    auto end() const -> const float* {
+      return elements.end();
+    }
+
     auto begin() -> float* {
       return elements.begin();
     }
@@ -225,26 +242,21 @@ namespace engine::geometry {
       return sum;
     }
 
-    // TODO
-    // Vector<N> cross_product() {
-    //   https://math.stackexchange.com/questions/2517876/cross-product-for-3-vectors-in-4d
-    //   https://math.stackexchange.com/questions/2371022/cross-product-in-higher-dimensions
-    // }
-
-    [[nodiscard]] auto euclidean_length_squared() const -> float {
-      float sum = 0;
-      for (auto& e : elements)
-        sum += e * e;
-
-      return sum;
-    }
-
-    [[nodiscard]] auto euclidean_length() const -> float {
-      return std::sqrt(euclidean_length_squared());
+    [[nodiscard]] auto magnitude() const -> float {
+      // Vector mangnitude = distance between tip and origin
+      return elements.euclidean_distance(Point<N>());
     }
 
     auto normalized() const -> Vector<N> {
-      return (*this) / euclidean_length();
+      return (*this) / magnitude();
+    }
+
+    auto tip(Point<N> start = Point<N>()) const -> Point<N> {
+      Point<N> res;
+      for (unsigned int i = 0; i < N; i++)
+        res[i] = start[i] + elements[i];
+
+      return res;
     }
 
     auto multiply_elementwise(const Vector<N>& other) const -> Vector<N> {
@@ -263,6 +275,7 @@ namespace engine::geometry {
       return inner_product(other);
     }
 
+    // TODO: maybe remove? We already have this in Matrix. Write a matrix test for it and then remove here.
     template <unsigned int M>
     auto outer_product(const Vector<M>& other) const -> std::array<std::array<float, M>, N> {
       std::array<std::array<float, M>, N> matrix;
@@ -274,7 +287,9 @@ namespace engine::geometry {
     }
 
     operator std::array<float, N>() const {
-      return elements;
+      std::array<float, N> arr;
+      std::copy(elements.begin(), elements.end(), arr.begin());
+      return arr;
     }
 
     [[nodiscard]] auto to_json() const -> debug::JSON {
@@ -284,6 +299,9 @@ namespace engine::geometry {
 
       return json;
     };
+
+  private:
+    Point<N> elements; //< We use a point to represent the elements since they can be thought of as representing the vector's relative tip.
   };
 
   template <unsigned int N>
@@ -291,6 +309,4 @@ namespace engine::geometry {
     return rhs * lhs;
   }
 
-  // Vector<3> cross_product(Vector<3> v1, Vector<3> v2);
-  // Vector<2> cross_product(Vector<2> vector);
 }

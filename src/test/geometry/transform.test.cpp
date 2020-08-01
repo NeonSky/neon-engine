@@ -31,9 +31,9 @@ TEST(TransformTest, Constructor3) {
 TEST(TransformTest, VectorBasis1) {
   Transform t;
 
-  EXPECT_EQ(t.right().euclidean_length(), 1.0F);
-  EXPECT_EQ(t.up().euclidean_length(), 1.0F);
-  EXPECT_EQ(t.forward().euclidean_length(), 1.0F);
+  EXPECT_EQ(t.right().magnitude(), 1.0F);
+  EXPECT_EQ(t.up().magnitude(), 1.0F);
+  EXPECT_EQ(t.forward().magnitude(), 1.0F);
 
   EXPECT_EQ(t.forward().dot(t.up()), 0);
   EXPECT_EQ(t.forward().dot(t.right()), 0);
