@@ -6,9 +6,7 @@
 
 namespace engine::geometry {
 
-  /// @brief Point represents a position in space.
-  ///
-  /// Its responsibility is to provide a common data structure for N-dimensional positions.
+  /// @brief Point represents a position in N-dimensional space.
   ///
   /// @see https://www.wikiwand.com/en/Point_(geometry)
   template <unsigned int N>
@@ -31,10 +29,10 @@ namespace engine::geometry {
     auto operator[](unsigned int index) -> float&;
 
     /// @brief The memory address of the first coordinate.
-    auto begin() -> float*;
+    [[nodiscard]] auto begin() -> float*;
 
     /// @brief The memory address following the last coordinate.
-    auto end() -> float*;
+    [[nodiscard]] auto end() -> float*;
 
     /// @}
     /// @name Accessors
@@ -45,7 +43,7 @@ namespace engine::geometry {
     /// If the new point has fewer dimensions, then coordinates of higher dimensions will be omitted.
     /// If the new point has more dimensions, then the new coordinates will be set to 0.
     template <unsigned int M>
-    operator Point<M>();
+    operator Point<M>() const;
 
     /// @brief The \p i th coordinate.
     auto operator[](unsigned int i) const -> float;
@@ -57,10 +55,19 @@ namespace engine::geometry {
     auto operator!=(const Point<N>& other) const -> bool;
 
     /// @brief The memory address of the first coordinate.
-    auto begin() const -> const float*;
+    [[nodiscard]] auto begin() const -> const float*;
 
     /// @brief The memory address following the last coordinate.
-    auto end() const -> const float*;
+    [[nodiscard]] auto end() const -> const float*;
+
+    /// @brief The squared euclidean distance between this point and point \p other.
+    [[nodiscard]] auto euclidean_distance_squared(const Point<N>& other) const -> float;
+
+    /// @brief The euclidean distance between this point and point \p other.
+    [[nodiscard]] auto euclidean_distance(const Point<N>& other) const -> float;
+
+    /// @brief The manhattan distance between this point and point \p other.
+    [[nodiscard]] auto manhattan_distance(const Point<N>& other) const -> float;
 
     /// @brief Serializes the current state to JSON.
     [[nodiscard]] auto to_json() const -> debug::JSON;
@@ -83,7 +90,7 @@ namespace engine::geometry {
 
   template <unsigned int N>
   template <unsigned int M>
-  Point<N>::operator Point<M>() {
+  Point<N>::operator Point<M>() const {
     Point<M> res;
     if constexpr (M < N)
       std::copy(_coordinates.begin(), _coordinates.begin() + M, res.begin());
@@ -137,6 +144,29 @@ namespace engine::geometry {
   template <unsigned int N>
   auto Point<N>::end() const -> const float* {
     return _coordinates.end();
+  }
+
+  template <unsigned int N>
+  [[nodiscard]] auto Point<N>::euclidean_distance_squared(const Point<N>& other) const -> float {
+    float sum = 0;
+    for (unsigned int i = 0; i < N; i++)
+      sum += std::pow(_coordinates[i] - other[i], 2); // See: https://stackoverflow.com/a/6321226/8418261
+
+    return sum;
+  }
+
+  template <unsigned int N>
+  [[nodiscard]] auto Point<N>::euclidean_distance(const Point<N>& other) const -> float {
+    return sqrt(euclidean_distance_squared(other));
+  }
+
+  template <unsigned int N>
+  [[nodiscard]] auto Point<N>::manhattan_distance(const Point<N>& other) const -> float {
+    float sum = 0;
+    for (unsigned int i = 0; i < N; i++)
+      sum += std::abs(_coordinates[i] - other[i]);
+
+    return sum;
   }
 
   template <unsigned int N>
