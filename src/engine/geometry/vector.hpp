@@ -9,23 +9,8 @@
 namespace engine::geometry {
 
   template <unsigned int N>
-  struct Vector {
-    std::array<float, N> elements;
-
-    float& x = elements[0];
-    float& y = elements[1];
-    float& z = elements[2];
-    float& w = elements[3];
-
-    float& r = elements[0];
-    float& g = elements[1];
-    float& b = elements[2];
-    float& a = elements[3];
-
-    float& s = elements[0];
-    float& t = elements[1];
-    float& p = elements[2];
-    float& q = elements[3];
+  class Vector {
+  public:
 
     Vector()
             : elements() {}
@@ -162,6 +147,66 @@ namespace engine::geometry {
         res[i] /= scalar;
 
       return res;
+    }
+
+    template <unsigned int D = N>
+    auto x() const -> std::enable_if_t<(D >= 1), float> {
+      return elements[0];
+    }
+
+    template <unsigned int D = N>
+    auto y() const -> std::enable_if_t<(D >= 2), float> {
+      return elements[1];
+    }
+
+    template <unsigned int D = N>
+    auto z() const -> std::enable_if_t<(D >= 3), float> {
+      return elements[2];
+    }
+
+    template <unsigned int D = N>
+    auto w() const -> std::enable_if_t<(D >= 4), float> {
+      return elements[3];
+    }
+
+    template <unsigned int D = N>
+    auto r() const -> std::enable_if_t<(D >= 1), float> {
+      return elements[0];
+    }
+
+    template <unsigned int D = N>
+    auto g() const -> std::enable_if_t<(D >= 2), float> {
+      return elements[1];
+    }
+
+    template <unsigned int D = N>
+    auto b() const -> std::enable_if_t<(D >= 3), float> {
+      return elements[2];
+    }
+
+    template <unsigned int D = N>
+    auto a() const -> std::enable_if_t<(D >= 4), float> {
+      return elements[3];
+    }
+
+    template <unsigned int D = N>
+    auto s() const -> std::enable_if_t<(D >= 1), float> {
+      return elements[0];
+    }
+
+    template <unsigned int D = N>
+    auto t() const -> std::enable_if_t<(D >= 2), float> {
+      return elements[1];
+    }
+
+    template <unsigned int D = N>
+    auto p() const -> std::enable_if_t<(D >= 3), float> {
+      return elements[2];
+    }
+
+    template <unsigned int D = N>
+    auto q() const -> std::enable_if_t<(D >= 4), float> {
+      return elements[3];
     }
 
     auto begin() -> float* {

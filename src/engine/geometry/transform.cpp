@@ -60,15 +60,15 @@ auto Transform::right() const -> Vector<3> {
 }
 
 auto Transform::yaw() const -> float {
-  return rotation.y;
+  return rotation.y();
 };
 
 auto Transform::pitch() const -> float {
-  return rotation.x;
+  return rotation.x();
 };
 
 auto Transform::roll() const -> float {
-  return rotation.z;
+  return rotation.z();
 };
 
 // https://www.wikiwand.com/en/Euler_angles
@@ -84,21 +84,21 @@ auto Transform::rotation_matrix_slow() const -> Matrix<4> {
   //   cos(-t) = cos(t)
   //   sin(-t) = -sin(t)
 
-  float x = rotation.x;
+  float x = rotation.x();
   Matrix<3> rot_x{
     {1, 0, 0},
     {0, std::cos(x), std::sin(x)},
     {0, -std::sin(x), std::cos(x)},
   };
 
-  float y = rotation.y;
+  float y = rotation.y();
   Matrix<3> rot_y{
     {std::cos(y), 0, -std::sin(y)},
     {0, 1, 0},
     {std::sin(y), 0, std::cos(y)},
   };
 
-  float z = rotation.z;
+  float z = rotation.z();
   Matrix<3> rot_z{
     {std::cos(z), std::sin(z), 0},
     {-std::sin(z), std::cos(z), 0},
@@ -109,12 +109,12 @@ auto Transform::rotation_matrix_slow() const -> Matrix<4> {
 }
 
 auto Transform::rotation_matrix() const -> Matrix<4> {
-  float cx = std::cos(rotation.x);
-  float sx = std::sin(rotation.x);
-  float cy = std::cos(rotation.y);
-  float sy = std::sin(rotation.y);
-  float cz = std::cos(rotation.z);
-  float sz = std::sin(rotation.z);
+  float cx = std::cos(rotation.x());
+  float sx = std::sin(rotation.x());
+  float cy = std::cos(rotation.y());
+  float sy = std::sin(rotation.y());
+  float cz = std::cos(rotation.z());
+  float sz = std::sin(rotation.z());
 
   // https://www.wolframalpha.com/input/?i=%7B%7Bcos%28y%29%2C+0%2C+-sin%28y%29%7D%2C+%7B0%2C+1%2C+-0%7D%2C+%7Bsin%28y%29%2C+0%2C+cos%28y%29%7D%7D+*+%7B%7B1%2C+0%2C+0%7D%2C+%7B0%2C+cos%28x%29%2C+sin%28x%29%7D%2C+%7B0%2C+-sin%28x%29%2C+cos%28x%29%7D%7D+*+%7B%7Bcos%28z%29%2C+sin%28z%29%2C+0%7D%2C+%7B-sin%28z%29%2C+cos%28z%29%2C+0%7D%2C+%7B0%2C+0%2C+1%7D%7D
   return {

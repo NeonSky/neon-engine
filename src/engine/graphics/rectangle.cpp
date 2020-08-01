@@ -18,21 +18,21 @@ Rectangle::Rectangle(const geometry::Rectangle& rectangle, const Texture* textur
   geometry::Vector<3> topright = rectangle.topright();
 
   std::vector<float> positions = {
-    botleft.x,
-    botleft.y,
-    botleft.z,
+    botleft.x(),
+    botleft.y(),
+    botleft.z(),
 
-    botright.x,
-    botright.y,
-    botright.z,
+    botright.x(),
+    botright.y(),
+    botright.z(),
 
-    topright.x,
-    topright.y,
-    topright.z,
+    topright.x(),
+    topright.y(),
+    topright.z(),
 
-    topleft.x,
-    topleft.y,
-    topleft.z,
+    topleft.x(),
+    topleft.y(),
+    topleft.z(),
   };
 
   unsigned int pos_buffer = 0;

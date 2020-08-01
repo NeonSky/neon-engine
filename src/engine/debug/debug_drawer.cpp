@@ -13,12 +13,12 @@ void DebugDrawer::render(const geometry::Matrix<4>& view_projection_matrix) {
 
   std::vector<float> positions;
   for (auto& line : this->line_queue) {
-    positions.emplace_back(line.A.x);
-    positions.emplace_back(line.A.y);
-    positions.emplace_back(line.A.z);
-    positions.emplace_back(line.B.x);
-    positions.emplace_back(line.B.y);
-    positions.emplace_back(line.B.z);
+    positions.emplace_back(line.A.x());
+    positions.emplace_back(line.A.y());
+    positions.emplace_back(line.A.z());
+    positions.emplace_back(line.B.x());
+    positions.emplace_back(line.B.y());
+    positions.emplace_back(line.B.z());
   }
 
   unsigned int pos_buffer = 0;
@@ -29,9 +29,9 @@ void DebugDrawer::render(const geometry::Matrix<4>& view_projection_matrix) {
   std::vector<float> colors;
   for (auto& line : this->line_queue) {
     for (int i = 0; i < 2; i++) {
-      colors.emplace_back(line.color.x);
-      colors.emplace_back(line.color.y);
-      colors.emplace_back(line.color.z);
+      colors.emplace_back(line.color.x());
+      colors.emplace_back(line.color.y());
+      colors.emplace_back(line.color.z());
     }
   }
 

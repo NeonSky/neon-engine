@@ -503,19 +503,19 @@ namespace engine::geometry {
 
     // NOTE: pair = point + axis
     // 1. Rotate the pair so that the axis is in the XZ-plane.
-    float xy_len   = sqrt(axis.x * axis.x + axis.y * axis.y);
+    float xy_len   = sqrt(std::pow(axis.x(), 2) + std::pow(axis.y(), 2));
     Matrix<3> m_xz = {
-      {axis.x / xy_len, axis.y / xy_len, 0},
-      {-axis.y / xy_len, axis.x / xy_len, 0},
+      {axis.x() / xy_len, axis.y() / xy_len, 0},
+      {-axis.y() / xy_len, axis.x() / xy_len, 0},
       {0, 0, 1},
     };
 
     // 2. Rotate the pair so that the axis is equivalent to the Z-axis.
-    float xz_len  = sqrt(axis.x * axis.x + axis.z * axis.z);
+    float xz_len  = sqrt(std::pow(axis.x(), 2) + std::pow(axis.z(), 2));
     Matrix<3> m_z = {
-      {axis.z / xz_len, 0, -axis.x / xz_len},
+      {axis.z() / xz_len, 0, -axis.x() / xz_len},
       {0, 1, 0},
-      {axis.x / xz_len, 0, axis.z / xz_len},
+      {axis.x() / xz_len, 0, axis.z() / xz_len},
     };
 
     // 3. Rotate the point about the z-axis by the desired rotation angle.

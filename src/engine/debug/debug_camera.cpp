@@ -85,7 +85,7 @@ void DebugCamera::on_cursor(GLFWwindow* window, float xpos, float ypos) {
   geometry::Vector<3> ndc(2.0F * (x / (float) width) - 1.0F, 2.0F * (y / (float) height) - 1.0F, -1.0F); // z = -1.0f since cursor points along camera's forward direction.
 
   // Homogeneous Clip Space [-1:1, -1:1, -1:1, -1:1]
-  geometry::Vector<4> clip_coords(ndc.x, ndc.y, ndc.z, 1.0F);
+  geometry::Vector<4> clip_coords(ndc.x(), ndc.y(), ndc.z(), 1.0F);
 
   // View Space (Eye Space) [-inf:inf, -inf:inf, -inf:inf, -inf:inf]
   geometry::Vector<4> view_coords(geometry::Vector<3>(projection_matrix().inverse() * clip_coords), 0.0F);
