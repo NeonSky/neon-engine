@@ -24,6 +24,8 @@ namespace engine::geometry {
     /// @brief Swaps the rows indexed by \p i and \p j.
     auto swap_rows(unsigned int i, unsigned int j);
 
+    operator std::array<std::array<float, C>, R>() const;
+
     auto operator[](unsigned int index) const -> const Vector<C>&;
 
     auto operator[](unsigned int index) -> Vector<C>&;
@@ -152,6 +154,14 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
+  Matrix<R, C>::operator std::array<std::array<float, C>, R>() const {
+    std::array<std::array<float, C>, R> m;
+    for (unsigned int i = 0; i < R; i++)
+      m[i] = elements[i];
+    return m;
+  }
+
+  template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator[](unsigned int index) const -> const Vector<C>& {
     return elements[index];
   }
@@ -163,11 +173,9 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator==(const Matrix<R, C>& other) const -> bool {
-    const float tolerance = 0.00001F;
     for (unsigned int r = 0; r < R; r++)
-      for (unsigned int c = 0; c < C; c++)
-        if (std::abs(elements[r][c] - other[r][c]) > tolerance)
-          return false;
+      if (elements[r] != other[r])
+        return false;
 
     return true;
   }
@@ -367,7 +375,7 @@ namespace engine::geometry {
   [[nodiscard]] auto Matrix<R, C>::to_json() const -> debug::JSON {
     debug::JSON json = debug::JSON::array();
     for (auto& row : elements)
-      json.emplace_back(row);
+      json.emplace_back(row.to_json());
 
     return json;
   };
