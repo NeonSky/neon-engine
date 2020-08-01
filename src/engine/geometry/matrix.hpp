@@ -8,12 +8,11 @@
 
 namespace engine::geometry {
 
-  /// @todo Use Vector instead of array for elements again. Would be nice to divide or multiply a whole row. I'll just focus on row-based operations and not column ones. The user can always transpose the matrix. I'm thinking something like m[4] *= 3.2F;
   /// @todo add augmented_matrix(other_matrix) https://www.wikiwand.com/en/Augmented_matrix
   /// @todo add coefficient_matrix() which returns all but the last column https://www.wikiwand.com/en/Augmented_matrix
   template <unsigned int R, unsigned int C = R>
   struct Matrix {
-    std::array<std::array<float, C>, R> elements;
+    std::array<Vector<C>, R> elements;
 
     Matrix();
     Matrix(std::initializer_list<std::array<float, C>> elements);
@@ -25,9 +24,9 @@ namespace engine::geometry {
     /// @brief Swaps the rows indexed by \p i and \p j.
     auto swap_rows(unsigned int i, unsigned int j);
 
-    auto operator[](unsigned int index) const -> const std::array<float, C>&;
+    auto operator[](unsigned int index) const -> const Vector<C>&;
 
-    auto operator[](unsigned int index) -> std::array<float, C>&;
+    auto operator[](unsigned int index) -> Vector<C>&;
 
     auto operator==(const Matrix<R, C>& other) const -> bool;
 
@@ -153,12 +152,12 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  auto Matrix<R, C>::operator[](unsigned int index) const -> const std::array<float, C>& {
+  auto Matrix<R, C>::operator[](unsigned int index) const -> const Vector<C>& {
     return elements[index];
   }
 
   template <unsigned int R, unsigned int C>
-  auto Matrix<R, C>::operator[](unsigned int index) -> std::array<float, C>& {
+  auto Matrix<R, C>::operator[](unsigned int index) -> Vector<C>& {
     return elements[index];
   }
 
@@ -180,7 +179,7 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator-() const -> Matrix<R, C> {
-    Matrix<R, C> res(elements);
+    Matrix<R, C> res = *this;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)
         res[r][c] *= -1;
@@ -190,7 +189,7 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator*(float scalar) const -> Matrix<R, C> {
-    Matrix<R, C> res(elements);
+    Matrix<R, C> res = *this;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)
         res[r][c] *= scalar;
@@ -200,7 +199,7 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator/(float scalar) const -> Matrix<R, C> {
-    Matrix<R, C> res(elements);
+    Matrix<R, C> res = *this;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)
         res[r][c] /= scalar;
@@ -288,10 +287,7 @@ namespace engine::geometry {
 
         // To make m[i][c] = 0, we need to add row `r` to row `i` by a factor of ...
         float factor = -(m[i][c] / m[r][c]);
-
-        // Now we perform the addition.
-        for (unsigned int j = c; j < C; j++)
-          m[i][j] += factor * m[r][j];
+        m[i] += m[r] * factor;
       }
 
       r++;
@@ -312,9 +308,7 @@ namespace engine::geometry {
 
       for (int i = r - 1; i >= 0; i--) {
         float factor = -m[i][c]; // we know that row[r][c] = 1 here
-
-        for (unsigned int j = pivots[r - 1]; j < C; j++)
-          m[i][j] += factor * m[r][j];
+        m[i] += m[r] * factor;
       }
     }
 
