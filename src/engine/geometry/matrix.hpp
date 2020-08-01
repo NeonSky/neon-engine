@@ -8,6 +8,9 @@
 
 namespace engine::geometry {
 
+  /// @todo Use Vector instead of array for elements again. Would be nice to divide or multiply a whole row. I'll just focus on row-based operations and not column ones. The user can always transpose the matrix. I'm thinking something like m[4] *= 3.2F;
+  /// @todo add augmented_matrix(other_matrix) https://www.wikiwand.com/en/Augmented_matrix
+  /// @todo add coefficient_matrix() which returns all but the last column https://www.wikiwand.com/en/Augmented_matrix
   template <unsigned int R, unsigned int C = R>
   struct Matrix {
     std::array<std::array<float, C>, R> elements;
@@ -18,6 +21,9 @@ namespace engine::geometry {
 
     template <class... Args, class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, std::array<float, C>>::value)>>
     Matrix(Args... args);
+
+    /// @brief Swaps the rows indexed by \p i and \p j.
+    auto swap_rows(unsigned int i, unsigned int j);
 
     auto operator[](unsigned int index) const -> const std::array<float, C>&;
 
@@ -41,8 +47,17 @@ namespace engine::geometry {
     [[nodiscard]] auto transpose() const -> Matrix<C, R>;
 
     /// @see https://www.wikiwand.com/en/Gaussian_elimination
+    /// @see https://www.wikiwand.com/en/Row_echelon_form
     template <unsigned int N = R>
-    [[nodiscard]] auto reduced_row_echelon_form() const -> std::enable_if_t<(N < C), Matrix<R, C>>;
+    [[nodiscard]] auto reduced_row_echelon_form() const -> Matrix<R, C>;
+
+    /// @see https://www.wikiwand.com/en/Rank_(linear_algebra)
+    /// @see https://www.wikiwand.com/en/Linear_independence
+    [[nodiscard]] auto rank() const -> unsigned int;
+
+    [[nodiscard]] auto has_full_rank() const -> bool;
+
+    [[nodiscard]] auto rank_deficiency() const -> unsigned int;
 
     [[nodiscard]] auto row_vector(unsigned int r) const -> Vector<C>;
 
@@ -129,6 +144,12 @@ namespace engine::geometry {
   Matrix<R, C>::Matrix(Args... args)
           : elements({args...}) {
     static_assert(sizeof...(args) == R, "Must provide exactly R elements.");
+  }
+
+  template <unsigned int R, unsigned int C>
+  auto Matrix<R, C>::swap_rows(unsigned int i, unsigned int j) {
+    for (unsigned int c = 0; c < C; c++)
+      std::swap(elements[i][c], elements[j][c]);
   }
 
   template <unsigned int R, unsigned int C>
@@ -225,48 +246,109 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
-  [[nodiscard]] auto Matrix<R, C>::reduced_row_echelon_form() const -> std::enable_if_t<(N < C), Matrix<R, C>> {
-    Matrix<R, C> res = *this;
+  [[nodiscard]] auto Matrix<R, C>::reduced_row_echelon_form() const -> Matrix<R, C> {
+    Matrix<R, C> m = *this;
+    std::vector<unsigned int> pivots; // Track the pivots of each row (some of the bottom rows may lack pivots though).
+
+    // Row and column of pivot
+    unsigned int r = 0;
+    unsigned int c = 0;
 
     // Convert to echelon/triangular form (clear lower triangle)
-    for (unsigned int d = 0; d < R - 1; d++) {   // `d` represents the diagonal index.
-      for (unsigned int r = d + 1; r < R; r++) { // `r` represents the row index.
+    while (r < R && c < C) {
 
-        // To make res[r][d] = 0, we need to add row `d` to row `r` by a factor of ...
-        float factor = -(res[r][d] / res[d][d]);
+      // Find this row's pivot (a.k.a. leading coefficient)
+      for (unsigned int j = c; j < C; j++) {
+
+        if (m[r][j] == 0) {
+          // Check if below has better (pivot in this column). If so, switch rows.
+          for (unsigned int i = r + 1; i < R; i++) {
+            if (m[i][j] != 0) {
+              m.swap_rows(r, i);
+              break;
+            }
+          }
+        }
+
+        if (m[r][j] != 0) {
+          // Whether or not we swapped, the current element is fine.
+          c = j;
+          break;
+        }
+      }
+
+      // No more pivots to find
+      if (m[r][c] == 0)
+        break;
+
+      pivots.push_back(c);
+
+      // Clear elements below
+      for (unsigned int i = r + 1; i < R; i++) {
+
+        // To make m[i][c] = 0, we need to add row `r` to row `i` by a factor of ...
+        float factor = -(m[i][c] / m[r][c]);
 
         // Now we perform the addition.
-        for (unsigned int c = d; c < C; c++)
-          res[r][c] += factor * res[d][c];
+        for (unsigned int j = c; j < C; j++)
+          m[i][j] += factor * m[r][j];
       }
+
+      r++;
+      c++;
     }
 
     // Form leading 1:s
-    for (unsigned int d = 0; d < R; d++) {
-      for (unsigned int c = d + 1; c < C; c++)
-        res[d][c] /= res[d][d];
-      res[d][d] = 1.0F;
+    for (unsigned int r = 0; r < pivots.size(); r++) {
+      int c = pivots[r];
+
+      for (int j = C - 1; j >= c; j--) // We go backwards because we want to divide m[r][c] by itself last.
+        m[r][j] /= m[r][c];
     }
 
     // Clear upper triangle
-    for (int d = R - 1; d > 0; d--) {    // `d` represents the diagonal index.
-      for (int r = d - 1; r >= 0; r--) { // `r` represents the row index.
+    for (unsigned int r = pivots.size() - 1; r > 0; r--) {
+      unsigned int c = pivots[r];
 
-        // To make res[r][d] = 0, we need to add row `d` to row `r` by a factor of ...
-        float factor = -res[r][d]; // we know that row[d][d] = 1 here
+      for (int i = r - 1; i >= 0; i--) {
+        float factor = -m[i][c]; // we know that row[r][c] = 1 here
 
-        // Now we perform the addition.
-        for (unsigned int c = d; c < C; c++)
-          res[r][c] += factor * res[d][c];
+        for (unsigned int j = pivots[r - 1]; j < C; j++)
+          m[i][j] += factor * m[r][j];
       }
     }
 
-    Vector<R> v;
-    for (unsigned int i = 0; i < R; i++)
-      v[i] = res[i][C] / res[i][i];
-
-    return res;
+    return m;
   }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::rank() const -> unsigned int {
+    Matrix<R, C> reduced = reduced_row_echelon_form(); // TODO: use row_echelon_form() instead. Reduced is not needed.
+
+    unsigned int rank = 0;
+    // Count amount of rows that are not just zeroes.
+    for (unsigned int r = 0; r < R; r++) {
+      for (unsigned int c = 0; c < C; c++) {
+        if (reduced[r][c] != 0) {
+          rank++;
+          break;
+        }
+      }
+    }
+
+    return rank;
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::has_full_rank() const -> bool {
+    return rank() == std::min(R, C);
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::rank_deficiency() const -> unsigned int {
+    return std::min(R, C) - rank();
+  }
+
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::row_vector(unsigned int r) const -> Vector<C> {
     return Vector<C>(elements[r]);

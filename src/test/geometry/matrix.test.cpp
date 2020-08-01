@@ -173,3 +173,71 @@ TEST(MatrixTest, ReducedRowEchelonForm2) {
   });
   EXPECT_EQ(m.reduced_row_echelon_form(), expected);
 }
+
+TEST(MatrixTest, ReducedRowEchelonForm3) {
+  Matrix<2, 3> m({
+    {1, 3, -1},
+    {0, 1, 7},
+  });
+  Matrix<2, 3> expected({
+    {1, 0, -22},
+    {0, 1, 7},
+  });
+  EXPECT_EQ(m.reduced_row_echelon_form(), expected);
+}
+
+TEST(MatrixTest, ReducedRowEchelonForm4) {
+  Matrix<3, 3> m({
+    {0, 0, 1},
+    {0, 1, 0},
+    {1, 0, 0},
+  });
+  Matrix<3, 3> expected({
+    {1, 0, 0},
+    {0, 1, 0},
+    {0, 0, 1},
+  });
+  EXPECT_EQ(m.reduced_row_echelon_form(), expected);
+}
+
+TEST(MatrixTest, Rank1) {
+  Matrix<3, 3> m({
+    {1, 0, 1},
+    {-2, -3, 1},
+    {3, 3, 0},
+  });
+  int rank = m.rank();
+  EXPECT_EQ(rank, 2);
+  EXPECT_EQ(rank, m.transpose().rank());
+}
+
+TEST(MatrixTest, Rank2) {
+  Matrix<2, 4> m({
+    {1, 1, 0, 2},
+    {-1, -1, 0, -2},
+  });
+  int rank = m.rank();
+  EXPECT_EQ(rank, 1);
+  EXPECT_EQ(rank, m.transpose().rank());
+}
+
+TEST(MatrixTest, Rank3) {
+  Matrix<2, 3> m({
+    {1, 3, -1},
+    {0, 1, 7},
+  });
+  int rank = m.rank();
+  EXPECT_EQ(rank, 2);
+  EXPECT_EQ(rank, m.transpose().rank());
+}
+
+TEST(MatrixTest, Rank4) {
+  Matrix<3, 3> m({
+    {0, 0, -1},
+    {0, 1, 7},
+    {1, 1, 7},
+  });
+  int rank = m.rank();
+  EXPECT_EQ(rank, 3);
+  EXPECT_EQ(rank, m.transpose().rank());
+}
