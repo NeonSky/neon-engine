@@ -36,14 +36,14 @@ build:
 .PHONY: coverage
 coverage: build
 	rm -rf build/CODE_COVERAGE
-	lcov --directory build --zerocounters
+	lcov --directory build --zerocounters --rc lcov_branch_coverage=1
 	lcov --initial --directory build --capture --output-file build/code_coverage_base.info --rc lcov_branch_coverage=1
 	make run-tests
 	lcov --directory build --capture --output-file build/code_coverage_test.info --rc lcov_branch_coverage=1
-	lcov --add-tracefile build/code_coverage_base.info --add-tracefile build/code_coverage_test.info -o build/code_coverage.info
-	lcov --remove build/code_coverage.info "/usr/*" "include*" "*test*" "*vendor*" -o build/code_coverage.info
+	lcov --add-tracefile build/code_coverage_base.info --add-tracefile build/code_coverage_test.info -o build/code_coverage.info  --rc lcov_branch_coverage=1
+	lcov --remove build/code_coverage.info "/usr/*" "include*" "*test*" "*vendor*" -o build/code_coverage.info  --rc lcov_branch_coverage=1
 	rm build/code_coverage_base.info build/code_coverage_test.info
-	genhtml build/code_coverage.info --branch-coverage --output-directory build/CODE_COVERAGE
+	genhtml build/code_coverage.info --branch-coverage --output-directory build/CODE_COVERAGE --rc genhtml_branch_coverage=1
 
 .PHONY: dependencies
 dependencies:
