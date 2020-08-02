@@ -92,10 +92,11 @@ namespace engine::geometry {
   template <unsigned int M>
   Point<N>::operator Point<M>() const {
     Point<M> res;
-    if constexpr (M < N)
-      std::copy(_coordinates.begin(), _coordinates.begin() + M, res.begin());
-    else
-      std::copy(_coordinates.begin(), _coordinates.end(), res.begin());
+
+    const float* src_start = _coordinates.begin();
+    const float* src_end = std::min(_coordinates.begin() + M, _coordinates.end());
+    std::copy(src_start, src_end, res.begin()); // LCOV_EXCL_LINE
+
     return res;
   }
 
@@ -173,7 +174,7 @@ namespace engine::geometry {
   auto Point<N>::to_json() const -> debug::JSON {
     debug::JSON json = debug::JSON::array();
     for (auto& c : _coordinates)
-      json.emplace_back(c);
+      json.emplace_back(c); // LCOV_EXCL_LINE
 
     return json;
   };

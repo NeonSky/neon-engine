@@ -134,6 +134,18 @@ TEST(PointTest, Iterates5) {
   EXPECT_EQ((float*) point.begin(), &point[0]);
 }
 
+TEST(PointTest, EuclideanDistance1) {
+  Point<2> point1({2.5F, 3.7F});
+  Point<2> point2({-1.5F, 0.9F});
+  EXPECT_EQ(point1.euclidean_distance(point2), 4.8826222F);
+}
+
+TEST(PointTest, ManhattanDistance1) {
+  Point<2> point1({2.5F, 3.7F});
+  Point<2> point2({-1.5F, 0.9F});
+  EXPECT_EQ(point1.manhattan_distance(point2), 6.8F);
+}
+
 TEST(PointTest, ConvertsToJSON1) {
   Point<3> point({1.4F, 3.8F, 0.1F});
   JSON json = {1.4F, 3.8F, 0.1F};
