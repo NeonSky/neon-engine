@@ -36,9 +36,13 @@ TEST(VectorTest, Constructor3) {
 
 TEST(VectorTest, Constructor4) {
   Vector<2> vector1(3.2F, -2.4F);
-  Vector<4> vector2(vector1, 1.3F, 9.2F);
-  Vector<4> expected(3.2F, -2.4F, 1.3F, 9.2F);
-  EXPECT_EQ(vector2, expected);
+  Vector<3> vector2(vector1, 9.2F);
+  EXPECT_EQ(vector2, Vector<3>(3.2F, -2.4F, 9.2F));
+}
+
+TEST(VectorTest, Constructor5) {
+  Vector<1> vector(10.37F);
+  EXPECT_EQ(vector[0], 10.37F);
 }
 
 TEST(VectorTest, Assignment1) {
@@ -51,12 +55,45 @@ TEST(VectorTest, Assignment1) {
   EXPECT_EQ(vector1, vector2);
 }
 
+TEST(VectorTest, Assignment2) {
+  Vector<2> vector1(3.2F, -2.4F);
+  Vector<2> vector2(1.3F, 9.2F);
+
+  EXPECT_EQ(vector1 + vector2, Vector<2>(4.5F, 6.8F));
+  vector1 += vector2;
+  EXPECT_EQ(vector1, Vector<2>(4.5F, 6.8F));
+}
+
+TEST(VectorTest, Assignment3) {
+  Vector<2> vector1(3.2F, -2.4F);
+  Vector<2> vector2(1.3F, 9.2F);
+
+  EXPECT_EQ(vector1 - vector2, Vector<2>(1.9F, -11.6F));
+  vector1 -= vector2;
+  EXPECT_EQ(vector1, Vector<2>(1.9F, -11.6F));
+}
+
 TEST(VectorTest, Negation1) {
   Vector<2> vector(3.2F, -2.4F);
   EXPECT_EQ(vector, vector);
   EXPECT_EQ(-(-vector), vector);
   EXPECT_EQ(-vector, -vector);
   EXPECT_NE(-vector, vector);
+}
+
+TEST(VectorTest, Affirmation1) {
+  Vector<2> vector(3.2F, -2.4F);
+  EXPECT_EQ(vector, vector);
+  EXPECT_EQ(vector, +vector);
+  EXPECT_EQ(+vector, +vector);
+}
+
+TEST(VectorTest, Scales1) {
+  Vector<2> vector(1.3F, 0.4F);
+  EXPECT_EQ(1.5F * vector, Vector<2>(1.95F, 0.6F));
+  EXPECT_EQ(vector * 1.5F, Vector<2>(1.95F, 0.6F));
+  vector *= 1.5F;
+  EXPECT_EQ(vector, Vector<2>(1.95F, 0.6F));
 }
 
 TEST(VectorTest, InnerProduct1) {
@@ -111,11 +148,20 @@ TEST(VectorTest, OuterProduct2) {
 }
 
 TEST(VectorTest, Iterates1) {
-  Vector<3> vector({1.4F, 3.8F, 0.1F});
+  Vector<3> vector(1.4F, 3.8F, 0.1F);
 
   int i = 0;
   for (auto& e : vector)
     EXPECT_EQ(e, vector[i++]);
+  EXPECT_EQ(i, 3);
+}
+
+TEST(VectorTest, Iterates2) {
+  Vector<3> vector(1.4F, 3.8F, 0.1F);
+
+  int i = 0;
+  for (const float* it = vector.begin(); it != vector.end(); it++)
+    EXPECT_EQ((*it), vector[i++]);
   EXPECT_EQ(i, 3);
 }
 
@@ -183,4 +229,16 @@ TEST(VectorTest, Aliases4) {
   EXPECT_EQ(vector.t(), vector[1]);
   EXPECT_EQ(vector.p(), vector[2]);
   EXPECT_EQ(vector.q(), vector[3]);
+}
+
+TEST(VectorTest, ConvertsToArray) {
+  Vector<3> vector(1.4F, 3.8F, 0.1F);
+  std::array<float, 3> arr{1.4F, 3.8F, 0.1F};
+  EXPECT_EQ((std::array<float, 3>) vector, arr);
+}
+
+TEST(VectorTest, ConvertsToJSON1) {
+  Vector<3> vector{1.4F, 3.8F, 0.1F};
+  JSON json = {1.4F, 3.8F, 0.1F};
+  EXPECT_EQ(vector.to_json(), json);
 }

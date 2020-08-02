@@ -2,7 +2,6 @@
 
 #include "point.hpp"
 
-#include "../data/templates.hpp"
 #include "../debug/json.hpp"
 #include "../debug/logger.hpp"
 
@@ -15,79 +14,31 @@ namespace engine::geometry {
   template <unsigned int N>
   class Vector {
   public:
-    Vector()
-            : elements() {}
+    Vector() : elements() {}
+    Vector(float x) : elements({x}) {}
+    Vector(float x, float y) : elements({x, y}) {}
+    Vector(float x, float y, float z) : elements({x, y, z}) {}
+    Vector(float x, float y, float z, float w) : elements({x, y, z, w}) {}
 
-    Vector(std::initializer_list<float> elements) {
-      if (elements.size() != N)
-        LOG_ERROR("Must provide exactly N vector elements.");
-
-      std::copy(elements.begin(), elements.end(), this->elements.begin());
-    }
+    Vector(std::array<float, N> elements)
+            : elements(Point<N>(elements)) {}
 
     Vector(Point<N> tip)
             : elements(tip) {}
 
     Vector(Point<N> from, Point<N> to) {
       if (from == to)
-        LOG_ERROR("The provided points may not coincide.");
+        LOG_ERROR("The provided points may not coincide."); // LCOV_EXCL_LINE
 
       for (unsigned int i = 0; i < N; i++)
         elements[i] = to[i] - from[i];
     }
 
-    Vector(std::array<float, N> elements)
-            : elements(Point<N>(elements)) {}
-
-    template <class... Args,
-              class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, float>::value)>>
-    Vector(Args... args)
-            : elements({args...}) {
-      static_assert(sizeof...(args) == N, "Must provide exactly N vector elements.");
-    }
-
-    template <bool>
-    struct Range;
-
-    template <unsigned int M, typename = Range<(M >= N)>>
-    Vector(const Vector<M>& other) {
-      for (unsigned int i = 0; i < N; i++)
+    Vector(const Vector<N - 1>& other, float last) {
+      for (unsigned int i = 0; i < N - 1; i++)
         elements[i] = other[i];
+      elements[N - 1] = last;
     }
-
-    // FIXME: https://stackoverflow.com/questions/9510514/integer-range-based-template-specialisation
-    // template <unsigned int M, typename = Range<M < N>>
-    Vector(const Vector<N>& other)
-            : elements(other.elements) {}
-
-    auto operator=(const Vector<N>& other) -> Vector<N>& {
-      for (unsigned int i = 0; i < N; i++)
-        elements[i] = other[i];
-      return *this;
-    }
-
-    Vector(Vector<N>&& other) noexcept {
-      elements = other.elements;
-    }
-
-    auto operator=(Vector<N>&& other) noexcept -> Vector<N>& {
-      elements = other.elements;
-      return *this;
-    }
-
-    template <unsigned int M, class... Args, class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, float>::value)>>
-    Vector(const Vector<M>& other, Args... args) {
-      static_assert(M + sizeof...(args) == N, "Dimensions must match.");
-
-      for (unsigned int i = 0; i < M; i++)
-        elements[i] = other[i];
-
-      int i = M;
-      for (auto& arg : {args...})
-        elements[i++] = arg;
-    }
-
-    ~Vector() = default;
 
     auto operator[](unsigned int index) const -> float {
       return elements[index];
@@ -295,18 +246,19 @@ namespace engine::geometry {
       return matrix;
     }
 
+    template <unsigned int M>
+    operator Vector<M>() const {
+      return Vector<M>(Point<M>(elements));
+    }
+
     operator std::array<float, N>() const {
       std::array<float, N> arr;
-      std::copy(elements.begin(), elements.end(), arr.begin());
+      std::copy(begin(), end(), arr.begin());
       return arr;
     }
 
     [[nodiscard]] auto to_json() const -> debug::JSON {
-      debug::JSON json = debug::JSON::array();
-      for (auto& e : elements)
-        json.emplace_back(e);
-
-      return json;
+      return elements.to_json();
     };
 
   private:

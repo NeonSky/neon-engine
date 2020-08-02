@@ -94,7 +94,7 @@ namespace engine::geometry {
     Point<M> res;
 
     const float* src_start = _coordinates.begin();
-    const float* src_end = std::min(_coordinates.begin() + M, _coordinates.end());
+    const float* src_end   = std::min(_coordinates.begin() + M, _coordinates.end());
     std::copy(src_start, src_end, res.begin()); // LCOV_EXCL_LINE
 
     return res;
