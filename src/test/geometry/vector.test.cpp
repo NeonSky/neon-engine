@@ -34,6 +34,31 @@ TEST(VectorTest, Constructor3) {
   EXPECT_EQ(v, vector2);
 }
 
+TEST(VectorTest, Constructor4) {
+  Vector<2> vector1(3.2F, -2.4F);
+  Vector<4> vector2(vector1, 1.3F, 9.2F);
+  Vector<4> expected(3.2F, -2.4F, 1.3F, 9.2F);
+  EXPECT_EQ(vector2, expected);
+}
+
+TEST(VectorTest, Assignment1) {
+  Vector<2> vector1(3.2F, -2.4F);
+  Vector<2> vector2(1.3F, 9.2F);
+  EXPECT_NE(vector1, vector2);
+
+  vector1 = vector2;
+
+  EXPECT_EQ(vector1, vector2);
+}
+
+TEST(VectorTest, Negation1) {
+  Vector<2> vector(3.2F, -2.4F);
+  EXPECT_EQ(vector, vector);
+  EXPECT_EQ(-(-vector), vector);
+  EXPECT_EQ(-vector, -vector);
+  EXPECT_NE(-vector, vector);
+}
+
 TEST(VectorTest, InnerProduct1) {
   Vector<2> vector1(1.0F, 2.0F);
   Vector<2> vector2(1.0F, 1.0F);

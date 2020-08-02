@@ -227,11 +227,11 @@ namespace engine::geometry {
       return elements[3];
     }
 
-    auto begin() const -> const float* {
+    [[nodiscard]] auto begin() const -> const float* {
       return elements.begin();
     }
 
-    auto end() const -> const float* {
+    [[nodiscard]] auto end() const -> const float* {
       return elements.end();
     }
 

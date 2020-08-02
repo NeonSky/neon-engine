@@ -90,8 +90,8 @@ rebuild:
 
 .PHONY: retidy
 retidy:
-	$(eval CHANGED_FILES=$(shell git diff HEAD --name-only | grep -E "*.[ch]pp" | grep -Ev "*/(vendor|test)/*" || echo 0))
-	@if [ $(CHANGED_FILES) != 0 ]; then \
+	$(eval CHANGED_FILES=$(shell git diff HEAD --name-only | grep -E "*.[ch]pp" | grep -Ev "*/(vendor|test)/*" || echo ""))
+	@if [ "$(CHANGED_FILES)" != "" ]; then \
 		clang-tidy --fix -p build/compile_commands.json $(CHANGED_FILES); \
 	fi
 

@@ -126,7 +126,7 @@ namespace engine::geometry {
 
     void row_echelon_swap_with_leftmost_pivot_row(unsigned int row, unsigned int col);
 
-    auto leftmost_pivot(unsigned int row) const -> int;
+    [[nodiscard]] auto leftmost_pivot(unsigned int row) const -> int;
   };
 
   /////////////////////
@@ -312,7 +312,7 @@ namespace engine::geometry {
   auto Matrix<R, C>::leftmost_pivot(unsigned int row) const -> int {
     for (unsigned int col = 0; col < C; col++)
       if (elements[row][col])
-        return col;
+        return (int) col;
     return -1;
   }
 
