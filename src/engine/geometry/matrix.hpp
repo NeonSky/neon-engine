@@ -123,6 +123,10 @@ namespace engine::geometry {
     std::array<Vector<C>, R> elements;
 
     void row_echelon_clear_pivot_column(unsigned int row, unsigned int col);
+
+    void row_echelon_swap_with_leftmost_pivot_row(unsigned int row, unsigned int col);
+
+    auto leftmost_pivot(unsigned int row) const -> int;
   };
 
   /////////////////////
@@ -285,52 +289,64 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
+  void Matrix<R, C>::row_echelon_swap_with_leftmost_pivot_row(unsigned int row, unsigned int col) {
+    for (unsigned int j = col; j < C; j++) {
+
+      // If current row has the leftmost pivot, do nothing.
+      if (elements[row][j] != 0)
+        return;
+
+      for (unsigned int i = row + 1; i < R; i++) {
+        // If this row has the leftmost pivot, we swap with it.
+        if (elements[i][j] != 0) {
+          swap_rows(row, i);
+          return;
+        }
+      }
+    }
+  }
+
+  /// Returns the column of the provided row's leftmost pivot.
+  /// If there is no pivot element it will return -1.
+  template <unsigned int R, unsigned int C>
+  auto Matrix<R, C>::leftmost_pivot(unsigned int row) const -> int {
+    for (unsigned int col = 0; col < C; col++)
+      if (elements[row][col])
+        return col;
+    return -1;
+  }
+
+  /// For each row (top -> bottom), we consider
+  /// 1. the pivot (a.k.a. leading coefficient) of the current row.
+  /// 2. if any row below it has a pivot further to the left.
+  ///
+  /// If 2., we swap that row with the current one so the current row has the leftmost pivot amongst the rows considered.
+  /// Then we clear the elements directly above and below the pivot, and scale the current row such that the pivot becomes 1.
+  template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::reduced_row_echelon_form() const -> Matrix<R, C> {
     Matrix<R, C> m = *this;
-
-    // Cursor looking for pivots
     unsigned int r = 0;
     unsigned int c = 0;
     while (r < R && c < C) {
 
-      // Find this row's pivot (a.k.a. leading coefficient)
-      for (unsigned int j = c; j < C; j++) {
+      m.row_echelon_swap_with_leftmost_pivot_row(r, c);
 
-        if (m[r][j] == 0) {
-          // Check if below has better (pivot in this column). If so, switch rows.
-          for (unsigned int i = r + 1; i < R; i++) {
-            if (m[i][j] != 0) {
-              m.swap_rows(r, i);
-              break;
-            }
-          }
-        }
-
-        if (m[r][j] != 0) {
-          // Whether or not we swapped, the current element is fine.
-          c = j;
-          break;
-        }
-      }
-
-      // No more pivots to find
-      if (m[r][c] == 0)
+      int potential_pivot = m.leftmost_pivot(r);
+      if (potential_pivot == -1)
         break;
 
-      m.row_echelon_clear_pivot_column(r, c);
+      m.row_echelon_clear_pivot_column(r, potential_pivot);
 
       r++;
-      c++;
+      c = potential_pivot + 1;
     }
-
-    LOG_DEBUG(m.to_json().dump(2));
 
     return m;
   }
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::rank() const -> unsigned int {
-    Matrix<R, C> reduced = reduced_row_echelon_form(); // TODO: use row_echelon_form() instead. Reduced is not needed.
+    Matrix<R, C> reduced = reduced_row_echelon_form();
 
     unsigned int rank = 0;
     // Count amount of rows that are not just zeroes.

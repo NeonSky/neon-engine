@@ -170,45 +170,6 @@ TEST(MatrixTest, CofactorMatrix1) {
   EXPECT_EQ(m.cofactor_matrix(), expected);
 }
 
-TEST(MatrixTest, RowEchelonForm1) {
-  Matrix<3, 4> m({
-    {2, 1, -1, 8},
-    {-3, -1, 2, -11},
-    {-2, 1, 2, -3},
-  });
-  m = m.row_echelon_form();
-
-  // Leftmost zeroes
-  EXPECT_EQ(m[1][0], 0);
-  EXPECT_EQ(m[2][0], 0);
-  EXPECT_EQ(m[2][1], 0);
-
-  // Leading Coefficients
-  EXPECT_NE(m[0][0], 0);
-  EXPECT_NE(m[1][1], 0);
-  EXPECT_NE(m[2][2], 0);
-}
-
-TEST(MatrixTest, RowEchelonForm2) {
-  Matrix<3, 4> m({
-    {1, 3, 1, 9},
-    {1, 1, -1, 1},
-    {3, 11, 5, 35},
-  });
-  m = m.row_echelon_form();
-
-  // Leftmost zeroes
-  EXPECT_EQ(m[1][0], 0);
-  EXPECT_EQ(m[2][0], 0);
-  EXPECT_EQ(m[2][1], 0);
-  EXPECT_EQ(m[2][2], 0);
-  EXPECT_EQ(m[2][3], 0);
-
-  // Leading Coefficients
-  EXPECT_NE(m[0][0], 0);
-  EXPECT_NE(m[1][1], 0);
-}
-
 TEST(MatrixTest, ReducedRowEchelonForm1) {
   Matrix<3, 4> m({
     {2, 1, -1, 8},
@@ -259,6 +220,20 @@ TEST(MatrixTest, ReducedRowEchelonForm4) {
     {1, 0, 0},
     {0, 1, 0},
     {0, 0, 1},
+  });
+  EXPECT_EQ(m.reduced_row_echelon_form(), expected);
+}
+
+TEST(MatrixTest, ReducedRowEchelonForm5) {
+  Matrix<3, 4> m({
+    {1, 3, 1, 9},
+    {1, 1, -1, 1},
+    {3, 11, 5, 35},
+  });
+  Matrix<3, 4> expected({
+    {1, 0, -2, -3},
+    {0, 1, 1, 4},
+    {0, 0, 0, 0},
   });
   EXPECT_EQ(m.reduced_row_echelon_form(), expected);
 }
