@@ -11,6 +11,7 @@
 namespace engine::geometry {
 
   /// @todo Add cross product. Preferably generalized to N dimensions.
+  /// @todo Consider renaming `elements` to `tip` to clarify that it's a point.
   template <unsigned int N>
   class Vector {
   public:
@@ -116,16 +117,6 @@ namespace engine::geometry {
       return *this;
     }
 
-    void operator+=(const Vector<N>& other) {
-      for (unsigned int i = 0; i < N; i++)
-        elements[i] += other[i];
-    }
-
-    void operator-=(const Vector<N>& other) {
-      for (unsigned int i = 0; i < N; i++)
-        elements[i] -= other[i];
-    }
-
     auto operator+(const Vector<N>& other) const -> Vector<N> {
       Vector<N> res;
       for (unsigned int i = 0; i < N; i++)
@@ -142,6 +133,16 @@ namespace engine::geometry {
       return res;
     }
 
+    void operator+=(const Vector<N>& other) {
+      for (unsigned int i = 0; i < N; i++)
+        elements[i] += other[i];
+    }
+
+    void operator-=(const Vector<N>& other) {
+      for (unsigned int i = 0; i < N; i++)
+        elements[i] -= other[i];
+    }
+
     auto operator*(float scalar) const -> Vector<N> {
       Vector<N> res(elements);
       for (unsigned int i = 0; i < N; i++)
@@ -156,6 +157,14 @@ namespace engine::geometry {
         res[i] /= scalar;
 
       return res;
+    }
+
+    void operator*=(float scalar) {
+      *this = (*this) * scalar;
+    }
+
+    void operator/=(float scalar) {
+      *this = (*this) / scalar;
     }
 
     template <unsigned int D = N>

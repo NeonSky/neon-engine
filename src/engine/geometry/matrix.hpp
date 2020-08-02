@@ -11,9 +11,8 @@ namespace engine::geometry {
   /// @todo add augmented_matrix(other_matrix) https://www.wikiwand.com/en/Augmented_matrix
   /// @todo add coefficient_matrix() which returns all but the last column https://www.wikiwand.com/en/Augmented_matrix
   template <unsigned int R, unsigned int C = R>
-  struct Matrix {
-    std::array<Vector<C>, R> elements;
-
+  class Matrix {
+  public:
     Matrix();
     Matrix(std::initializer_list<std::array<float, C>> elements);
     Matrix(std::array<std::array<float, C>, R> elements);
@@ -55,7 +54,6 @@ namespace engine::geometry {
 
     /// @see https://www.wikiwand.com/en/Gaussian_elimination
     /// @see https://www.wikiwand.com/en/Row_echelon_form
-    template <unsigned int N = R>
     [[nodiscard]] auto reduced_row_echelon_form() const -> Matrix<R, C>;
 
     /// @see https://www.wikiwand.com/en/Rank_(linear_algebra)
@@ -76,9 +74,9 @@ namespace engine::geometry {
 
     [[nodiscard]] auto to_json() const -> debug::JSON;
 
-    //////////////////////////
-    // Square matrix functions
-    //////////////////////////
+    /////////////////////////////
+    // Square matrix functions //
+    /////////////////////////////
     template <unsigned int N = R, unsigned int M, class Enable = std::enable_if_t<(N == R && R == C && M <= N)>>
     Matrix(const Matrix<M>& other);
 
@@ -120,6 +118,11 @@ namespace engine::geometry {
 
     template <unsigned int N = R>
     auto scale(Vector<N - 1> scale) const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
+
+  private:
+    std::array<Vector<C>, R> elements;
+
+    void row_echelon_clear_pivot_column(unsigned int row, unsigned int col);
   };
 
   /////////////////////
@@ -267,17 +270,27 @@ namespace engine::geometry {
     return res;
   }
 
-  template <unsigned int R, unsigned int C>
-  template <unsigned int N>
-  [[nodiscard]] auto Matrix<R, C>::reduced_row_echelon_form() const -> Matrix<R, C> {
-    Matrix<R, C> m = *this;
-    std::vector<unsigned int> pivots; // Track the pivots of each row (some of the bottom rows may lack pivots though).
+  // template <unsigned int R, unsigned int C>
+  // [[nodiscard]] auto Matrix<R, C>::row_echelon_move_best_pivot(unsigned int ) -> Matrix<R, C> {
+  //   for (unsigned int c = )
+  // }
 
-    // Row and column of pivot
+  // Pivot is a (row, col). Maybe rename to `elimate` or something?
+  template <unsigned int R, unsigned int C>
+  void Matrix<R, C>::row_echelon_clear_pivot_column(unsigned int row, unsigned int col) {
+    for (unsigned int r = 0; r < R; r++)
+      if (r != row)
+        elements[r] -= elements[row] * (elements[r][col] / elements[row][col]);
+    elements[row] /= elements[row][col];
+  }
+
+  template <unsigned int R, unsigned int C>
+  auto Matrix<R, C>::reduced_row_echelon_form() const -> Matrix<R, C> {
+    Matrix<R, C> m = *this;
+
+    // Cursor looking for pivots
     unsigned int r = 0;
     unsigned int c = 0;
-
-    // Convert to echelon/triangular form (clear lower triangle)
     while (r < R && c < C) {
 
       // Find this row's pivot (a.k.a. leading coefficient)
@@ -304,37 +317,13 @@ namespace engine::geometry {
       if (m[r][c] == 0)
         break;
 
-      pivots.push_back(c);
-
-      // Clear elements below
-      for (unsigned int i = r + 1; i < R; i++) {
-
-        // To make m[i][c] = 0, we need to add row `r` to row `i` by a factor of ...
-        float factor = -(m[i][c] / m[r][c]);
-        m[i] += m[r] * factor;
-      }
+      m.row_echelon_clear_pivot_column(r, c);
 
       r++;
       c++;
     }
 
-    // Form leading 1:s
-    for (unsigned int r = 0; r < pivots.size(); r++) {
-      int c = pivots[r];
-
-      for (int j = C - 1; j >= c; j--) // We go backwards because we want to divide m[r][c] by itself last.
-        m[r][j] /= m[r][c];
-    }
-
-    // Clear upper triangle
-    for (unsigned int r = pivots.size() - 1; r > 0; r--) {
-      unsigned int c = pivots[r];
-
-      for (int i = r - 1; i >= 0; i--) {
-        float factor = -m[i][c]; // we know that row[r][c] = 1 here
-        m[i] += m[r] * factor;
-      }
-    }
+    LOG_DEBUG(m.to_json().dump(2));
 
     return m;
   }
@@ -396,8 +385,9 @@ namespace engine::geometry {
     return json;
   };
 
-  //////////////////////////
-  // Square matrix functions
+  /////////////////////////////
+  // Square matrix functions //
+  /////////////////////////////
 
   template <unsigned int R, unsigned int C>
   template <unsigned int N, unsigned int M, class Enable>
@@ -406,7 +396,7 @@ namespace engine::geometry {
 
     for (unsigned int r = 0; r < M; r++)
       for (unsigned int c = 0; c < M; c++)
-        elements[r][c] = other.elements[r][c];
+        elements[r][c] = other[r][c];
 
     for (unsigned int i = M; i < N; i++)
       elements[i][i] = 1.0F;
