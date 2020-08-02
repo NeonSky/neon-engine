@@ -148,7 +148,7 @@ namespace engine::geometry {
 
   template <unsigned int N>
   [[nodiscard]] auto Point<N>::euclidean_distance_squared(const Point<N>& other) const -> float {
-    float sum = 0;
+    float sum = 0.0F;
     for (unsigned int i = 0; i < N; i++)
       sum += std::pow(_coordinates[i] - other[i], 2); // See: https://stackoverflow.com/a/6321226/8418261
 
