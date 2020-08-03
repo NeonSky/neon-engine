@@ -20,6 +20,8 @@ namespace engine::geometry {
     template <class... Args, class Enable = std::enable_if_t<(... && is_convertible_no_narrowing<Args, std::array<float, C>>::value)>>
     Matrix(Args... args);
 
+    [[nodiscard]] static auto outer_product(Vector<R> lhs, Vector<C> rhs) -> Matrix<R, C>;
+
     /// @brief The memory address of the top-left most element.
     [[nodiscard]] auto begin() -> float*;
 
@@ -164,6 +166,15 @@ namespace engine::geometry {
   Matrix<R, C>::Matrix(Args... args)
           : elements({args...}) {
     static_assert(sizeof...(args) == R, "Must provide exactly R elements.");
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] static auto outer_product(Vector<R> lhs, Vector<C> rhs) -> Matrix<R, C> {
+    Matrix<R, C> matrix;
+    for (unsigned int r = 0; r < R; r++)
+      for (unsigned int c = 0; c < C; c++)
+        matrix[r][c] = lhs[r] * rhs[c];
+    return matrix;
   }
 
   template <unsigned int R, unsigned int C>

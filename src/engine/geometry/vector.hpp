@@ -118,10 +118,6 @@ namespace engine::geometry {
 
     auto dot(const Vector<N>& other) const -> float;
 
-    // TODO: maybe remove? We already have this in Matrix. Write a matrix test for it and then remove here.
-    template <unsigned int M>
-    auto outer_product(const Vector<M>& other) const -> std::array<std::array<float, M>, N>;
-
     template <unsigned int M>
     operator Vector<M>() const;
 
@@ -406,17 +402,6 @@ namespace engine::geometry {
   template <unsigned int N>
   auto Vector<N>::dot(const Vector<N>& other) const -> float {
     return inner_product(other);
-  }
-
-  template <unsigned int N>
-  template <unsigned int M>
-  auto Vector<N>::outer_product(const Vector<M>& other) const -> std::array<std::array<float, M>, N> {
-    std::array<std::array<float, M>, N> matrix;
-    for (unsigned int r = 0; r < N; r++)
-      for (unsigned int c = 0; c < M; c++)
-        matrix[r][c] = elements[r] * other[c];
-
-    return matrix;
   }
 
   template <unsigned int N>

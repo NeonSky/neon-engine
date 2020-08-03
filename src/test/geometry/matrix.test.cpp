@@ -314,3 +314,23 @@ TEST(MatrixTest, Iterates2) {
 
   EXPECT_EQ(m, expected);
 }
+
+TEST(MatrixTest, OuterProduct1) {
+  Vector<2> vector1(1.0F, 2.0F);
+  Vector<2> vector2(0.5F, 1.5F);
+  Matrix<2> expected{
+    {0.5F, 1.5F},
+    {1.0F, 3.0F}};
+  EXPECT_EQ(outer_product(vector1, vector2), expected);
+}
+
+TEST(MatrixTest, OuterProduct2) {
+  Vector<3> vector1(1.0F, 2.0F, 3.0F);
+  Vector<2> vector2(4.0F, 5.0F);
+  Matrix<3, 2> expected{
+    {4.0F, 5.0F},
+    {8.0F, 10.0F},
+    {12.0F, 15.0F},
+  };
+  EXPECT_EQ(outer_product(vector1, vector2), expected);
+}

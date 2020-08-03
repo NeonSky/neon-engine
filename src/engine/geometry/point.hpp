@@ -25,14 +25,14 @@ namespace engine::geometry {
     /// @name Mutators
     /// @{
 
-    /// @brief The \p i th coordinate.
-    auto operator[](unsigned int index) -> float&;
-
     /// @brief The memory address of the first coordinate.
     [[nodiscard]] auto begin() -> float*;
 
     /// @brief The memory address following the last coordinate.
     [[nodiscard]] auto end() -> float*;
+
+    /// @brief The \p i th coordinate.
+    auto operator[](unsigned int index) -> float&;
 
     /// @}
     /// @name Accessors
