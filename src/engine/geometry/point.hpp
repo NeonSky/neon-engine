@@ -38,7 +38,7 @@ namespace engine::geometry {
     /// @name Accessors
     /// @{
 
-    /// @brief Converts the point to a different dimension.
+    /// @brief Converts this point to a different dimension.
     ///
     /// If the new point has fewer dimensions, then coordinates of higher dimensions will be omitted.
     /// If the new point has more dimensions, then the new coordinates will be set to 0.
@@ -61,12 +61,19 @@ namespace engine::geometry {
     [[nodiscard]] auto end() const -> const float*;
 
     /// @brief The squared euclidean distance between this point and point \p other.
+    ///
+    /// @see https://www.wikiwand.com/en/Euclidean_distance
     [[nodiscard]] auto euclidean_distance_squared(const Point<N>& other) const -> float;
 
     /// @brief The euclidean distance between this point and point \p other.
+    ///
+    /// @see https://www.wikiwand.com/en/Euclidean_distance
     [[nodiscard]] auto euclidean_distance(const Point<N>& other) const -> float;
 
     /// @brief The manhattan distance between this point and point \p other.
+    ///
+    /// @see https://en.wiktionary.org/wiki/Manhattan_distance
+    /// @see https://www.wikiwand.com/en/Taxicab_geometry
     [[nodiscard]] auto manhattan_distance(const Point<N>& other) const -> float;
 
     /// @brief Serializes the current state to JSON.
@@ -88,6 +95,7 @@ namespace engine::geometry {
   Point<N>::Point(std::array<float, N> coordinates)
           : _coordinates(coordinates) {}
 
+  /// @internal We copy as much data as we can from this point and let the remaining coordinates be their default value.
   template <unsigned int N>
   template <unsigned int M>
   Point<N>::operator Point<M>() const {
