@@ -29,6 +29,12 @@ namespace engine::geometry {
     /// @brief Swaps the rows indexed by \p i and \p j.
     auto swap_rows(unsigned int i, unsigned int j);
 
+    /// @brief The memory address of the top-left most element.
+    [[nodiscard]] auto begin() const -> const float*;
+
+    /// @brief The memory address following the bottom-right most element.
+    [[nodiscard]] auto end() const -> const float*;
+
     operator std::array<std::array<float, C>, R>() const;
 
     auto operator[](unsigned int index) const -> const Vector<C>&;
@@ -162,7 +168,7 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::begin() -> float* {
-    return &elements[0][0];
+    return elements[0].begin();
   }
 
   template <unsigned int R, unsigned int C>
@@ -174,6 +180,16 @@ namespace engine::geometry {
   auto Matrix<R, C>::swap_rows(unsigned int i, unsigned int j) {
     for (unsigned int c = 0; c < C; c++)
       std::swap(elements[i][c], elements[j][c]);
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::begin() const -> const float* {
+    return elements[0].begin();
+  }
+
+  template <unsigned int R, unsigned int C>
+  [[nodiscard]] auto Matrix<R, C>::end() const -> const float* {
+    return elements[R - 1].end();
   }
 
   template <unsigned int R, unsigned int C>

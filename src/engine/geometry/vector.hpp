@@ -186,11 +186,11 @@ namespace engine::geometry {
       return elements.end();
     }
 
-    auto begin() -> float* {
+    [[nodiscard]] auto begin() -> float* {
       return elements.begin();
     }
 
-    auto end() -> float* {
+    [[nodiscard]] auto end() -> float* {
       return elements.end();
     }
 
