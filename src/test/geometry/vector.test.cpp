@@ -297,10 +297,22 @@ TEST(VectorTest, Aliases4) {
   EXPECT_EQ(vector.q(), vector[3]);
 }
 
-TEST(VectorTest, ConvertsToArray) {
+TEST(VectorTest, ConvertsToArray1) {
+  Vector<2> vector(1.4F, 3.8F);
+  std::array<float, 2> arr{1.4F, 3.8F};
+  EXPECT_EQ((std::array<float, 2>) vector, arr);
+}
+
+TEST(VectorTest, ConvertsToArray2) {
   Vector<3> vector(1.4F, 3.8F, 0.1F);
   std::array<float, 3> arr{1.4F, 3.8F, 0.1F};
   EXPECT_EQ((std::array<float, 3>) vector, arr);
+}
+
+TEST(VectorTest, ConvertsToArray3) {
+  Vector<4> vector(1.4F, 3.8F, 0.1F, -93.4F);
+  std::array<float, 4> arr{1.4F, 3.8F, 0.1F, -93.4F};
+  EXPECT_EQ((std::array<float, 4>) vector, arr);
 }
 
 TEST(VectorTest, ConvertsToJSON1) {
