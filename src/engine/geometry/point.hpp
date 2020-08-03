@@ -95,7 +95,7 @@ namespace engine::geometry {
 
     const float* src_start = _coordinates.begin();
     const float* src_end   = std::min(_coordinates.begin() + M, _coordinates.end());
-    std::copy(src_start, src_end, res.begin()); // LCOV_EXCL_LINE
+    std::copy(src_start, src_end, res.begin()); // LCOV_EXCL_BR_LINE
 
     return res;
   }
@@ -122,7 +122,7 @@ namespace engine::geometry {
 
   template <unsigned int N>
   auto Point<N>::operator==(const Point<N>& other) const -> bool {
-    static const float tolerance = 0.000001F;
+    static const float tolerance = 0.00001F;
 
     // Each coordinate must match with `tolerance` precision.
     for (unsigned int i = 0; i < N; i++)
@@ -174,7 +174,7 @@ namespace engine::geometry {
   auto Point<N>::to_json() const -> debug::JSON {
     debug::JSON json = debug::JSON::array();
     for (auto& c : _coordinates)
-      json.emplace_back(c); // LCOV_EXCL_LINE
+      json.emplace_back(c); // LCOV_EXCL_BR_LINE
 
     return json;
   };

@@ -35,14 +35,30 @@ TEST(VectorTest, Constructor3) {
 }
 
 TEST(VectorTest, Constructor4) {
-  Vector<2> vector1(3.2F, -2.4F);
-  Vector<3> vector2(vector1, 9.2F);
-  EXPECT_EQ(vector2, Vector<3>(3.2F, -2.4F, 9.2F));
+  Vector<1> vector1(3.2F);
+  Vector<2> vector2(vector1, -2.4F);
+  Vector<3> vector3(vector2, 9.2F);
+  Vector<4> vector4(vector3, -14.9F);
+
+  EXPECT_EQ(vector2, Vector<2>(3.2F, -2.4F));
+  EXPECT_EQ(vector3, Vector<3>(3.2F, -2.4F, 9.2F));
+  EXPECT_EQ(vector4, Vector<4>(3.2F, -2.4F, 9.2F, -14.9F));
 }
 
 TEST(VectorTest, Constructor5) {
   Vector<1> vector(10.37F);
   EXPECT_EQ(vector[0], 10.37F);
+}
+
+TEST(VectorTest, Constructor6) {
+  Point<2> from({3.4F, 2.4F});
+  Point<2> to({1.8F, 3.8F});
+
+  Vector<2> vector(from, to);
+  EXPECT_EQ(vector, Vector<2>(-1.6F, 1.4F));
+
+  ASSERT_THROW(Vector<2>(from, from), std::runtime_error);
+  ASSERT_THROW(Vector<2>(to, to), std::runtime_error);
 }
 
 TEST(VectorTest, Assignment1) {
@@ -59,18 +75,49 @@ TEST(VectorTest, Assignment2) {
   Vector<2> vector1(3.2F, -2.4F);
   Vector<2> vector2(1.3F, 9.2F);
 
-  EXPECT_EQ(vector1 + vector2, Vector<2>(4.5F, 6.8F));
   vector1 += vector2;
   EXPECT_EQ(vector1, Vector<2>(4.5F, 6.8F));
+
+  vector1 -= vector2;
+  EXPECT_EQ(vector1, Vector<2>(3.2F, -2.4F));
+
+  vector1 -= vector2;
+  EXPECT_EQ(vector1, Vector<2>(1.9F, -11.6F));
+
+  vector1 += vector2;
+  EXPECT_EQ(vector1, Vector<2>(3.2F, -2.4F));
 }
 
 TEST(VectorTest, Assignment3) {
+  Vector<3> vector1(3.2F, -2.4F, 1.1F);
+  Vector<3> vector2;
+  EXPECT_EQ(vector1 + vector2, vector1);
+
+  vector2 += vector1;
+  EXPECT_EQ(vector1, vector2);
+
+  vector1 -= vector2;
+  EXPECT_EQ(vector1, Vector<3>());
+}
+
+TEST(VectorTest, AddsAndSubtracts1) {
   Vector<2> vector1(3.2F, -2.4F);
   Vector<2> vector2(1.3F, 9.2F);
-
+  EXPECT_EQ(vector1 + vector2, Vector<2>(4.5F, 6.8F));
   EXPECT_EQ(vector1 - vector2, Vector<2>(1.9F, -11.6F));
-  vector1 -= vector2;
-  EXPECT_EQ(vector1, Vector<2>(1.9F, -11.6F));
+  EXPECT_EQ(vector2 - vector1, Vector<2>(-1.9F, 11.6F));
+  EXPECT_EQ(vector1 - vector1, Vector<2>());
+  EXPECT_EQ(vector2 - vector2, Vector<2>());
+}
+
+TEST(VectorTest, AddsAndSubtracts2) {
+  Vector<3> vector1(3.2F, -2.4F, 0.4F);
+  Vector<3> vector2(1.3F, 9.2F, -0.1F);
+  EXPECT_EQ(vector1 + vector2, Vector<3>(4.5F, 6.8F, 0.3F));
+  EXPECT_EQ(vector1 - vector2, Vector<3>(1.9F, -11.6F, 0.5F));
+  EXPECT_EQ(vector2 - vector1, Vector<3>(-1.9F, 11.6F, -0.5F));
+  EXPECT_EQ(vector1 - vector1, Vector<3>());
+  EXPECT_EQ(vector2 - vector2, Vector<3>());
 }
 
 TEST(VectorTest, Negation1) {
@@ -88,12 +135,31 @@ TEST(VectorTest, Affirmation1) {
   EXPECT_EQ(+vector, +vector);
 }
 
+TEST(VectorTest, Affirmation2) {
+  Vector<1> v1;
+  Vector<2> v2;
+  Vector<3> v3;
+  Vector<4> v4;
+  EXPECT_EQ(+v1, +v1);
+  EXPECT_EQ(+v2, +v2);
+  EXPECT_EQ(+v3, +v3);
+  EXPECT_EQ(+v4, +v4);
+}
+
 TEST(VectorTest, Scales1) {
   Vector<2> vector(1.3F, 0.4F);
   EXPECT_EQ(1.5F * vector, Vector<2>(1.95F, 0.6F));
   EXPECT_EQ(vector * 1.5F, Vector<2>(1.95F, 0.6F));
   vector *= 1.5F;
   EXPECT_EQ(vector, Vector<2>(1.95F, 0.6F));
+}
+
+TEST(VectorTest, Scales2) {
+  Vector<3> vector(1.0F, 2.0F, 3.0F);
+  EXPECT_EQ(2.0F * vector, Vector<3>(2.0F, 4.0F, 6.0F));
+  EXPECT_EQ(vector * 2.0F, Vector<3>(2.0F, 4.0F, 6.0F));
+  vector *= 2.0F;
+  EXPECT_EQ(vector, Vector<3>(2.0F, 4.0F, 6.0F));
 }
 
 TEST(VectorTest, InnerProduct1) {

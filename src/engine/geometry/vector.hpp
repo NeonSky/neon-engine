@@ -28,7 +28,7 @@ namespace engine::geometry {
 
     Vector(Point<N> from, Point<N> to) {
       if (from == to)
-        LOG_ERROR("The provided points may not coincide."); // LCOV_EXCL_LINE
+        LOG_ERROR("The provided points may not coincide."); // LCOV_EXCL_BR_LINE
 
       for (unsigned int i = 0; i < N; i++)
         elements[i] = to[i] - from[i];

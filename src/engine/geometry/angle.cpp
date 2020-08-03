@@ -25,7 +25,7 @@ void Angle::set(float angle, Unit unit) {
     _angle_in_radians = angle * (pi / 200.0F);
     break;
   default:
-    LOG_ERROR("Unknown unit was provided."); // LCOV_EXCL_LINE
+    LOG_ERROR("Unknown unit was provided."); // LCOV_EXCL_BR_LINE
   }
 }
 
