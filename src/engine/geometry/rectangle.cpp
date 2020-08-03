@@ -10,7 +10,7 @@ Rectangle::Rectangle()
         : Rectangle(Transform()) {}
 
 Rectangle::Rectangle(Transform transform, float width, float height)
-        : _transform(std::move(transform)),
+        : _transform(transform),
           _width(width),
           _height(height) {
   update_corners();

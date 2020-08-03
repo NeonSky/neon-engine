@@ -22,7 +22,7 @@ GLTFModel::GLTFModel(const std::string& model_path,
                      geometry::Transform transform,
                      bool invert,
                      GLTFFileFormat format)
-        : _transform(std::move(transform)),
+        : _transform(transform),
           _shader(Shader("gltf.vert", "gltf.frag")),
           _invert(invert) {
 

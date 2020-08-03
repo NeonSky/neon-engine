@@ -7,7 +7,7 @@
 using namespace engine::geometry;
 
 Intersection::Intersection(Vector<3> point)
-        : point(std::move(point)) {}
+        : point(point) {}
 
 auto engine::geometry::ray_plane_intersection(const Ray& ray, const Plane& plane) -> std::unique_ptr<Intersection> {
   Vector<3> from   = ray.origin;

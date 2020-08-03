@@ -15,7 +15,7 @@ float pitch = 0.0F;
 
 Camera::Camera() : Camera(geometry::Transform()) {}
 Camera::Camera(geometry::Transform transform)
-        : _transform(std::move(transform)) {
+        : _transform(transform) {
 
   yaw   = _transform.yaw();
   pitch = _transform.pitch();

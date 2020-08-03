@@ -18,9 +18,9 @@ namespace engine::debug {
             : Line(A, B, geometry::Vector<3>(1.0F, 0.0F, 0.0F)) {}
 
     Line(geometry::Vector<3> A, geometry::Vector<3> B, geometry::Vector<3> color)
-            : A(std::move(A)),
-              B(std::move(B)),
-              color(std::move(color)) {}
+            : A(A),
+              B(B),
+              color(color) {}
   };
 
   class DebugDrawer {

@@ -18,9 +18,9 @@ Transform::Transform(const Vector<3>& position, const Vector<3>& rotation)
         : Transform(position, rotation, Vector<3>(1.0F, 1.0F, 1.0F)) {}
 
 Transform::Transform(Vector<3> position, Vector<3> rotation, Vector<3> scale)
-        : position(std::move(position)),
-          rotation(std::move(rotation)),
-          scale(std::move(scale)) {}
+        : position(position),
+          rotation(rotation),
+          scale(scale) {}
 
 void Transform::set_rotation(float yaw, float pitch, float roll) {
   this->rotation = Vector<3>(pitch, yaw, roll);
