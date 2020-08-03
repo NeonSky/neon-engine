@@ -1,5 +1,7 @@
 #include "transform.hpp"
 
+#include "angle.hpp"
+
 #include <utility>
 
 using namespace engine::geometry;
@@ -28,7 +30,7 @@ void Transform::set_rotation(float yaw, float pitch, float roll) {
 
 // TODO: Needs more tests.
 void Transform::flip_rotation() {
-  Matrix<4> m = rotation_matrix().rotate(pi, engine::geometry::Transform::world_up);
+  Matrix<4> m = rotation_matrix().rotate(Angle(pi, Angle::Unit::RADIANS), engine::geometry::Transform::world_up);
 
   // NOTE: we negate each angle due to rotation_matrix() negating the angles.
   float yaw   = -std::atan2(-m[0][2], m[2][2]);

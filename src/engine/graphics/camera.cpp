@@ -82,11 +82,11 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 }
 
 auto Camera::view_matrix() const -> geometry::Matrix<4> {
-  geometry::Matrix<4> base_vectors_in_world_space = geometry::Matrix<3>(
+  geometry::Matrix<4> base_vectors_in_world_space = geometry::Matrix<3>{
     (std::array<float, 3>) geometry::Vector<3>(_transform.right()),  // (R_x, R_y, R_z)
     (std::array<float, 3>) geometry::Vector<3>(_transform.up()),     // (U_x, U_y, U_z)
     (std::array<float, 3>) geometry::Vector<3>(_transform.forward()) // (F_x, F_y, F_z)
-  );
+  };
 
   return base_vectors_in_world_space.translate(-_transform.position);
 }
