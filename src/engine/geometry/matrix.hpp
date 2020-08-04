@@ -14,6 +14,7 @@ namespace engine::geometry {
   /// @todo add coefficient_matrix() which returns all but the last column https://www.wikiwand.com/en/Augmented_matrix
   /// @todo add is_diagonal() https://www.wikiwand.com/en/Diagonal_matrix
   /// @todo add adjoint()
+  /// @todo add swap_columns()
   /// @see https://www.wikiwand.com/en/Matrix_(mathematics)
   template <unsigned int R, unsigned int C = R>
   class Matrix {

@@ -22,6 +22,16 @@ TEST(MatrixTest, Constructor2) {
   EXPECT_EQ(m, expected);
 }
 
+TEST(MatrixTest, Constructor3) {
+  Matrix<4> m;
+  EXPECT_EQ(m, Matrix<4>({
+                 {1, 0, 0, 0},
+                 {0, 1, 0, 0},
+                 {0, 0, 1, 0},
+                 {0, 0, 0, 1},
+               }));
+}
+
 TEST(MatrixTest, Size1) {
   Matrix<1> m1;
   Matrix<2> m2;
@@ -65,6 +75,60 @@ TEST(MatrixTest, MinorMatrix1) {
   EXPECT_EQ(m.minor_matrix(1, 1)[0][0], 1.0F);
 }
 
+TEST(MatrixTest, MinorMatrix2) {
+  Matrix<4> m{
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12},
+    {13, 14, 15, 16},
+  };
+  EXPECT_EQ(m.minor_matrix(0, 0), Matrix<3>({
+                                    {6, 7, 8},
+                                    {10, 11, 12},
+                                    {14, 15, 16},
+                                  }));
+  EXPECT_EQ(m.minor_matrix(1, 2), Matrix<3>({
+                                    {1, 2, 4},
+                                    {9, 10, 12},
+                                    {13, 14, 16},
+                                  }));
+  EXPECT_EQ(m.minor_matrix(3, 3), Matrix<3>({
+                                    {1, 2, 3},
+                                    {5, 6, 7},
+                                    {9, 10, 11},
+                                  }));
+}
+
+TEST(MatrixTest, Adjugate1) {
+  Matrix<4> m{
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12},
+    {13, 14, 15, 16},
+  };
+  EXPECT_EQ(m.adjugate(), Matrix<4>({
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                            {0, 0, 0, 0},
+                          }));
+}
+
+TEST(MatrixTest, Adjugate2) {
+  Matrix<4> m{
+    {-1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12},
+    {13, 14, 15, 16},
+  };
+  EXPECT_EQ(m.adjugate(), Matrix<4>({
+                            {0, 0, 0, 0},
+                            {0, 8, -16, 8},
+                            {0, -16, 32, -16},
+                            {0, 8, -16, 8},
+                          }));
+}
+
 TEST(MatrixTest, Determinant1) {
   Matrix<1> m({
     {-17.3F},
@@ -95,6 +159,16 @@ TEST(MatrixTest, Determinant4) {
     {1, 4, 5},
   });
   EXPECT_EQ(m.determinant(), 49.0F);
+}
+
+TEST(MatrixTest, Determinant5) {
+  Matrix<4> m({
+    {2, -3, 1, 7},
+    {2, 0, -1, 3},
+    {1, 4, 5, 5},
+    {0, 1, 2, 3},
+  });
+  EXPECT_EQ(m.determinant(), 71.0F);
 }
 
 TEST(MatrixTest, Transpose1) {
@@ -214,6 +288,25 @@ TEST(MatrixTest, Inverse2) {
 }
 
 TEST(MatrixTest, Inverse3) {
+  Matrix<4> m{
+    {1, 2, 3, 4},
+    {4, 3, 2, 1},
+    {9, 1, 1, 12},
+    {2, 3, 2, 1},
+  };
+  Matrix<4> expected = Matrix<4>{
+                         {0, -55, 0, 55},
+                         {46, 86, -10, -150},
+                         {-70, -95, 20, 135},
+                         {2, 42, -10, -40},
+                       } /
+                       -110.0F; // -110 is the determinant for m
+  LOG_DEBUG(m.inverse().to_json().dump(2));
+  LOG_DEBUG(m.cofactor_matrix().to_json().dump(2));
+  EXPECT_EQ(m.inverse(), expected);
+}
+
+TEST(MatrixTest, Inverse4) {
   Matrix<2> m({
     {-1.0F, 1.5F},
     {2.0F / 3.0F, -1.0F},
@@ -382,6 +475,23 @@ TEST(MatrixTest, Iterates1) {
 }
 
 TEST(MatrixTest, Iterates2) {
+  Matrix<4> m{
+    {0, 1, 2, 3},
+    {4, 5, 6, 7},
+    {8, 9, 10, 11},
+    {12, 13, 14, 15},
+  };
+
+  int i = 0;
+  for (auto& e : std::as_const(m)) {
+    EXPECT_EQ(e, m[(i / 4)][(i % 4)]);
+    i++;
+  }
+
+  EXPECT_EQ(i, 16);
+}
+
+TEST(MatrixTest, Iterates3) {
   Matrix<3, 3> m({
     {0, 1, 2},
     {3, 4, 5},
@@ -418,6 +528,160 @@ TEST(MatrixTest, OuterProduct2) {
     {12.0F, 15.0F},
   };
   EXPECT_EQ(outer_product(vector1, vector2), expected);
+}
+
+TEST(MatrixTest, SwapsRows1) {
+  Matrix<3, 2> m1{
+    {4.0F, 5.0F},
+    {8.0F, 10.0F},
+    {12.0F, 15.0F},
+  };
+  Matrix<3, 2> m2{
+    {8.0F, 10.0F},
+    {4.0F, 5.0F},
+    {12.0F, 15.0F},
+  };
+
+  auto m = m1;
+  EXPECT_EQ(m, m1);
+
+  m.swap_rows(0, 1);
+  EXPECT_EQ(m, m2);
+
+  m.swap_rows(0, 1);
+  EXPECT_EQ(m, m1);
+
+  m.swap_rows(0, 0);
+  EXPECT_EQ(m, m1);
+  m.swap_rows(1, 1);
+  EXPECT_EQ(m, m1);
+  m.swap_rows(2, 2);
+  EXPECT_EQ(m, m1);
+}
+
+TEST(MatrixTest, SwapsRows2) {
+  Matrix<3> m;
+
+  m.swap_rows(0, 2);
+  EXPECT_EQ(m, Matrix<3>({
+                 {0.0F, 0.0F, 1.0F},
+                 {0.0F, 1.0F, 0.0F},
+                 {1.0F, 0.0F, 0.0F},
+               }));
+
+  m.swap_rows(1, 2);
+  EXPECT_EQ(m, Matrix<3>({
+                 {0.0F, 0.0F, 1.0F},
+                 {1.0F, 0.0F, 0.0F},
+                 {0.0F, 1.0F, 0.0F},
+               }));
+}
+
+TEST(MatrixTest, SwapsRows3) {
+  Matrix<4> m;
+  m.swap_rows(0, 3);
+  m.swap_rows(1, 2);
+
+  EXPECT_EQ(m, Matrix<4>({
+                 {0.0F, 0.0F, 0.0F, 1.0F},
+                 {0.0F, 0.0F, 1.0F, 0.0F},
+                 {0.0F, 1.0F, 0.0F, 0.0F},
+                 {1.0F, 0.0F, 0.0F, 0.0F},
+               }));
+}
+
+TEST(MatrixTest, SwapsRows4) {
+  Matrix<2> m{
+    {1.0F, 4.0F},
+    {2.0F, 3.0F},
+  };
+  m.swap_rows(0, 1);
+
+  EXPECT_EQ(m, Matrix<2>({
+                 {2.0F, 3.0F},
+                 {1.0F, 4.0F},
+               }));
+}
+
+TEST(MatrixTest, SwapsRows5) {
+  Matrix<1> m{
+    {-5.0F}};
+  m.swap_rows(0, 0);
+  EXPECT_EQ(m, Matrix<1>({
+                 {-5.0F},
+               }));
+}
+
+TEST(MatrixTest, SwapsRows6) {
+  Matrix<2, 3> m1{
+    {1.0F, 2.0F, 3.0F},
+    {1.0F, 2.0F, 3.0F}};
+  auto m = m1;
+
+  m.swap_rows(0, 0);
+  EXPECT_EQ(m, m1);
+
+  m.swap_rows(0, 1);
+  EXPECT_EQ(m, m1);
+
+  m.swap_rows(1, 1);
+  EXPECT_EQ(m, m1);
+}
+
+TEST(MatrixTest, SwapsRows7) {
+  Matrix<3, 1> m{
+    {-1.0F},
+    {-2.0F},
+    {-3.0F}};
+  m.swap_rows(1, 2);
+  EXPECT_EQ(m, (Matrix<3, 1>({{-1.0F}, {-3.0F}, {-2.0F}})));
+}
+
+TEST(MatrixTest, SwapsRows8) {
+  Matrix<2, 4> m1{
+    {-1.0F, 2.0F, -3.0F, -4.3F},
+    {-1.0F, 2.0F, -3.0F, -4.3F}};
+  auto m = m1;
+
+  m.swap_rows(0, 0);
+  EXPECT_EQ(m, m1);
+
+  m.swap_rows(0, 1);
+  EXPECT_EQ(m, m1);
+
+  m.swap_rows(1, 1);
+  EXPECT_EQ(m, m1);
+}
+
+TEST(MatrixTest, SwapsRows9) {
+  Matrix<3, 4> m{
+    {0.0F, 9.0F, 9.0F, 0.0F},
+    {7.7F, 0.0F, 0.0F, 7.7F},
+    {0.0F, 3.0F, 3.0F, 0.0F}};
+  m.swap_rows(0, 0);
+  m.swap_rows(1, 2);
+  m.swap_rows(2, 2);
+  EXPECT_EQ(m, (Matrix<3, 4>({
+                 {0.0F, 9.0F, 9.0F, 0.0F},
+                 {0.0F, 3.0F, 3.0F, 0.0F},
+                 {7.7F, 0.0F, 0.0F, 7.7F},
+               })));
+}
+
+TEST(MatrixTest, SwapsRows10) {
+  Matrix<4, 2> m{
+    {1.0F, 4.0F},
+    {3.0F, 2.0F},
+    {2.0F, 3.0F},
+    {4.0F, 1.0F}};
+
+  m.swap_rows(0, 3);
+  EXPECT_EQ(m, (Matrix<4, 2>({
+                 {4.0F, 1.0F},
+                 {3.0F, 2.0F},
+                 {2.0F, 3.0F},
+                 {1.0F, 4.0F},
+               })));
 }
 
 TEST(MatrixTest, Translates1) {
@@ -462,6 +726,22 @@ TEST(MatrixTest, Translates3) {
   EXPECT_EQ(m.translate({-4.5F, 3.8F}), expected);
 }
 
+TEST(MatrixTest, Translates4) {
+  Matrix<4> m{
+    {1, 0, 0, 0},
+    {0, 1, 0, 0},
+    {0, 0, 1, 0},
+    {0, 0, 0, 1},
+  };
+  Matrix<4> expected{
+    {1, 0, 0, -4.5F},
+    {0, 1, 0, 3.8F},
+    {0, 0, 1, 2.4F},
+    {0, 0, 0, 1},
+  };
+  EXPECT_EQ(m.translate({-4.5F, 3.8F, 2.4F}), expected);
+}
+
 TEST(MatrixTest, Scales1) {
   Matrix<3, 2> m{
     {4.0F, 5.0F},
@@ -500,6 +780,22 @@ TEST(MatrixTest, Scales3) {
     {16.0F, 3.9F},
   };
   EXPECT_EQ(m.scale({2.0F, 3.0F}), expected);
+}
+
+TEST(MatrixTest, Scales4) {
+  Matrix<4> m{
+    {1.0F, 1.0F, 1.0F, 1.0F},
+    {1.0F, 1.0F, 1.0F, 1.0F},
+    {1.0F, 1.0F, 1.0F, 1.0F},
+    {1.0F, 1.0F, 1.0F, 1.0F},
+  };
+  Matrix<4> expected{
+    {2.0F, 0.8F, -1.0F, 1.0F},
+    {2.0F, 0.8F, -1.0F, 1.0F},
+    {2.0F, 0.8F, -1.0F, 1.0F},
+    {2.0F, 0.8F, -1.0F, 1.0F},
+  };
+  EXPECT_EQ(m.scale(Vector<3>(2.0F, 0.8F, -1.0F)), expected);
 }
 
 TEST(MatrixTest, ConvertsTo2DArray1) {
