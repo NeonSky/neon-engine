@@ -19,7 +19,6 @@ namespace engine::geometry {
   /// @see https://www.wikiwand.com/en/Affine_transformation
   class Transform {
   public:
-
     /// @brief Creates the identity transform.
     Transform();
 
