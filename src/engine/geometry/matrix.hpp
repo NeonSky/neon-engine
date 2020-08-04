@@ -196,20 +196,20 @@ namespace engine::geometry {
     ///
     /// @see https://www.wikiwand.com/en/Translation_(geometry)
     /// @see https://www.wikiwand.com/en/Transformation_matrix
-    template <unsigned int N = R>
-    auto translate(Vector<N - 1> translation) const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
+    template <unsigned int N = R - 1>
+    auto translate(Vector<N> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>>;
 
     /// @brief This matrix rotated by \p angle around the vector \p axis.
     ///
     /// @see https://www.wikiwand.com/en/Rotation_matrix
-    template <unsigned int N = R>
-    auto rotate(Angle angle, Vector<N - 1> axis) const -> std::enable_if_t<(N == R && R == C && N == 4), Matrix<N>>;
+    template <unsigned int N = 4>
+    auto rotate(Angle angle, Vector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>>;
 
     /// @brief This matrix scaled by the vector \p scale.
     ///
     /// @see https://www.wikiwand.com/en/Scaling_(geometry)
     template <unsigned int N = R>
-    auto scale(Vector<N - 1> scale) const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
+    auto scale(Vector<N> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>>;
 
     /// @}
 
@@ -589,7 +589,7 @@ namespace engine::geometry {
     if (d == 0.0F)
       LOG_ERROR("Determinant is 0, which means that this matrix is singular/degenerate."); // LCOV_EXCL_BR_LINE
 
-    return cofactor_matrix() / d;
+    return adjugate() / d;
   }
 
   template <unsigned int R, unsigned int C>
@@ -609,10 +609,10 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
-  auto Matrix<R, C>::translate(Vector<N - 1> translation) const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
-    Matrix<N> m;
-    for (unsigned int r = 0; r < N - 1; r++)
-      m[r][N - 1] += translation[r];
+  auto Matrix<R, C>::translate(Vector<N> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>> {
+    Matrix<R> m;
+    for (unsigned int r = 0; r < N; r++)
+      m[r][C - 1] = translation[r];
 
     return (*this) * m;
   }
@@ -620,7 +620,7 @@ namespace engine::geometry {
   // See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
-  auto Matrix<R, C>::rotate(Angle angle, Vector<N - 1> axis) const -> std::enable_if_t<(N == R && R == C && N == 4), Matrix<N>> {
+  auto Matrix<R, C>::rotate(Angle angle, Vector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>> {
     axis = axis.normalized();
 
     // NOTE: pair = point + axis
@@ -662,10 +662,10 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
-  auto Matrix<R, C>::scale(Vector<N - 1> scale) const -> std::enable_if_t<(N == R && R == C), Matrix<N>> {
-    Matrix<N> m;
-    for (unsigned int i = 0; i < N - 1; i++)
-      m[i][i] *= scale[i];
+  auto Matrix<R, C>::scale(Vector<N> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>> {
+    Matrix<R> m;
+    for (unsigned int i = 0; i < N; i++)
+      m[i][i] = scale[i];
 
     return (*this) * m;
   }

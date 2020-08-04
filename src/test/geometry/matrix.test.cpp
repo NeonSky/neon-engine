@@ -3,6 +3,25 @@
 #include "../../engine/geometry/matrix.hpp"
 using namespace engine::geometry;
 
+TEST(MatrixTest, Constructor1) {
+  ASSERT_THROW(Matrix<2>({{1, 2}}), std::runtime_error);
+}
+
+TEST(MatrixTest, Constructor2) {
+  std::array<Vector<2>, 3> values{
+    {{2.0F, 2.5F},
+     {4.0F, 5.0F},
+     {6.0F, 7.5F}}};
+
+  Matrix<3, 2> expected{
+    {2.0F, 2.5F},
+    {4.0F, 5.0F},
+    {6.0F, 7.5F}};
+
+  Matrix<3, 2> m(values);
+  EXPECT_EQ(m, expected);
+}
+
 TEST(MatrixTest, Size1) {
   Matrix<1> m1;
   Matrix<2> m2;
@@ -156,6 +175,52 @@ TEST(MatrixTest, Transpose5) {
   EXPECT_EQ(m2.transpose().transpose(), m2);
 }
 
+TEST(MatrixTest, Negates1) {
+  Matrix<2, 3> m({
+    {7, 0, -4},
+    {-9, 3, 5},
+  });
+  Matrix<2, 3> expected({
+    {-7, 0, 4},
+    {9, -3, -5},
+  });
+  EXPECT_EQ(-m, expected);
+}
+
+TEST(MatrixTest, Inverse1) {
+  Matrix<2> m({
+    {4, 7},
+    {2, 6},
+  });
+  Matrix<2> expected({
+    {0.6F, -0.7F},
+    {-0.2F, 0.4F},
+  });
+  EXPECT_EQ(m.inverse(), expected);
+}
+
+TEST(MatrixTest, Inverse2) {
+  Matrix<3> m({
+    {1, 2, 3},
+    {0, 4, 5},
+    {1, 0, 6},
+  });
+  Matrix<3> expected({
+    {12.0F / 11.0F, -6.0F / 11.0F, -1.0F / 11.0F},
+    {5.0F / 22.0F, 3.0F / 22.0F, -5.0F / 22.0F},
+    {-2.0F / 11.0F, 1.0F / 11.0F, 2.0F / 11.0F},
+  });
+  EXPECT_EQ(m.inverse(), expected);
+}
+
+TEST(MatrixTest, Inverse3) {
+  Matrix<2> m({
+    {-1.0F, 1.5F},
+    {2.0F / 3.0F, -1.0F},
+  });
+  ASSERT_THROW(m.inverse(), std::runtime_error);
+}
+
 TEST(MatrixTest, CofactorMatrix1) {
   Matrix<3> m({
     {1, 2, 3},
@@ -247,6 +312,9 @@ TEST(MatrixTest, Rank1) {
   int rank = m.rank();
   EXPECT_EQ(rank, 2);
   EXPECT_EQ(rank, m.transpose().rank());
+
+  EXPECT_FALSE(m.has_full_rank());
+  EXPECT_EQ(m.rank_deficiency(), 1);
 }
 
 TEST(MatrixTest, Rank2) {
@@ -257,6 +325,9 @@ TEST(MatrixTest, Rank2) {
   int rank = m.rank();
   EXPECT_EQ(rank, 1);
   EXPECT_EQ(rank, m.transpose().rank());
+
+  EXPECT_FALSE(m.has_full_rank());
+  EXPECT_EQ(m.rank_deficiency(), 1);
 }
 
 TEST(MatrixTest, Rank3) {
@@ -267,6 +338,9 @@ TEST(MatrixTest, Rank3) {
   int rank = m.rank();
   EXPECT_EQ(rank, 2);
   EXPECT_EQ(rank, m.transpose().rank());
+
+  EXPECT_TRUE(m.has_full_rank());
+  EXPECT_EQ(m.rank_deficiency(), 0);
 }
 
 TEST(MatrixTest, Rank4) {
@@ -278,6 +352,17 @@ TEST(MatrixTest, Rank4) {
   int rank = m.rank();
   EXPECT_EQ(rank, 3);
   EXPECT_EQ(rank, m.transpose().rank());
+  EXPECT_TRUE(m.has_full_rank());
+  EXPECT_EQ(m.rank_deficiency(), 0);
+}
+
+TEST(MatrixTest, MainDiagonal1) {
+  Matrix<3, 3> m({
+    {0, 1, 2},
+    {3, 4, 5},
+    {6, 7, 8},
+  });
+  EXPECT_EQ(m.main_diagonal(), Vector<3>(0, 4, 8));
 }
 
 TEST(MatrixTest, Iterates1) {
@@ -288,7 +373,7 @@ TEST(MatrixTest, Iterates1) {
   });
 
   int i = 0;
-  for (auto& e : m) {
+  for (auto& e : std::as_const(m)) {
     EXPECT_EQ(e, m[(i / 3)][(i % 3)]);
     i++;
   }
@@ -333,4 +418,113 @@ TEST(MatrixTest, OuterProduct2) {
     {12.0F, 15.0F},
   };
   EXPECT_EQ(outer_product(vector1, vector2), expected);
+}
+
+TEST(MatrixTest, Translates1) {
+  Matrix<3> m{
+    {2.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  Matrix<3> expected{
+    {2.0F, 0.0F, 4.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  EXPECT_EQ(m.translate({2.0F}), expected);
+}
+
+TEST(MatrixTest, Translates2) {
+  Matrix<3> m{
+    {1.5F, 0.0F, 0.0F},
+    {0.0F, 3.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  Matrix<3> expected{
+    {1.5F, 0.0F, 3.0F},
+    {0.0F, 3.0F, -3.6F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  EXPECT_EQ(m.translate({2.0F, -1.2F}), expected);
+}
+
+TEST(MatrixTest, Translates3) {
+  Matrix<3> m{
+    {-2.7F, 5.0F, 12.0F},
+    {8.0F, 1.3F, 0.0F},
+    {-22.0F, 2.3F, 1.0F},
+  };
+  Matrix<3> expected{
+    {-2.7F, 5.0F, 43.15F},
+    {8.0F, 1.3F, -31.06F},
+    {-22.0F, 2.3F, 108.74F},
+  };
+  EXPECT_EQ(m.translate({-4.5F, 3.8F}), expected);
+}
+
+TEST(MatrixTest, Scales1) {
+  Matrix<3, 2> m{
+    {4.0F, 5.0F},
+    {8.0F, 10.0F},
+    {12.0F, 15.0F},
+  };
+  Matrix<3, 2> expected{
+    {4.8F, 6.0F},
+    {9.6F, 12.0F},
+    {14.4F, 18.0F},
+  };
+  EXPECT_EQ(m * 1.2F, expected);
+}
+
+TEST(MatrixTest, Scales2) {
+  Matrix<3, 2> m{
+    {4.0F, 5.0F},
+    {8.0F, 10.0F},
+    {12.0F, 15.0F},
+  };
+  Matrix<3, 2> expected{
+    {2.0F, 2.5F},
+    {4.0F, 5.0F},
+    {6.0F, 7.5F},
+  };
+  EXPECT_EQ(m / 2.0F, expected);
+}
+
+TEST(MatrixTest, Scales3) {
+  Matrix<2, 2> m{
+    {-2.7F, 5.0F},
+    {8.0F, 1.3F},
+  };
+  Matrix<2, 2> expected{
+    {-5.4F, 15.0F},
+    {16.0F, 3.9F},
+  };
+  EXPECT_EQ(m.scale({2.0F, 3.0F}), expected);
+}
+
+TEST(MatrixTest, ConvertsTo2DArray1) {
+  Matrix<3, 2> m{
+    {2.0F, 2.5F},
+    {4.0F, 5.0F},
+    {6.0F, 7.5F},
+  };
+  std::array<std::array<float, 2>, 3> expected{
+    {{2.0F, 2.5F},
+     {4.0F, 5.0F},
+     {6.0F, 7.5F}}};
+  EXPECT_EQ((std::array<std::array<float, 2>, 3>) m, expected);
+}
+
+TEST(MatrixTest, ConvertsToJSON1) {
+  Matrix<3, 2> m{
+    {2.0F, 2.5F},
+    {4.0F, 5.0F},
+    {6.0F, 7.5F},
+  };
+  JSON json = {
+    {2.0F, 2.5F},
+    {4.0F, 5.0F},
+    {6.0F, 7.5F},
+  };
+  EXPECT_EQ(m.to_json(), json);
 }
