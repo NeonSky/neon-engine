@@ -216,7 +216,7 @@ namespace engine::geometry {
   private:
     /// @{
     /// Private state.
-    std::array<Vector<C>, R> elements;
+    std::array<Vector<C>, R> _elements;
     /// @}
 
     /// @brief Performs elementary row operations to clear the column of the pivot at row \p row and column \p col.
@@ -238,10 +238,10 @@ namespace engine::geometry {
   /////////////////////
 
   template <unsigned int R, unsigned int C>
-  Matrix<R, C>::Matrix() : elements() {
+  Matrix<R, C>::Matrix() : _elements() {
     if constexpr (R == C)
       for (unsigned int i = 0; i < R; i++)
-        elements[i][i] = 1.0F;
+        _elements[i][i] = 1.0F;
   }
 
   template <unsigned int R, unsigned int C>
@@ -249,11 +249,11 @@ namespace engine::geometry {
     if (elements.size() != R)
       LOG_ERROR("Must provide exactly R elements."); // LCOV_EXCL_BR_LINE
 
-    std::copy(elements.begin(), elements.end(), this->elements.begin());
+    std::copy(elements.begin(), elements.end(), _elements.begin());
   }
 
   template <unsigned int R, unsigned int C>
-  Matrix<R, C>::Matrix(std::array<Vector<C>, R> elements) : elements(elements) {}
+  Matrix<R, C>::Matrix(std::array<Vector<C>, R> elements) : _elements(elements) {}
 
   template <unsigned int R, unsigned int C>
   template <unsigned int M, class Enable>
@@ -262,7 +262,7 @@ namespace engine::geometry {
 
     for (unsigned int r = 0; r < M; r++)
       for (unsigned int c = 0; c < M; c++)
-        elements[r][c] = other[r][c];
+        _elements[r][c] = other[r][c];
   }
 
   template <unsigned int R, unsigned int C>
@@ -276,52 +276,52 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::begin() -> float* {
-    return elements[0].begin();
+    return _elements[0].begin();
   }
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::end() -> float* {
-    return elements[R - 1].end();
+    return _elements[R - 1].end();
   }
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::swap_rows(unsigned int i, unsigned int j) {
     for (unsigned int c = 0; c < C; c++)
-      std::swap(elements[i][c], elements[j][c]);
+      std::swap(_elements[i][c], _elements[j][c]);
   }
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::begin() const -> const float* {
-    return elements[0].begin();
+    return _elements[0].begin();
   }
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::end() const -> const float* {
-    return elements[R - 1].end();
+    return _elements[R - 1].end();
   }
 
   template <unsigned int R, unsigned int C>
   Matrix<R, C>::operator std::array<std::array<float, C>, R>() const {
     std::array<std::array<float, C>, R> m;
     for (unsigned int i = 0; i < R; i++)
-      m[i] = elements[i];
+      m[i] = _elements[i];
     return m;
   }
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator[](unsigned int i) const -> const Vector<C>& {
-    return elements[i];
+    return _elements[i];
   }
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator[](unsigned int i) -> Vector<C>& {
-    return elements[i];
+    return _elements[i];
   }
 
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::operator==(const Matrix<R, C>& other) const -> bool {
     for (unsigned int r = 0; r < R; r++)
-      if (elements[r] != other[r])
+      if (_elements[r] != other[r])
         return false;
 
     return true;
@@ -380,7 +380,7 @@ namespace engine::geometry {
 
       float sum = 0.0F;
       for (unsigned int c = 0; c < C; c++)
-        sum += elements[r][c] * vector[c];
+        sum += _elements[r][c] * vector[c];
 
       res[r] = sum;
     }
@@ -393,7 +393,7 @@ namespace engine::geometry {
     Matrix<C, R> res;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)
-        res[c][r] = elements[r][c];
+        res[c][r] = _elements[r][c];
 
     return res;
   }
@@ -403,8 +403,8 @@ namespace engine::geometry {
   void Matrix<R, C>::row_echelon_clear_pivot_column(unsigned int row, unsigned int col) {
     for (unsigned int r = 0; r < R; r++)
       if (r != row)
-        elements[r] -= elements[row] * (elements[r][col] / elements[row][col]);
-    elements[row] /= elements[row][col];
+        _elements[r] -= _elements[row] * (_elements[r][col] / _elements[row][col]);
+    _elements[row] /= _elements[row][col];
   }
 
   template <unsigned int R, unsigned int C>
@@ -412,12 +412,12 @@ namespace engine::geometry {
     for (unsigned int j = col; j < C; j++) {
 
       // If current row has the leftmost pivot, do nothing.
-      if (elements[row][j] != 0)
+      if (_elements[row][j] != 0)
         return;
 
       for (unsigned int i = row + 1; i < R; i++) {
         // If this row has the leftmost pivot, we swap with it.
-        if (elements[i][j] != 0) {
+        if (_elements[i][j] != 0) {
           swap_rows(row, i);
           return;
         }
@@ -431,7 +431,7 @@ namespace engine::geometry {
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::leftmost_pivot(unsigned int row) const -> int {
     for (unsigned int col = 0; col < C; col++)
-      if (elements[row][col])
+      if (_elements[row][col])
         return (int) col;
     return -1;
   }
@@ -442,7 +442,7 @@ namespace engine::geometry {
   /// 2. if any row below it has a pivot further to the left.
   ///
   /// If 2., we swap that row with the current one so the current row has the leftmost pivot amongst the rows considered.
-  /// Then we clear the elements directly above and below the pivot, and scale the current row such that the pivot becomes 1.
+  /// Then we clear the _elements directly above and below the pivot, and scale the current row such that the pivot becomes 1.
   template <unsigned int R, unsigned int C>
   auto Matrix<R, C>::reduced_row_echelon_form() const -> Matrix<R, C> {
     Matrix<R, C> m = *this;
@@ -495,14 +495,14 @@ namespace engine::geometry {
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::row_vector(unsigned int r) const -> Vector<C> {
-    return Vector<C>(elements[r]);
+    return Vector<C>(_elements[r]);
   }
 
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::column_vector(unsigned int c) const -> Vector<R> {
     Vector<R> res;
     for (unsigned int r = 0; r < R; r++)
-      res[r] = elements[r][c];
+      res[r] = _elements[r][c];
 
     return res;
   }
@@ -510,7 +510,7 @@ namespace engine::geometry {
   template <unsigned int R, unsigned int C>
   [[nodiscard]] auto Matrix<R, C>::to_json() const -> debug::JSON {
     debug::JSON json = debug::JSON::array();
-    for (auto& row : elements)
+    for (auto& row : _elements)
       json.emplace_back(row.to_json());
 
     return json;
@@ -525,7 +525,7 @@ namespace engine::geometry {
   auto Matrix<R, C>::main_diagonal() const -> std::enable_if_t<(N == R && R == C), Vector<N>> {
     Vector<N> res;
     for (unsigned int i = 0; i < N; i++)
-      res[i] = elements[i][i];
+      res[i] = _elements[i][i];
 
     return res;
   }
@@ -535,7 +535,7 @@ namespace engine::geometry {
   auto Matrix<R, C>::trace() const -> std::enable_if_t<(N == R && R == C), float> {
     float res = 0.0F;
     for (unsigned int i = 0; i < N; i++)
-      res += elements[i][i];
+      res += _elements[i][i];
 
     return res;
   }
@@ -547,7 +547,7 @@ namespace engine::geometry {
     for (unsigned int i = 0; i < N; i++)
       for (unsigned int j = 0; j < N; j++)
         if (i != r && j != c)
-          res[i - static_cast<unsigned int>(r < i)][j - static_cast<unsigned int>(c < j)] = elements[i][j];
+          res[i - static_cast<unsigned int>(r < i)][j - static_cast<unsigned int>(c < j)] = _elements[i][j];
 
     return res;
   }
@@ -595,7 +595,7 @@ namespace engine::geometry {
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
   auto Matrix<R, C>::determinant() const -> std::enable_if_t<(N == R && R == C && N == 1), float> {
-    return elements[0][0];
+    return _elements[0][0];
   }
 
   template <unsigned int R, unsigned int C>
@@ -603,7 +603,7 @@ namespace engine::geometry {
   auto Matrix<R, C>::determinant() const -> std::enable_if_t<(N == R && R == C && N > 1), float> {
     float res = 0.0F;
     for (unsigned int c = 0; c < N; c++)
-      res += elements[0][c] * cofactor(0, c);
+      res += _elements[0][c] * cofactor(0, c);
     return res;
   }
 

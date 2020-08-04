@@ -20,12 +20,12 @@ Transform::Transform(const Vector<3>& position, const Vector<3>& rotation)
         : Transform(position, rotation, Vector<3>(1.0F, 1.0F, 1.0F)) {}
 
 Transform::Transform(Vector<3> position, Vector<3> rotation, Vector<3> scale)
-        : position(position),
-          rotation(rotation),
-          scale(scale) {}
+        : _position(position),
+          _rotation(rotation),
+          _scale(scale) {}
 
 void Transform::set_rotation(float yaw, float pitch, float roll) {
-  this->rotation = Vector<3>(pitch, yaw, roll);
+  _rotation = Vector<3>(pitch, yaw, roll);
 }
 
 // TODO: Needs more tests.
@@ -40,13 +40,25 @@ void Transform::flip_rotation() {
   set_rotation(yaw, pitch, roll);
 }
 
+[[nodiscard]] auto Transform::position() const -> const Vector<3>& {
+  return _position;
+}
+
+[[nodiscard]] auto Transform::rotation() const -> const Vector<3>& {
+  return _rotation;
+}
+
+[[nodiscard]] auto Transform::scale() const -> const Vector<3>& {
+  return _scale;
+}
+
 auto Transform::operator+(const Transform& other) const -> Transform {
-  return Transform(this->position + other.position, this->rotation + other.rotation, this->scale + other.scale);
+  return Transform(_position + other._position, _rotation + other._rotation, _scale + other._scale);
 }
 
 auto Transform::matrix() const -> Matrix<4> {
   // Scale -> Rotate -> Translate
-  return (Matrix<4>().scale(scale) * rotation_matrix()).translate(position);
+  return (Matrix<4>().scale(_scale) * rotation_matrix()).translate(_position);
 }
 
 auto Transform::forward() const -> Vector<3> {
@@ -61,17 +73,29 @@ auto Transform::right() const -> Vector<3> {
   return rotation_matrix() * engine::geometry::Transform::world_right;
 }
 
-auto Transform::yaw() const -> float {
-  return rotation.y();
+[[nodiscard]] auto Transform::yaw() const -> float {
+  return _rotation.y();
 };
 
-auto Transform::pitch() const -> float {
-  return rotation.x();
+[[nodiscard]] auto Transform::pitch() const -> float {
+  return _rotation.x();
 };
 
-auto Transform::roll() const -> float {
-  return rotation.z();
+[[nodiscard]] auto Transform::roll() const -> float {
+  return _rotation.z();
 };
+
+[[nodiscard]] auto Transform::position() -> Vector<3>& {
+  return _position;
+}
+
+[[nodiscard]] auto Transform::rotation() -> Vector<3>& {
+  return _rotation;
+}
+
+[[nodiscard]] auto Transform::scale() -> Vector<3>& {
+  return _scale;
+}
 
 // https://www.wikiwand.com/en/Euler_angles
 // https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
@@ -86,21 +110,21 @@ auto Transform::rotation_matrix_slow() const -> Matrix<4> {
   //   cos(-t) = cos(t)
   //   sin(-t) = -sin(t)
 
-  float x = rotation.x();
+  float x = _rotation.x();
   Matrix<3> rot_x{
     {1, 0, 0},
     {0, std::cos(x), std::sin(x)},
     {0, -std::sin(x), std::cos(x)},
   };
 
-  float y = rotation.y();
+  float y = _rotation.y();
   Matrix<3> rot_y{
     {std::cos(y), 0, -std::sin(y)},
     {0, 1, 0},
     {std::sin(y), 0, std::cos(y)},
   };
 
-  float z = rotation.z();
+  float z = _rotation.z();
   Matrix<3> rot_z{
     {std::cos(z), std::sin(z), 0},
     {-std::sin(z), std::cos(z), 0},
@@ -111,12 +135,12 @@ auto Transform::rotation_matrix_slow() const -> Matrix<4> {
 }
 
 auto Transform::rotation_matrix() const -> Matrix<4> {
-  float cx = std::cos(rotation.x());
-  float sx = std::sin(rotation.x());
-  float cy = std::cos(rotation.y());
-  float sy = std::sin(rotation.y());
-  float cz = std::cos(rotation.z());
-  float sz = std::sin(rotation.z());
+  float cx = std::cos(_rotation.x());
+  float sx = std::sin(_rotation.x());
+  float cy = std::cos(_rotation.y());
+  float sy = std::sin(_rotation.y());
+  float cz = std::cos(_rotation.z());
+  float sz = std::sin(_rotation.z());
 
   // https://www.wolframalpha.com/input/?i=%7B%7Bcos%28y%29%2C+0%2C+-sin%28y%29%7D%2C+%7B0%2C+1%2C+-0%7D%2C+%7Bsin%28y%29%2C+0%2C+cos%28y%29%7D%7D+*+%7B%7B1%2C+0%2C+0%7D%2C+%7B0%2C+cos%28x%29%2C+sin%28x%29%7D%2C+%7B0%2C+-sin%28x%29%2C+cos%28x%29%7D%7D+*+%7B%7Bcos%28z%29%2C+sin%28z%29%2C+0%7D%2C+%7B-sin%28z%29%2C+cos%28z%29%2C+0%7D%2C+%7B0%2C+0%2C+1%7D%7D
   return {

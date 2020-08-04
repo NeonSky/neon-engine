@@ -201,7 +201,7 @@ namespace engine::geometry {
   private:
     /// @{
     /// Private state.
-    Point<N> elements; //< We use a point to represent the elements since they can be thought of as representing the vector's relative tip.
+    Point<N> _elements; //< We use a point to represent the elements since they can be thought of as representing the vector's relative tip.
     /// @}
   };
 
@@ -210,25 +210,25 @@ namespace engine::geometry {
   /////////////////////
 
   template <unsigned int N>
-  Vector<N>::Vector() : elements() {}
+  Vector<N>::Vector() : _elements() {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x) : elements({x}) {}
+  Vector<N>::Vector(float x) : _elements({x}) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x, float y) : elements({x, y}) {}
+  Vector<N>::Vector(float x, float y) : _elements({x, y}) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x, float y, float z) : elements({x, y, z}) {}
+  Vector<N>::Vector(float x, float y, float z) : _elements({x, y, z}) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x, float y, float z, float w) : elements({x, y, z, w}) {}
+  Vector<N>::Vector(float x, float y, float z, float w) : _elements({x, y, z, w}) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(std::array<float, N> elements) : elements(Point<N>(elements)) {}
+  Vector<N>::Vector(std::array<float, N> elements) : _elements(Point<N>(elements)) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(Point<N> tip) : elements(tip) {}
+  Vector<N>::Vector(Point<N> tip) : _elements(tip) {}
 
   template <unsigned int N>
   Vector<N>::Vector(Point<N> from, Point<N> to) {
@@ -236,41 +236,41 @@ namespace engine::geometry {
       LOG_ERROR("The provided points may not coincide."); // LCOV_EXCL_BR_LINE
 
     for (unsigned int i = 0; i < N; i++)
-      elements[i] = to[i] - from[i];
+      _elements[i] = to[i] - from[i];
   }
 
   template <unsigned int N>
   Vector<N>::Vector(const Vector<N - 1>& other, float last) {
     for (unsigned int i = 0; i < N - 1; i++)
-      elements[i] = other[i];
-    elements[N - 1] = last;
+      _elements[i] = other[i];
+    _elements[N - 1] = last;
   }
 
   template <unsigned int N>
   [[nodiscard]] auto Vector<N>::begin() -> float* {
-    return elements.begin();
+    return _elements.begin();
   }
 
   template <unsigned int N>
   [[nodiscard]] auto Vector<N>::end() -> float* {
-    return elements.end();
+    return _elements.end();
   }
 
   template <unsigned int N>
   auto Vector<N>::operator[](unsigned int i) -> float& {
-    return elements[i];
+    return _elements[i];
   }
 
   template <unsigned int N>
   void Vector<N>::operator+=(const Vector<N>& other) {
     for (unsigned int i = 0; i < N; i++)
-      elements[i] += other[i];
+      _elements[i] += other[i];
   }
 
   template <unsigned int N>
   void Vector<N>::operator-=(const Vector<N>& other) {
     for (unsigned int i = 0; i < N; i++)
-      elements[i] -= other[i];
+      _elements[i] -= other[i];
   }
 
   template <unsigned int N>
@@ -285,12 +285,12 @@ namespace engine::geometry {
 
   template <unsigned int N>
   auto Vector<N>::operator[](unsigned int i) const -> float {
-    return elements[i];
+    return _elements[i];
   }
 
   template <unsigned int N>
   auto Vector<N>::operator==(const Vector<N>& other) const -> bool {
-    return elements == other.elements;
+    return _elements == other._elements;
   }
 
   template <unsigned int N>
@@ -300,7 +300,7 @@ namespace engine::geometry {
 
   template <unsigned int N>
   auto Vector<N>::operator-() const -> Vector<N> {
-    Vector<N> res(elements);
+    Vector<N> res(_elements);
     for (auto& e : res)
       e = -e;
 
@@ -316,23 +316,23 @@ namespace engine::geometry {
   auto Vector<N>::operator+(const Vector<N>& other) const -> Vector<N> {
     Vector<N> res;
     for (unsigned int i = 0; i < N; i++)
-      res[i] = elements[i] + other[i];
+      res[i] = _elements[i] + other[i];
 
     return res;
   }
 
   template <unsigned int N>
   auto Vector<N>::operator-(const Vector<N>& other) const -> Vector<N> {
-    Vector<N> res(elements);
+    Vector<N> res(_elements);
     for (unsigned int i = 0; i < N; i++)
-      res[i] = elements[i] - other[i];
+      res[i] = _elements[i] - other[i];
 
     return res;
   }
 
   template <unsigned int N>
   auto Vector<N>::operator*(float scalar) const -> Vector<N> {
-    Vector<N> res(elements);
+    Vector<N> res(_elements);
     for (unsigned int i = 0; i < N; i++)
       res[i] *= scalar;
 
@@ -341,7 +341,7 @@ namespace engine::geometry {
 
   template <unsigned int N>
   auto Vector<N>::operator/(float scalar) const -> Vector<N> {
-    Vector<N> res(elements);
+    Vector<N> res(_elements);
     for (unsigned int i = 0; i < N; i++)
       res[i] /= scalar;
 
@@ -351,89 +351,89 @@ namespace engine::geometry {
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::x() const -> std::enable_if_t<(D >= 1), float> {
-    return elements[0];
+    return _elements[0];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::y() const -> std::enable_if_t<(D >= 2), float> {
-    return elements[1];
+    return _elements[1];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::z() const -> std::enable_if_t<(D >= 3), float> {
-    return elements[2];
+    return _elements[2];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::w() const -> std::enable_if_t<(D >= 4), float> {
-    return elements[3];
+    return _elements[3];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::r() const -> std::enable_if_t<(D >= 1), float> {
-    return elements[0];
+    return _elements[0];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::g() const -> std::enable_if_t<(D >= 2), float> {
-    return elements[1];
+    return _elements[1];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::b() const -> std::enable_if_t<(D >= 3), float> {
-    return elements[2];
+    return _elements[2];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::a() const -> std::enable_if_t<(D >= 4), float> {
-    return elements[3];
+    return _elements[3];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::s() const -> std::enable_if_t<(D >= 1), float> {
-    return elements[0];
+    return _elements[0];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::t() const -> std::enable_if_t<(D >= 2), float> {
-    return elements[1];
+    return _elements[1];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::p() const -> std::enable_if_t<(D >= 3), float> {
-    return elements[2];
+    return _elements[2];
   }
 
   template <unsigned int N>
   template <unsigned int D>
   auto Vector<N>::q() const -> std::enable_if_t<(D >= 4), float> {
-    return elements[3];
+    return _elements[3];
   }
 
   template <unsigned int N>
   [[nodiscard]] auto Vector<N>::begin() const -> const float* {
-    return elements.begin();
+    return _elements.begin();
   }
 
   template <unsigned int N>
   [[nodiscard]] auto Vector<N>::end() const -> const float* {
-    return elements.end();
+    return _elements.end();
   }
 
   template <unsigned int N>
   [[nodiscard]] auto Vector<N>::magnitude() const -> float {
     // mangnitude = distance between tip and origin
-    return elements.euclidean_distance(Point<N>());
+    return _elements.euclidean_distance(Point<N>());
   }
 
   template <unsigned int N>
@@ -449,7 +449,7 @@ namespace engine::geometry {
   auto Vector<N>::tip(Point<N> start) const -> Point<N> {
     Point<N> res;
     for (unsigned int i = 0; i < N; i++)
-      res[i] = start[i] + elements[i];
+      res[i] = start[i] + _elements[i];
 
     return res;
   }
@@ -458,7 +458,7 @@ namespace engine::geometry {
   auto Vector<N>::multiply_elementwise(const Vector<N>& other) const -> Vector<N> {
     Vector<N> res;
     for (unsigned int i = 0; i < N; i++)
-      res[i] = elements[i] * other[i];
+      res[i] = _elements[i] * other[i];
 
     return res;
   }
@@ -477,7 +477,7 @@ namespace engine::geometry {
   template <unsigned int N>
   template <unsigned int M>
   Vector<N>::operator Vector<M>() const {
-    return Vector<M>(Point<M>(elements));
+    return Vector<M>(Point<M>(_elements));
   }
 
   template <unsigned int N>
@@ -489,7 +489,7 @@ namespace engine::geometry {
 
   template <unsigned int N>
   [[nodiscard]] auto Vector<N>::to_json() const -> debug::JSON {
-    return elements.to_json();
+    return _elements.to_json();
   };
 
   /////////////////////

@@ -61,6 +61,14 @@ TEST(VectorTest, Constructor6) {
   ASSERT_THROW(Vector<2>(to, to), std::runtime_error);
 }
 
+TEST(VectorTest, Constructor7) {
+  std::array<float, 3> arr{0.3F, -0.6F, 0.99124F};
+  Vector<3> v(arr);
+  EXPECT_EQ(v[0], +0.3F);
+  EXPECT_EQ(v[1], -0.6F);
+  EXPECT_EQ(v[2], +0.99124F);
+}
+
 TEST(VectorTest, Assignment1) {
   Vector<2> vector1(3.2F, -2.4F);
   Vector<2> vector2(1.3F, 9.2F);

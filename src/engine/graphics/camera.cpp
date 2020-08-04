@@ -49,7 +49,7 @@ void Camera::move(Direction move_dir) {
   default:
     LOG_ERROR("Direction type not supported: " + std::to_string(move_dir));
   }
-  _transform.position += _movement_speed * displacement_dir;
+  _transform.position() += _movement_speed * displacement_dir;
 }
 
 void Camera::set_zoom(float zoom_level) {
@@ -88,7 +88,7 @@ auto Camera::view_matrix() const -> geometry::Matrix<4> {
     (std::array<float, 3>) geometry::Vector<3>(_transform.forward()) // (F_x, F_y, F_z)
   };
 
-  return base_vectors_in_world_space.translate(-_transform.position);
+  return base_vectors_in_world_space.translate(-_transform.position());
 }
 
 auto Camera::projection_matrix(ProjectionType projection_type) const -> geometry::Matrix<4> {

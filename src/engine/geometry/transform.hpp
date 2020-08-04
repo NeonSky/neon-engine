@@ -17,6 +17,10 @@ namespace engine::geometry {
     void set_rotation(float yaw, float pitch, float roll);
     void flip_rotation();
 
+    [[nodiscard]] auto position() -> Vector<3>&;
+    [[nodiscard]] auto rotation() -> Vector<3>&;
+    [[nodiscard]] auto scale() -> Vector<3>&;
+
     // Accessors
     static const Vector<4> world_right;
     static const Vector<4> world_up;
@@ -33,11 +37,15 @@ namespace engine::geometry {
     [[nodiscard]] auto pitch() const -> float;
     [[nodiscard]] auto roll() const -> float;
 
-    Vector<3> position;
-    Vector<3> rotation;
-    Vector<3> scale;
+    [[nodiscard]] auto position() const -> const Vector<3>&;
+    [[nodiscard]] auto rotation() const -> const Vector<3>&;
+    [[nodiscard]] auto scale() const -> const Vector<3>&;
 
   private:
+    Vector<3> _position;
+    Vector<3> _rotation;
+    Vector<3> _scale;
+
     // Accessors
     [[nodiscard]] auto rotation_matrix() const -> Matrix<4>;
     [[nodiscard]] auto rotation_matrix_slow() const -> Matrix<4>;

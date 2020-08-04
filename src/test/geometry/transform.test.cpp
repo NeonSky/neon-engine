@@ -5,15 +5,15 @@ using namespace engine::geometry;
 
 TEST(TransformTest, Constructor1) {
   Transform t;
-  EXPECT_EQ(Vector<3>(), t.position);
-  EXPECT_EQ(Vector<3>(), t.rotation);
-  EXPECT_EQ(Vector<3>(1.0F, 1.0F, 1.0F), t.scale);
+  EXPECT_EQ(Vector<3>(), t.position());
+  EXPECT_EQ(Vector<3>(), t.rotation());
+  EXPECT_EQ(Vector<3>(1.0F, 1.0F, 1.0F), t.scale());
 }
 
 TEST(TransformTest, Constructor2) {
   Vector<3> v(1.2f, 3.5f, -0.5f);
   Transform t(v);
-  EXPECT_EQ(v, t.position);
+  EXPECT_EQ(v, t.position());
 }
 
 TEST(TransformTest, Constructor3) {
@@ -23,9 +23,9 @@ TEST(TransformTest, Constructor3) {
 
   Transform t(v1, v2, v3);
 
-  EXPECT_EQ(t.position, v1);
-  EXPECT_EQ(t.rotation, v2);
-  EXPECT_EQ(t.scale, v3);
+  EXPECT_EQ(t.position(), v1);
+  EXPECT_EQ(t.rotation(), v2);
+  EXPECT_EQ(t.scale(), v3);
 }
 
 TEST(TransformTest, VectorBasis1) {
