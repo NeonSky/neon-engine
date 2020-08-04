@@ -97,10 +97,11 @@ auto Transform::right() const -> Vector<3> {
   return _scale;
 }
 
-// https://www.wikiwand.com/en/Euler_angles
-// https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
-//
-// Here we apply y-rotation (yaw), then x-rotation (pitch), and finally z-rotation (roll).
+/// @image html geometry/img1.png
+/// @see Image source: https://tinyurl.com/y6fo7ps7
+/// @see https://www.wikiwand.com/en/Rotation_matrix
+/// @see https://www.wikiwand.com/en/Euler_angles
+/// @see https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
 auto Transform::rotation_matrix_slow() const -> Matrix<4> {
 
   // Right-handed matrices: https://www.wikiwand.com/en/Rotation_matrix
