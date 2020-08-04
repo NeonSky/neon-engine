@@ -163,18 +163,24 @@ TEST(VectorTest, Scales2) {
 }
 
 TEST(VectorTest, InnerProduct1) {
+  Vector<1> vector1(0.9627590F);
+  Vector<1> vector2(1.0F);
+  EXPECT_EQ(vector1.inner_product(vector2), 0.9627590F);
+}
+
+TEST(VectorTest, InnerProduct2) {
   Vector<2> vector1(1.0F, 2.0F);
   Vector<2> vector2(1.0F, 1.0F);
   EXPECT_EQ(vector1.inner_product(vector2), 3.0F);
 }
 
-TEST(VectorTest, InnerProduct2) {
+TEST(VectorTest, InnerProduct3) {
   Vector<3> vector1(1.0F, 0.0F, 2.0F);
   Vector<3> vector2(1.0F, 1.0F, 1.5F);
   EXPECT_EQ(vector1.inner_product(vector2), 4.0F);
 }
 
-TEST(VectorTest, InnerProduct4) {
+TEST(VectorTest, InnerProduct5) {
   Vector<4> vector1(1.0F, 0.0F, 2.0F, -4.0F);
   Vector<4> vector2(1.0F, 1.0F, 0.5F, 2.0F);
   EXPECT_EQ(vector1.inner_product(vector2), -6.0F);

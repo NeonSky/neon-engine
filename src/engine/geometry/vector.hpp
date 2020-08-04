@@ -466,7 +466,7 @@ namespace engine::geometry {
   template <unsigned int N>
   auto Vector<N>::inner_product(const Vector<N>& other) const -> float {
     Vector<N> v = multiply_elementwise(other);
-    return std::accumulate(v.begin(), v.end(), 0, std::plus<>());
+    return std::accumulate(v.begin(), v.end(), 0.0F, std::plus<>());
   }
 
   template <unsigned int N>
