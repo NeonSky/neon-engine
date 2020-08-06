@@ -54,7 +54,7 @@ void DebugDrawer::render(const geometry::Matrix<4>& view_projection_matrix) {
 
   glBindVertexArray(vao);
 
-  this->shader.set_uniform_mat4("modelViewProjectionMatrix", view_projection_matrix);
+  this->shader.set_uniform_mat4("model_view_projection", view_projection_matrix);
 
   glLineWidth(this->line_width);
   glDrawArrays(GL_LINES, 0, 6 * this->line_queue.size()); // NOTE: 6 floats per line
@@ -62,14 +62,18 @@ void DebugDrawer::render(const geometry::Matrix<4>& view_projection_matrix) {
 }
 
 void DebugDrawer::draw_line(const geometry::Vector<3>& from, const geometry::Vector<3>& to) {
-  this->line_queue.emplace_back(from, to);
+  draw_line(from, to, geometry::Vector<3>(1.0F, 1.0F, 1.0F));
+}
+
+void DebugDrawer::draw_line(const geometry::Vector<3>& from, const geometry::Vector<3>& to, const geometry::Vector<3>& color) {
+  this->line_queue.emplace_back(from, to, color);
 }
 
 void DebugDrawer::draw_transform(const geometry::Transform& transform) {
   geometry::Vector<3> from = transform.position();
-  this->line_queue.emplace_back(from, from + transform.right(), geometry::Vector<3>(1.0F, 0.0F, 0.0F));
-  this->line_queue.emplace_back(from, from + transform.up(), geometry::Vector<3>(0.0F, 1.0F, 0.0F));
-  this->line_queue.emplace_back(from, from + transform.forward(), geometry::Vector<3>(0.0F, 0.0F, 1.0F));
+  this->line_queue.emplace_back(from, from + transform.scale().x() * transform.right(), geometry::Vector<3>(1.0F, 0.0F, 0.0F));
+  this->line_queue.emplace_back(from, from + transform.scale().y() * transform.up(), geometry::Vector<3>(0.0F, 1.0F, 0.0F));
+  this->line_queue.emplace_back(from, from + transform.scale().z() * transform.forward(), geometry::Vector<3>(0.0F, 0.0F, 1.0F));
 }
 
 void DebugDrawer::draw_rectangle(const geometry::Rectangle& rectangle) {

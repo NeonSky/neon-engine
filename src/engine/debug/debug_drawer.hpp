@@ -30,6 +30,7 @@ namespace engine::debug {
     // Mutators
     void render(const geometry::Matrix<4>& view_projection_matrix);
     void draw_line(const geometry::Vector<3>& from, const geometry::Vector<3>& to);
+    void draw_line(const geometry::Vector<3>& from, const geometry::Vector<3>& to, const geometry::Vector<3>& color);
     void draw_transform(const geometry::Transform& transform);
     void draw_rectangle(const geometry::Rectangle& rectangle);
 
