@@ -169,7 +169,7 @@ TEST(TransformTest, Matrix1) {
                           {0.0F, 0.0F, 0.0F, 1.0F},
                         })));
 
-  t.set_rotation(pi, 0, 0);
+  t.set_rotation(0, 0, pi);
   EXPECT_EQ(t.matrix(), (Matrix<4>({
                           {-2.0F, 0.0F, 0.0F, 0.0F},
                           {0.0F, 2.0F, 0.0F, 0.0F},

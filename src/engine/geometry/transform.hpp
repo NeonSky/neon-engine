@@ -46,7 +46,7 @@ namespace engine::geometry {
     /// The new rotation will rotate by \p yaw around the yaw axis, \p pitch around the pitch axis, and \p roll around the roll axis.
     ///
     /// @see https://www.wikiwand.com/en/Aircraft_principal_axes
-    void set_rotation(float yaw, float pitch, float roll);
+    void set_rotation(float roll, float pitch, float yaw);
     void flip_rotation();
 
     [[nodiscard]] auto position() -> Vector<3>&;

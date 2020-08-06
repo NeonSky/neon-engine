@@ -78,7 +78,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 
   pitch = std::clamp(pitch, -geometry::pi / 2.0F, geometry::pi / 2.0F);
 
-  _transform.set_rotation(yaw, pitch, 0.0F);
+  _transform.set_rotation(0.0F, pitch, yaw);
 }
 
 auto Camera::view_matrix() const -> geometry::Matrix<4> {

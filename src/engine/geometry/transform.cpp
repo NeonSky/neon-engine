@@ -24,7 +24,7 @@ Transform::Transform(Vector<3> position, Vector<3> rotation, Vector<3> scale)
           _rotation(rotation),
           _scale(scale) {}
 
-void Transform::set_rotation(float yaw, float pitch, float roll) {
+void Transform::set_rotation(float roll, float pitch, float yaw) {
   _rotation = Vector<3>(pitch, yaw, roll);
 }
 
@@ -36,7 +36,7 @@ void Transform::flip_rotation() {
   float pitch = -std::asin(m[1][2]);
   float roll  = -std::atan2(-m[1][0], m[1][1]);
 
-  set_rotation(yaw, pitch, roll);
+  set_rotation(roll, pitch, yaw);
 }
 
 [[nodiscard]] auto Transform::position() const -> const Vector<3>& {
