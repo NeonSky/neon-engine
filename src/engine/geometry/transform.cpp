@@ -56,8 +56,8 @@ auto Transform::operator+(const Transform& other) const -> Transform {
 }
 
 auto Transform::matrix() const -> Matrix<4> {
-  // Scale -> Rotate -> Translate
-  return (Matrix<4>().scale(_scale) * rotation_matrix()).translate(_position);
+  // 1. Scale -> 2. Rotate -> 3. Translate
+  return (rotation_matrix() * Matrix<4>().scale(_scale)).translate(_position);
 }
 
 auto Transform::forward() const -> Vector<3> {
@@ -115,6 +115,11 @@ auto Transform::rotation_matrix_slow() const -> Matrix<4> {
   // This changes the right-handed rotation matrices in the following ways:
   //   cos(-t) = cos(t)
   //   sin(-t) = -sin(t)
+  //
+  // Alternatively, you can take the inverse of the matrices which is the transpose since they are orthonormal.
+  //
+  // It might seem weird that y- and z-rotation has to be inverted as well.
+  // But remember, pos (1, 1, 1) means different things for the different systems.
 
   float x = _rotation.x();
   Matrix<3> rot_x{

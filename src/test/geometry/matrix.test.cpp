@@ -691,7 +691,7 @@ TEST(MatrixTest, Translates1) {
     {0.0F, 0.0F, 1.0F},
   };
   Matrix<3> expected{
-    {2.0F, 0.0F, 4.0F},
+    {2.0F, 0.0F, 2.0F},
     {0.0F, 1.0F, 0.0F},
     {0.0F, 0.0F, 1.0F},
   };
@@ -705,8 +705,8 @@ TEST(MatrixTest, Translates2) {
     {0.0F, 0.0F, 1.0F},
   };
   Matrix<3> expected{
-    {1.5F, 0.0F, 3.0F},
-    {0.0F, 3.0F, -3.6F},
+    {1.5F, 0.0F, 2.0F},
+    {0.0F, 3.0F, -1.2F},
     {0.0F, 0.0F, 1.0F},
   };
   EXPECT_EQ(m.translate({2.0F, -1.2F}), expected);
@@ -719,9 +719,9 @@ TEST(MatrixTest, Translates3) {
     {-22.0F, 2.3F, 1.0F},
   };
   Matrix<3> expected{
-    {-2.7F, 5.0F, 43.15F},
-    {8.0F, 1.3F, -31.06F},
-    {-22.0F, 2.3F, 108.74F},
+    {96.3F, -5.35F, 7.5F},
+    {-75.6F, 10.04F, 3.8F},
+    {-22.0F, 2.3F, 1.0F},
   };
   EXPECT_EQ(m.translate({-4.5F, 3.8F}), expected);
 }
@@ -776,8 +776,8 @@ TEST(MatrixTest, Scales3) {
     {8.0F, 1.3F},
   };
   Matrix<2, 2> expected{
-    {-5.4F, 15.0F},
-    {16.0F, 3.9F},
+    {-5.4F, 10.0F},
+    {24.0F, 3.9F},
   };
   EXPECT_EQ(m.scale({2.0F, 3.0F}), expected);
 }
@@ -790,10 +790,10 @@ TEST(MatrixTest, Scales4) {
     {1.0F, 1.0F, 1.0F, 1.0F},
   };
   Matrix<4> expected{
-    {2.0F, 0.8F, -1.0F, 1.0F},
-    {2.0F, 0.8F, -1.0F, 1.0F},
-    {2.0F, 0.8F, -1.0F, 1.0F},
-    {2.0F, 0.8F, -1.0F, 1.0F},
+    {2.0F, 2.0F, 2.0F, 2.0F},
+    {0.8F, 0.8F, 0.8F, 0.8F},
+    {-1.0F, -1.0F, -1.0F, -1.0F},
+    {1.0F, 1.0F, 1.0F, 1.0F},
   };
   EXPECT_EQ(m.scale(Vector<3>(2.0F, 0.8F, -1.0F)), expected);
 }

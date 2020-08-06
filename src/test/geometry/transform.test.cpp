@@ -96,6 +96,22 @@ TEST(TransformTest, VectorBasis8) {
   EXPECT_EQ(t.forward(), Vector<3>(0.0F, 0.0F, 1.0F));
 }
 
+TEST(TransformTest, VectorBasis9) {
+  Transform t(Vector<3>(), Vector<3>(pi / 2.0F, -pi / 2.0F, 0.0F));
+
+  EXPECT_EQ(t.right(), Vector<3>(0.0F, 0.0F, -1.0F));
+  EXPECT_EQ(t.up(), Vector<3>(-1.0F, 0.0F, 0.0F));
+  EXPECT_EQ(t.forward(), Vector<3>(0.0F, 1.0F, 0.0F));
+}
+
+TEST(TransformTest, VectorBasis10) {
+  Transform t(Vector<3>(), Vector<3>(pi / 2.0F, pi / 2.0F, pi / 2.0F));
+
+  EXPECT_EQ(t.right(), Vector<3>(-1.0F, 0.0F, 0.0F));
+  EXPECT_EQ(t.up(), Vector<3>(0.0F, 0.0F, 1.0F));
+  EXPECT_EQ(t.forward(), Vector<3>(0.0F, 1.0F, 0.0F));
+}
+
 TEST(TransformTest, FlipRotation1) {
   Transform t(Vector<3>(-4.2F, 3.2F, -0.3F));
 
@@ -134,4 +150,86 @@ TEST(TransformTest, FlipRotation2) {
   EXPECT_EQ(t.right(), Vector<3>(1.0F, 0.0F, 0.0F));
   EXPECT_EQ(t.up(), Vector<3>(0.0F, sqrtf(0.5), -sqrtf(0.5)));
   EXPECT_EQ(t.forward(), Vector<3>(0.0F, sqrtf(0.5), sqrtf(0.5)));
+}
+
+TEST(TransformTest, Matrix1) {
+  Transform t;
+  EXPECT_EQ(t.matrix(), (Matrix<4>({
+                          {1.0F, 0.0F, 0.0F, 0.0F},
+                          {0.0F, 1.0F, 0.0F, 0.0F},
+                          {0.0F, 0.0F, 1.0F, 0.0F},
+                          {0.0F, 0.0F, 0.0F, 1.0F},
+                        })));
+
+  t.scale() = Vector<3>(2.0F, 2.0F, 2.0F);
+  EXPECT_EQ(t.matrix(), (Matrix<4>({
+                          {2.0F, 0.0F, 0.0F, 0.0F},
+                          {0.0F, 2.0F, 0.0F, 0.0F},
+                          {0.0F, 0.0F, 2.0F, 0.0F},
+                          {0.0F, 0.0F, 0.0F, 1.0F},
+                        })));
+
+  t.set_rotation(pi, 0, 0);
+  EXPECT_EQ(t.matrix(), (Matrix<4>({
+                          {-2.0F, 0.0F, 0.0F, 0.0F},
+                          {0.0F, 2.0F, 0.0F, 0.0F},
+                          {0.0F, 0.0F, -2.0F, 0.0F},
+                          {0.0F, 0.0F, 0.0F, 1.0F},
+                        })));
+
+  t.position() = Vector<3>(1.0F, 1.0F, 1.0F);
+  EXPECT_EQ(t.matrix(), (Matrix<4>({
+                          {-2.0F, 0.0F, 0.0F, 1.0F},
+                          {0.0F, 2.0F, 0.0F, 1.0F},
+                          {0.0F, 0.0F, -2.0F, 1.0F},
+                          {0.0F, 0.0F, 0.0F, 1.0F},
+                        })));
+}
+
+TEST(TransformTest, Matrix2) {
+  Transform t;
+  t.scale()    = Vector<3>(2.0F, 0.5F, 1.0F);
+  t.rotation() = Vector<3>(0.0F, 0.0F, pi / 2.0F);
+  t.position() = Vector<3>(1.0F, 1.0F, 1.0F);
+
+  EXPECT_EQ(t.matrix(), (Matrix<4>({
+                          {+0.0F, +0.5F, +0.0F, +1.0F},
+                          {-2.0F, +0.0F, +0.0F, +1.0F},
+                          {+0.0F, +0.0F, +1.0F, +1.0F},
+                          {+0.0F, +0.0F, +0.0F, +1.0F},
+                        })));
+}
+
+TEST(TransformTest, Matrix3) {
+  // Cube coordinates
+  Vector<3> left_down_back(-1.0F, -1.0F, -1.0F);
+  Vector<3> right_down_back(1.0F, -1.0F, -1.0F);
+  Vector<3> left_up_back(-1.0F, 1.0F, -1.0F);
+  Vector<3> right_up_back(1.0F, 1.0F, -1.0F);
+  Vector<3> left_down_front(-1.0F, -1.0F, 1.0F);
+  Vector<3> right_down_front(1.0F, -1.0F, 1.0F);
+  Vector<3> left_up_front(-1.0F, 1.0F, 1.0F);
+  Vector<3> right_up_front(1.0F, 1.0F, 1.0F);
+
+  Transform t;
+  t.rotation() = Vector<3>(0.0F, pi, 0.0F);
+  t.position() = Vector<3>(0.5F, 0.5F, 0.5F);
+  t.scale()    = Vector<3>(0.5F, 0.5F, 0.5F);
+
+  EXPECT_EQ(t.matrix() * Vector<4>(left_down_back, 1.0F),
+            Vector<4>(1.0F, 0.0F, 1.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(right_down_back, 1.0F),
+            Vector<4>(0.0F, 0.0F, 1.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(left_up_back, 1.0F),
+            Vector<4>(1.0F, 1.0F, 1.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(right_up_back, 1.0F),
+            Vector<4>(0.0F, 1.0F, 1.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(left_down_front, 1.0F),
+            Vector<4>(1.0F, 0.0F, 0.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(right_down_front, 1.0F),
+            Vector<4>(0.0F, 0.0F, 0.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(left_up_front, 1.0F),
+            Vector<4>(1.0F, 1.0F, 0.0F, 1.0F));
+  EXPECT_EQ(t.matrix() * Vector<4>(right_up_front, 1.0F),
+            Vector<4>(0.0F, 1.0F, 0.0F, 1.0F));
 }

@@ -15,6 +15,7 @@ namespace engine::geometry {
   /// @todo add is_diagonal() https://www.wikiwand.com/en/Diagonal_matrix
   /// @todo add adjoint()
   /// @todo add swap_columns()
+  /// @todo add scale(scalar) which only multiplies the bottom-right element
   /// @see https://www.wikiwand.com/en/Matrix_(mathematics)
   template <unsigned int R, unsigned int C = R>
   class Matrix {
@@ -615,7 +616,7 @@ namespace engine::geometry {
     for (unsigned int r = 0; r < N; r++)
       m[r][C - 1] = translation[r];
 
-    return (*this) * m;
+    return m * (*this);
   }
 
   // See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
@@ -658,7 +659,7 @@ namespace engine::geometry {
 
     Matrix<4> m = Matrix<3>(m_xz * m_z * rot_z * inv_m_z * inv_m_xz);
 
-    return (*this) * m;
+    return m * (*this);
   }
 
   template <unsigned int R, unsigned int C>
@@ -668,7 +669,7 @@ namespace engine::geometry {
     for (unsigned int i = 0; i < N; i++)
       m[i][i] = scale[i];
 
-    return (*this) * m;
+    return m * (*this);
   }
 
 }
