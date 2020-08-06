@@ -14,7 +14,8 @@ namespace engine::geometry {
   /// 2. Rotation
   /// 3. Translation
   ///
-  /// @todo Add to_json
+  /// @todo set_rotation should take Angles
+  /// @todo flip_rotation needs more tests.
   /// @see https://www.wikiwand.com/en/Transformation_(function)
   /// @see https://www.wikiwand.com/en/Affine_transformation
   class Transform {
@@ -64,6 +65,24 @@ namespace engine::geometry {
     auto operator+(const Transform& other) const -> Transform;
 
     [[nodiscard]] auto matrix() const -> Matrix<4>;
+
+    /// @brief Produces a rotation matrix from the current rotation.
+    ///
+    /// Here we apply z-rotation (roll), then x-rotation (pitch), and finally y-rotation (yaw).
+    [[nodiscard]] auto rotation_matrix() const -> Matrix<4>;
+
+    /// @brief Produces a rotation matrix from the current rotation.
+    ///
+    /// Here we apply y-rotation (yaw), then x-rotation (pitch), and finally z-rotation (roll).
+    ///
+    /// @image html geometry/img1.png
+    /// @see Image source: https://tinyurl.com/y6fo7ps7
+    /// @see https://www.wikiwand.com/en/Rotation_matrix
+    /// @see https://www.wikiwand.com/en/Euler_angles
+    /// @see https://www.wikiwand.com/en/Aircraft_principal_axes
+    /// @see https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
+    [[nodiscard]] auto rotation_matrix_slow() const -> Matrix<4>;
+
     [[nodiscard]] auto forward() const -> Vector<3>;
     [[nodiscard]] auto up() const -> Vector<3>;
     [[nodiscard]] auto right() const -> Vector<3>;
@@ -76,6 +95,8 @@ namespace engine::geometry {
     [[nodiscard]] auto rotation() const -> const Vector<3>&;
     [[nodiscard]] auto scale() const -> const Vector<3>&;
 
+    [[nodiscard]] auto to_json() const -> debug::JSON;
+
     /// @}
 
   private:
@@ -84,21 +105,6 @@ namespace engine::geometry {
     Vector<3> _position;
     Vector<3> _rotation;
     Vector<3> _scale;
-    /// @}
-
-    /// @name Accessors
-    /// @{
-
-    /// @brief Produces a rotation matrix from the current rotation.
-    ///
-    /// Here we apply y-rotation (yaw), then x-rotation (pitch), and finally z-rotation (roll).
-    [[nodiscard]] auto rotation_matrix() const -> Matrix<4>;
-
-    /// @brief Produces a rotation matrix from the current rotation.
-    ///
-    /// Here we apply y-rotation (yaw), then x-rotation (pitch), and finally z-rotation (roll).
-    [[nodiscard]] auto rotation_matrix_slow() const -> Matrix<4>;
-
     /// @}
   };
 }

@@ -28,7 +28,6 @@ void Transform::set_rotation(float yaw, float pitch, float roll) {
   _rotation = Vector<3>(pitch, yaw, roll);
 }
 
-// TODO: Needs more tests.
 void Transform::flip_rotation() {
   Matrix<4> m = rotation_matrix().rotate(Angle(pi, Angle::Unit::RADIANS), engine::geometry::Transform::world_up);
 
@@ -97,11 +96,17 @@ auto Transform::right() const -> Vector<3> {
   return _scale;
 }
 
-/// @image html geometry/img1.png
-/// @see Image source: https://tinyurl.com/y6fo7ps7
-/// @see https://www.wikiwand.com/en/Rotation_matrix
-/// @see https://www.wikiwand.com/en/Euler_angles
-/// @see https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
+auto Transform::to_json() const -> debug::JSON {
+  debug::JSON json;
+  json["position"]         = _position.to_json();
+  json["rotation"]         = _rotation.to_json();
+  json["scale"]            = _scale.to_json();
+  json["debug"]["right"]   = right().to_json();
+  json["debug"]["up"]      = up().to_json();
+  json["debug"]["forward"] = forward().to_json();
+  return json;
+}
+
 auto Transform::rotation_matrix_slow() const -> Matrix<4> {
 
   // Right-handed matrices: https://www.wikiwand.com/en/Rotation_matrix
