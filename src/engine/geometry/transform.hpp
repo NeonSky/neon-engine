@@ -62,8 +62,6 @@ namespace engine::geometry {
     static const Vector<4> world_up;
     static const Vector<4> world_forward;
 
-    auto operator+(const Transform& other) const -> Transform;
-
     [[nodiscard]] auto matrix() const -> Matrix<4>;
 
     /// @brief Produces a rotation matrix from the current rotation.

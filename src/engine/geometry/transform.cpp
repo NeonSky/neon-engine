@@ -51,10 +51,6 @@ void Transform::flip_rotation() {
   return _scale;
 }
 
-auto Transform::operator+(const Transform& other) const -> Transform {
-  return Transform(_position + other._position, _rotation + other._rotation, _scale + other._scale);
-}
-
 auto Transform::matrix() const -> Matrix<4> {
   // 1. Scale -> 2. Rotate -> 3. Translate
   return (rotation_matrix() * Matrix<4>().scale(_scale)).translate(_position);

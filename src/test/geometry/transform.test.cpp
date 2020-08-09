@@ -26,6 +26,10 @@ TEST(TransformTest, Constructor3) {
   EXPECT_EQ(t.position(), v1);
   EXPECT_EQ(t.rotation(), v2);
   EXPECT_EQ(t.scale(), v3);
+
+  EXPECT_EQ(std::as_const(t).position(), v1);
+  EXPECT_EQ(std::as_const(t).rotation(), v2);
+  EXPECT_EQ(std::as_const(t).scale(), v3);
 }
 
 TEST(TransformTest, VectorBasis1) {
@@ -110,6 +114,14 @@ TEST(TransformTest, VectorBasis10) {
   EXPECT_EQ(t.right(), Vector<3>(-1.0F, 0.0F, 0.0F));
   EXPECT_EQ(t.up(), Vector<3>(0.0F, 0.0F, 1.0F));
   EXPECT_EQ(t.forward(), Vector<3>(0.0F, 1.0F, 0.0F));
+}
+
+TEST(TransformTest, YawPitchRoll1) {
+  Transform t(Vector<3>(), Vector<3>(0.01F, pi / 2.0F, -3.0F * pi / 4.0F));
+
+  EXPECT_EQ(t.pitch(), 0.01F);
+  EXPECT_EQ(t.yaw(), pi / 2.0F);
+  EXPECT_EQ(t.roll(), -3.0F * pi / 4.0F);
 }
 
 TEST(TransformTest, FlipRotation1) {
@@ -232,4 +244,120 @@ TEST(TransformTest, Matrix3) {
             Vector<4>(1.0F, 1.0F, 0.0F, 1.0F));
   EXPECT_EQ(t.matrix() * Vector<4>(right_up_front, 1.0F),
             Vector<4>(0.0F, 1.0F, 0.0F, 1.0F));
+}
+
+TEST(TransformTest, RotationMatrix1) {
+  Transform t;
+  t.rotation() = Vector<3>(0.0F, 0.0F, 0.0F);
+
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +1.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+}
+
+TEST(TransformTest, RotationMatrix2) {
+  Transform t;
+
+  t.rotation() = Vector<3>(pi / 2.0F, 0.0F, 0.0F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +1.0F, +0.0F},
+                                   {+0.0F, -1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+
+  t.rotation() = Vector<3>(pi, 0.0F, 0.0F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, -1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, -1.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+}
+
+TEST(TransformTest, RotationMatrix3) {
+  Transform t;
+
+  t.rotation() = Vector<3>(0.0F, pi / 2.0F, 0.0F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+0.0F, +0.0F, -1.0F, +0.0F},
+                                   {+0.0F, +1.0F, +0.0F, +0.0F},
+                                   {+1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+
+  t.rotation() = Vector<3>(0.0F, pi, 0.0F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {-1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, -1.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+}
+
+TEST(TransformTest, RotationMatrix4) {
+  Transform t;
+
+  t.rotation() = Vector<3>(0.0F, 0.0F, pi / 2.0F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+0.0F, +1.0F, +0.0F, +0.0F},
+                                   {-1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +1.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+
+  t.rotation() = Vector<3>(0.0F, 0.0F, pi);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {-1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, -1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +1.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+}
+
+TEST(TransformTest, RotationMatrix5) {
+  Transform t;
+  t.rotation() = Vector<3>(0.0F, -pi / 2.0F, -pi / 2.0F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+0.0F, +0.0F, +1.0F, +0.0F},
+                                   {+1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+}
+
+TEST(TransformTest, RotationMatrix6) {
+  Transform t;
+  t.rotation() = Vector<3>(pi / 2.0F, pi, 2.0F * pi * 0.75F);
+  EXPECT_EQ(t.rotation_matrix(), (Matrix<4>({
+                                   {+0.0F, +1.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +1.0F, +0.0F},
+                                   {+1.0F, +0.0F, +0.0F, +0.0F},
+                                   {+0.0F, +0.0F, +0.0F, +1.0F},
+                                 })));
+  EXPECT_EQ(t.rotation_matrix_slow(), t.rotation_matrix());
+}
+
+TEST(TransformTest, ConvertsToJSON1) {
+  Transform t(Vector<3>(1, 2, 3), Vector<3>(0, -pi, pi), Vector<3>(1, 2, 3));
+  JSON json;
+  json["position"]         = {1.0F, 2.0F, 3.0F};
+  json["rotation"]         = {0, -pi, pi};
+  json["scale"]            = {1.0F, 2.0F, 3.0F};
+  json["debug"]["right"]   = t.right().to_json();
+  json["debug"]["up"]      = t.up().to_json();
+  json["debug"]["forward"] = t.forward().to_json();
+  EXPECT_EQ(t.to_json(), json);
 }
