@@ -58,10 +58,6 @@ namespace engine::geometry {
     /// @{
 
     // Accessors
-    static const Vector<4> world_right;
-    static const Vector<4> world_up;
-    static const Vector<4> world_forward;
-
     [[nodiscard]] auto matrix() const -> Matrix<4>;
 
     /// @brief Produces a rotation matrix from the current rotation.

@@ -1,14 +1,11 @@
 #include "transform.hpp"
 
 #include "angle.hpp"
+#include "orientation.hpp"
 
 #include <utility>
 
 using namespace engine::geometry;
-
-const Vector<4> Transform::world_right   = Vector<4>(1.0F, 0.0F, 0.0F, 0.0F);
-const Vector<4> Transform::world_up      = Vector<4>(0.0F, 1.0F, 0.0F, 0.0F);
-const Vector<4> Transform::world_forward = Vector<4>(0.0F, 0.0F, 1.0F, 0.0F);
 
 Transform::Transform()
         : Transform(Vector<3>()) {}
@@ -29,7 +26,7 @@ void Transform::set_rotation(float roll, float pitch, float yaw) {
 }
 
 void Transform::flip_rotation() {
-  Matrix<4> m = rotation_matrix().rotate(Angle(pi, Angle::Unit::RADIANS), engine::geometry::Transform::world_up);
+  Matrix<4> m = rotation_matrix().rotate(Angle(pi, Angle::Unit::RADIANS), Orientation::world_up);
 
   // NOTE: we negate each angle due to rotation_matrix() negating the angles.
   float yaw   = -std::atan2(-m[0][2], m[2][2]);
@@ -57,15 +54,15 @@ auto Transform::matrix() const -> Matrix<4> {
 }
 
 auto Transform::forward() const -> Vector<3> {
-  return rotation_matrix() * engine::geometry::Transform::world_forward;
+  return rotation_matrix() * Orientation::world_forward;
 }
 
 auto Transform::up() const -> Vector<3> {
-  return rotation_matrix() * engine::geometry::Transform::world_up;
+  return rotation_matrix() * Orientation::world_up;
 }
 
 auto Transform::right() const -> Vector<3> {
-  return rotation_matrix() * engine::geometry::Transform::world_right;
+  return rotation_matrix() * Orientation::world_right;
 }
 
 [[nodiscard]] auto Transform::yaw() const -> float {
