@@ -93,7 +93,7 @@ namespace engine::geometry {
     [[nodiscard]] auto rotation() const -> const Vector<3>&;
     [[nodiscard]] auto scale() const -> const Vector<3>&;
 
-    [[nodiscard]] auto to_json() const -> debug::JSON;
+    [[nodiscard]] auto to_json(bool debug = false) const -> debug::JSON;
 
     /// @}
 

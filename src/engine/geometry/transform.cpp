@@ -92,14 +92,18 @@ auto Transform::right() const -> Vector<3> {
   return _scale;
 }
 
-auto Transform::to_json() const -> debug::JSON {
+auto Transform::to_json(bool debug) const -> debug::JSON {
   debug::JSON json;
-  json["position"]         = _position.to_json();
-  json["rotation"]         = _rotation.to_json();
-  json["scale"]            = _scale.to_json();
-  json["debug"]["right"]   = right().to_json();
-  json["debug"]["up"]      = up().to_json();
-  json["debug"]["forward"] = forward().to_json();
+  json["position"] = _position.to_json();
+  json["rotation"] = _rotation.to_json();
+  json["scale"]    = _scale.to_json();
+
+  if (debug) {
+    json["debug"]["right"]   = right().to_json();
+    json["debug"]["up"]      = up().to_json();
+    json["debug"]["forward"] = forward().to_json();
+  }
+
   return json;
 }
 

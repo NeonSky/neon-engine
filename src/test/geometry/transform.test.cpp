@@ -353,11 +353,13 @@ TEST(TransformTest, RotationMatrix6) {
 TEST(TransformTest, ConvertsToJSON1) {
   Transform t(Vector<3>(1, 2, 3), Vector<3>(0, -pi, pi), Vector<3>(1, 2, 3));
   JSON json;
-  json["position"]         = {1.0F, 2.0F, 3.0F};
-  json["rotation"]         = {0, -pi, pi};
-  json["scale"]            = {1.0F, 2.0F, 3.0F};
+  json["position"] = {1.0F, 2.0F, 3.0F};
+  json["rotation"] = {0, -pi, pi};
+  json["scale"]    = {1.0F, 2.0F, 3.0F};
+  EXPECT_EQ(t.to_json(), json);
+
   json["debug"]["right"]   = t.right().to_json();
   json["debug"]["up"]      = t.up().to_json();
   json["debug"]["forward"] = t.forward().to_json();
-  EXPECT_EQ(t.to_json(), json);
+  EXPECT_EQ(t.to_json(true), json);
 }
