@@ -301,8 +301,6 @@ TEST(MatrixTest, Inverse3) {
                          {2, 42, -10, -40},
                        } /
                        -110.0F; // -110 is the determinant for m
-  LOG_DEBUG(m.inverse().to_json().dump(2));
-  LOG_DEBUG(m.cofactor_matrix().to_json().dump(2));
   EXPECT_EQ(m.inverse(), expected);
 }
 
@@ -740,6 +738,66 @@ TEST(MatrixTest, Translates4) {
     {0, 0, 0, 1},
   };
   EXPECT_EQ(m.translate({-4.5F, 3.8F, 2.4F}), expected);
+}
+
+TEST(MatrixTest, Rotates1) {
+  Matrix<4> m{
+    {1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
+  };
+  Matrix<4> expected{
+    {1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+    {0.0F, -1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
+  };
+  m = m.rotate(Angle(90, Angle::Unit::DEGREES), Vector<3>(1.0F, 0.0F, 0.0F));
+  EXPECT_EQ(m, expected);
+
+  for (auto& e : m)
+    EXPECT_FALSE(std::isnan(e));
+}
+
+TEST(MatrixTest, Rotates2) {
+  Matrix<4> m{
+    {1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
+  };
+  Matrix<4> expected{
+    {0.0F, 0.0F, -1.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F, 0.0F},
+    {1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
+  };
+  m = m.rotate(Angle(90, Angle::Unit::DEGREES), Vector<3>(0.0F, 1.0F, 0.0F));
+  EXPECT_EQ(m, expected);
+
+  for (auto& e : m)
+    EXPECT_FALSE(std::isnan(e));
+}
+
+TEST(MatrixTest, Rotates3) {
+  Matrix<4> m{
+    {1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
+  };
+  Matrix<4> expected{
+    {0.0F, 1.0F, 0.0F, 0.0F},
+    {-1.0F, 0.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 0.0F, 1.0F},
+  };
+  m = m.rotate(Angle(90, Angle::Unit::DEGREES), Vector<3>(0.0F, 0.0F, 1.0F));
+  EXPECT_EQ(m, expected);
+
+  for (auto& e : m)
+    EXPECT_FALSE(std::isnan(e));
 }
 
 TEST(MatrixTest, Scales1) {

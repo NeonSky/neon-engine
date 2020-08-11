@@ -10,13 +10,14 @@ namespace engine::geometry {
 
   /// @brief Matrix represents a R-by-C-dimensional matrix of floats.
   ///
+  /// @see https://www.wikiwand.com/en/Matrix_(mathematics)
   /// @todo add augmented_matrix(other_matrix) https://www.wikiwand.com/en/Augmented_matrix
   /// @todo add coefficient_matrix() which returns all but the last column https://www.wikiwand.com/en/Augmented_matrix
   /// @todo add is_diagonal() https://www.wikiwand.com/en/Diagonal_matrix
   /// @todo add adjoint()
   /// @todo add swap_columns()
   /// @todo add scale(scalar) which only multiplies the bottom-right element
-  /// @see https://www.wikiwand.com/en/Matrix_(mathematics)
+  /// @todo rename rotate() to rotate_slow() and add the fast version from page 258.
   template <unsigned int R, unsigned int C = R>
   class Matrix {
   public:
@@ -627,37 +628,40 @@ namespace engine::geometry {
 
     // NOTE: pair = point + axis
     // 1. Rotate the pair so that the axis is in the XZ-plane.
-    float xy_len   = sqrtf(powf(axis.x(), 2) + powf(axis.y(), 2));
-    Matrix<3> m_xz = {
-      {axis.x() / xy_len, axis.y() / xy_len, 0},
-      {-axis.y() / xy_len, axis.x() / xy_len, 0},
-      {0, 0, 1},
-    };
+    Matrix<3> m_xz;
+    float xy_len = sqrtf(powf(axis.x(), 2) + powf(axis.y(), 2));
+
+    if (xy_len != 0.0F) { // Avoid division by 0 for vectors along Z-axis. We don't need to rotate in that case so the identity matrix will be used.
+      m_xz = {
+        {axis.x() / xy_len, axis.y() / xy_len, 0},
+        {-axis.y() / xy_len, axis.x() / xy_len, 0},
+        {0, 0, 1},
+      };
+    }
 
     // 2. Rotate the pair so that the axis is equivalent to the Z-axis.
-    float xz_len  = sqrtf(powf(axis.x(), 2) + powf(axis.z(), 2));
     Matrix<3> m_z = {
-      {axis.z() / xz_len, 0, -axis.x() / xz_len},
+      {axis.z() / axis.magnitude(), 0, -xy_len / axis.magnitude()},
       {0, 1, 0},
-      {axis.x() / xz_len, 0, axis.z() / xz_len},
+      {xy_len / axis.magnitude(), 0, axis.z() / axis.magnitude()},
     };
 
-    // 3. Rotate the point about the z-axis by the desired rotation angle.
+    // 3. Rotate the point about the Z-axis by the desired rotation angle.
     float rads = angle.radians();
     Matrix<3> rot_z{
-      // NOTE: Left-handed z-rotation
+      // NOTE: Left-handed Z-rotation
       {std::cos(rads), std::sin(rads), 0},
       {-std::sin(rads), std::cos(rads), 0},
       {0, 0, 1},
     };
 
-    // 4. Reverse rotate the pair from z-axis so that the axis is in the XY-plane as before.
+    // 4. Reverse rotate the pair from Z-axis so that the axis is in the XY-plane as before.
     Matrix<3> inv_m_z = m_z.transpose(); // We could also have flipped sign of angles.
 
     // 5. Reverse rotate the pair from the XZ-plane so that the axis is as it was initially.
     Matrix<3> inv_m_xz = m_xz.transpose();
 
-    Matrix<4> m = Matrix<3>(m_xz * m_z * rot_z * inv_m_z * inv_m_xz);
+    Matrix<4> m = Matrix<4>(inv_m_xz * inv_m_z * rot_z * m_z * m_xz);
 
     return m * (*this);
   }
