@@ -43,6 +43,16 @@ TEST(AngleTest, ConstructsIdentityAngle5) {
   EXPECT_EQ(angle.gradians(), 0.0F);
 }
 
+TEST(AngleTest, Equality1) {
+  Angle angle1(1.5F);
+  Angle angle2(1.5F);
+  Angle angle3(0.5F);
+
+  EXPECT_EQ(angle1, angle2);
+  EXPECT_NE(angle1, angle3);
+  EXPECT_NE(angle2, angle3);
+}
+
 TEST(AngleTest, ConstructsSpecificAngleWithTurns1) {
   Angle angle(0.5F, Angle::Unit::TURNS);
   EXPECT_EQ(angle.turns(), 0.5F);

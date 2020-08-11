@@ -29,6 +29,14 @@ void Angle::set(float angle, Unit unit) {
   }
 }
 
+auto Angle::operator==(const Angle& other) const -> bool {
+  return _angle_in_radians == other._angle_in_radians;
+}
+
+auto Angle::operator!=(const Angle& other) const -> bool {
+  return !((*this) == other);
+}
+
 auto Angle::turns() const -> float {
   return _angle_in_radians / tau;
 }
