@@ -49,10 +49,10 @@ namespace engine::geometry {
     /// @name Accessors
     /// @{
 
-    /// @brief Checks if this angle is not equal to angle \p other.
+    /// @brief Checks if this angle is equal to angle \p other.
     auto operator==(const Angle& other) const -> bool;
 
-    /// @brief Checks if this angle is different from angle \p other.
+    /// @brief Checks if this angle differs from angle \p other.
     auto operator!=(const Angle& other) const -> bool;
 
     /// @brief The current angle in turns.
