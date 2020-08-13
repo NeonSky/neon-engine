@@ -53,6 +53,36 @@ TEST(AngleTest, Equality1) {
   EXPECT_NE(angle2, angle3);
 }
 
+TEST(AngleTest, Modulo1) {
+  EXPECT_EQ(Angle(0).modulo(), Angle(0));
+  EXPECT_EQ(Angle(pi).modulo(), Angle(pi));
+  EXPECT_EQ(Angle(tau).modulo(), Angle(0));
+  EXPECT_EQ(Angle(tau + pi).modulo(), Angle(pi));
+  EXPECT_EQ(Angle(2.0F * tau).modulo(), Angle(0.0F));
+  EXPECT_EQ(Angle(2.0F * tau + pi).modulo(), Angle(pi));
+}
+
+TEST(AngleTest, Modulo2) {
+  EXPECT_EQ(Angle(0).modulo(), Angle(0));
+  EXPECT_EQ(Angle(-pi).modulo(), Angle(pi));
+  EXPECT_EQ(Angle(-tau).modulo(), Angle(0));
+  EXPECT_EQ(Angle(-tau - pi).modulo(), Angle(pi));
+  EXPECT_EQ(Angle(-2.0F * tau).modulo(), Angle(0.0F));
+  EXPECT_EQ(Angle(-2.0F * tau - pi).modulo(), Angle(pi));
+}
+
+TEST(AngleTest, Modulo3) {
+  EXPECT_EQ(Angle(-90, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(90, Angle::Unit::DEGREES));
+  EXPECT_EQ(Angle(-45, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(135, Angle::Unit::DEGREES));
+  EXPECT_EQ(Angle(-30, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(150, Angle::Unit::DEGREES));
+  EXPECT_EQ(Angle(0, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle());
+  EXPECT_EQ(Angle(90, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(90, Angle::Unit::DEGREES));
+  EXPECT_EQ(Angle(179.9F, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(179.9F, Angle::Unit::DEGREES));
+  EXPECT_EQ(Angle(180, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle());
+  EXPECT_EQ(Angle(210, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(30, Angle::Unit::DEGREES));
+  EXPECT_EQ(Angle(270, Angle::Unit::DEGREES).modulo(Angle(pi)), Angle(90, Angle::Unit::DEGREES));
+}
+
 TEST(AngleTest, ConstructsSpecificAngleWithTurns1) {
   Angle angle(0.5F, Angle::Unit::TURNS);
   EXPECT_EQ(angle.turns(), 0.5F);
@@ -72,7 +102,7 @@ TEST(AngleTest, ConstructsSpecificAngleWithRadians1) {
 TEST(AngleTest, ConstructsSpecificAngleWithDegrees1) {
   Angle angle(-90.0F, Angle::Unit::DEGREES);
   EXPECT_EQ(angle.turns(), -0.25F);
-  EXPECT_EQ(angle.radians(), -phi);
+  EXPECT_EQ(angle.radians(), -pi / 2.0F);
   EXPECT_EQ(angle.degrees(), -90.0F);
   EXPECT_EQ(angle.gradians(), -100.0F);
 }
