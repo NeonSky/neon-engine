@@ -1,14 +1,13 @@
 #pragma once
 
-#include "matrix.hpp"
-#include "orientation.hpp"
-#include "vector.hpp"
+#include "rigidbody.hpp"
 
 namespace engine::geometry {
 
   /// @brief Transform models a generic 3D affine transformation.
   ///
-  /// Its responsibility is to combine specific affine transformations such as translation, reflection, and scale.
+  /// It builds upon the Rigidbody geometry which supports all mass-preserving transformations.
+  /// Transform expands its features by also supporting scale.
   /// The order in which these separate transformations are applied is:
   /// 1. Scale
   /// 2. Rotation
@@ -16,8 +15,7 @@ namespace engine::geometry {
   ///
   /// @see https://www.wikiwand.com/en/Transformation_(function)
   /// @see https://www.wikiwand.com/en/Affine_transformation
-  /// @todo extract rigid body. Doesn't make sense that camera has scale.
-  class Transform {
+  class Transform : public Rigidbody {
   public:
     /// @brief Creates the identity transform.
     Transform();
@@ -40,12 +38,6 @@ namespace engine::geometry {
     /// @name Mutators
     /// @{
 
-    /// @brief The position of this transform.
-    [[nodiscard]] auto position() -> Vector<3>&;
-
-    /// @brief The orientation of this transform.
-    [[nodiscard]] auto orientation() -> Orientation&;
-
     /// @brief The scale of this transform.
     [[nodiscard]] auto scale() -> Vector<3>&;
 
@@ -65,36 +57,19 @@ namespace engine::geometry {
     /// 1. Scale
     /// 2. Rotate
     /// 3. Translate
-    [[nodiscard]] auto matrix() const -> Matrix<4>;
-
-    /// @brief The position of this transform.
-    [[nodiscard]] auto position() const -> const Vector<3>&;
-
-    /// @brief The orientation of this transform.
-    [[nodiscard]] auto orientation() const -> const Orientation&;
+    [[nodiscard]] auto matrix() const -> Matrix<4> override;
 
     /// @brief The scale of this transform.
     [[nodiscard]] auto scale() const -> const Vector<3>&;
 
-    /// @brief This transform's right vector.
-    [[nodiscard]] auto right() const -> Vector<3>;
-
-    /// @brief This transform's up vector.
-    [[nodiscard]] auto up() const -> Vector<3>;
-
-    /// @brief This transform's forward vector.
-    [[nodiscard]] auto forward() const -> Vector<3>;
-
     /// @brief Serializes the current state to JSON.
-    [[nodiscard]] auto to_json(bool debug = false) const -> debug::JSON;
+    [[nodiscard]] auto to_json(bool debug = false) const -> debug::JSON override;
 
     /// @}
 
   private:
     /// @{
     /// Private state.
-    Vector<3> _position;
-    Orientation _orientation;
     Vector<3> _scale;
     /// @}
   };
