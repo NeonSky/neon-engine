@@ -17,6 +17,49 @@ Rotation::Rotation(Angle pitch, Angle yaw, Angle roll)
           _yaw(yaw),
           _roll(roll) {}
 
+/// @internal See the general rotation matrix used in matrix() to grasp these assignments.
+/// @see https://www.wikiwand.com/en/Gimbal_lock
+/// @see https://www.wikiwand.com/en/List_of_trigonometric_identities
+Rotation::Rotation(Matrix<3> matrix, Angle::Unit angle_unit) {
+  // : _pitch(Angle(std::atan2(-matrix[2][1], matrix[2][2]), angle_unit)),
+  //   _yaw(Angle(std::asin(matrix[2][0]), angle_unit)),
+  //   _roll(Angle(std::atan2(-matrix[1][0], matrix[0][0]), angle_unit)) {
+
+  // Since yaw is the second axis rotation applied, it can gimbal lock roll.
+
+  // sin(a \plusminus b) = sin(a) cos(b) \plusminus cos(a) sin(b)
+  // cos(a \plusminus b) = cos(a) cos(b) \minusplus sin(a) sin(b)
+
+  // Gimbal lock case 1: https://www.wolframalpha.com/input/?i=%7B%7Bcos%28z%29%2C+sin%28z%29%2C+0%7D%2C+%7B-sin%28z%29%2C+cos%28z%29%2C+0%7D%2C+%7B0%2C+0%2C+1%7D%7D+*+%7B%7Bcos%28pi+%2F+2%29%2C+0%2C+-sin%28pi+%2F+2%29%7D%2C+%7B0%2C+1%2C+0%7D%2C+%7Bsin%28pi+%2F+2%29%2C+0%2C+cos%28pi+%2F+2%29%7D%7D+*+%7B%7B1%2C+0%2C+0%7D%2C+%7B0%2C+cos%28x%29%2C+sin%28x%29%7D%2C+%7B0%2C+-sin%28x%29%2C+cos%28x%29%7D%7D&lang=ja
+  if (matrix[2][0] == 1.0F) {
+    _pitch = Angle(); // Gimbal locked, so value doesn't matter.
+    _yaw   = Angle(pi / 2.0F);
+
+    // = atan(sin(z + x) / cos(z + x)) - x
+    // = atan(tan(z + x)) - x
+    // = (z + x) - x
+    // = z
+    _roll = Angle(std::atan2(matrix[0][1], matrix[1][1]) - _pitch.radians());
+  }
+  // Gimbal lock case 2: https://www.wolframalpha.com/input/?i=%7B%7Bcos%28z%29%2C+sin%28z%29%2C+0%7D%2C+%7B-sin%28z%29%2C+cos%28z%29%2C+0%7D%2C+%7B0%2C+0%2C+1%7D%7D+*+%7B%7Bcos%28-pi+%2F+2%29%2C+0%2C+-sin%28-pi+%2F+2%29%7D%2C+%7B0%2C+1%2C+0%7D%2C+%7Bsin%28-pi+%2F+2%29%2C+0%2C+cos%28-pi+%2F+2%29%7D%7D+*+%7B%7B1%2C+0%2C+0%7D%2C+%7B0%2C+cos%28x%29%2C+sin%28x%29%7D%2C+%7B0%2C+-sin%28x%29%2C+cos%28x%29%7D%7D&lang=ja
+  else if (matrix[2][0] == -1.0F) {
+    _pitch = Angle(); // Gimbal locked, so value doesn't matter.
+    _yaw   = Angle(-pi / 2.0F);
+
+    // = atan(sin(z - x) / cos(z - x)) + x
+    // = atan(tan(z - x)) + x
+    // = (z - x) + x
+    // = z
+    _roll = Angle(std::atan2(matrix[0][1], matrix[1][1]) + _pitch.radians());
+  }
+  // No gimbal lock (yay!)
+  else {
+    _pitch = Angle(std::atan2(-matrix[2][1], matrix[2][2]), angle_unit);
+    _yaw   = Angle(std::asin(matrix[2][0]), angle_unit);
+    _roll  = Angle(std::atan2(-matrix[1][0], matrix[0][0]), angle_unit);
+  }
+}
+
 auto Rotation::pitch() -> Angle& { return _pitch; }
 auto Rotation::yaw() -> Angle& { return _yaw; }
 auto Rotation::roll() -> Angle& { return _roll; }
@@ -27,6 +70,10 @@ auto Rotation::operator==(const Rotation& other) const -> bool {
 
 auto Rotation::operator!=(const Rotation& other) const -> bool {
   return !((*this) == other);
+}
+
+auto Rotation::modulo(const Angle& modulo) const -> Rotation {
+  return Rotation(_pitch.modulo(modulo), _yaw.modulo(modulo), _roll.modulo(modulo));
 }
 
 auto Rotation::pitch() const -> const Angle& { return _pitch; }

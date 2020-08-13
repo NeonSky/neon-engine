@@ -31,6 +31,11 @@ namespace engine::geometry {
     /// The created rotation will rotate by \p pitch about the x-axis, \p yaw about the y-axis, and \p roll about the z-axis.
     explicit Rotation(Angle pitch, Angle yaw, Angle roll);
 
+    /// @brief Creates a specific rotation identical to the provided rotation matrix \p matrix.
+    ///
+    /// It is assumed that all elements in \p matrix are provided in the \p angle_unit unit.
+    explicit Rotation(Matrix<3> matrix, Angle::Unit angle_unit = Angle::Unit::RADIANS);
+
     /// @name Mutators
     /// @{
 
@@ -52,6 +57,9 @@ namespace engine::geometry {
 
     /// @brief Checks if this rotation differs from to rotation \p other.
     auto operator!=(const Rotation& other) const -> bool;
+
+    /// @brief Creates a duplicate of this rotation, but with its angles wrapped around the range [0, \p modulo ].
+    auto modulo(const Angle& modulo = Angle(tau)) const -> Rotation;
 
     /// @brief The pitch of this rotation.
     [[nodiscard]] auto pitch() const -> const Angle&;
