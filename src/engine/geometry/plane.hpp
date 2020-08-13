@@ -13,7 +13,7 @@ namespace engine::geometry {
 
     Plane(const Rectangle& rectangle)
             : point_on_plane(rectangle.botleft()),
-              normal(rectangle.transform().forward()) {}
+              normal(rectangle.rigidbody().forward()) {}
   };
 
 }
