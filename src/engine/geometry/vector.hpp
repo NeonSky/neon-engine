@@ -11,8 +11,8 @@ namespace engine::geometry {
 
   /// @brief Vector represents a N-dimensional Euclidean vector.
   ///
-  /// @todo Add cross product. Preferably generalized to N dimensions.
   /// @see https://www.wikiwand.com/en/Euclidean_vector
+  /// @todo Add cross product. Preferably generalized to N dimensions.
   template <unsigned int N>
   class Vector {
   public:
@@ -210,25 +210,32 @@ namespace engine::geometry {
   /////////////////////
 
   template <unsigned int N>
-  Vector<N>::Vector() : _elements() {}
+  Vector<N>::Vector()
+          : _elements() {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x) : _elements({x}) {}
+  Vector<N>::Vector(float x)
+          : _elements(x) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x, float y) : _elements({x, y}) {}
+  Vector<N>::Vector(float x, float y)
+          : _elements(x, y) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x, float y, float z) : _elements({x, y, z}) {}
+  Vector<N>::Vector(float x, float y, float z)
+          : _elements(x, y, z) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(float x, float y, float z, float w) : _elements({x, y, z, w}) {}
+  Vector<N>::Vector(float x, float y, float z, float w)
+          : _elements(x, y, z, w) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(std::array<float, N> elements) : _elements(Point<N>(elements)) {}
+  Vector<N>::Vector(std::array<float, N> elements)
+          : _elements(Point<N>(elements)) {}
 
   template <unsigned int N>
-  Vector<N>::Vector(Point<N> tip) : _elements(tip) {}
+  Vector<N>::Vector(Point<N> tip)
+          : _elements(tip) {}
 
   template <unsigned int N>
   Vector<N>::Vector(Point<N> from, Point<N> to) {

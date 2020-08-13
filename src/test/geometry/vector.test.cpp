@@ -51,8 +51,8 @@ TEST(VectorTest, Constructor5) {
 }
 
 TEST(VectorTest, Constructor6) {
-  Point<2> from({3.4F, 2.4F});
-  Point<2> to({1.8F, 3.8F});
+  Point<2> from(3.4F, 2.4F);
+  Point<2> to(1.8F, 3.8F);
 
   Vector<2> vector(from, to);
   EXPECT_EQ(vector, Vector<2>(-1.6F, 1.4F));

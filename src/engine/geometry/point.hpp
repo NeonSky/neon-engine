@@ -17,6 +17,18 @@ namespace engine::geometry {
     /// @see https://www.wikiwand.com/en/Origin_(mathematics)
     explicit Point();
 
+    /// @brief Creates a point in the x-axis.
+    explicit Point(float x);
+
+    /// @brief Creates a point in the xy-plane.
+    explicit Point(float x, float y);
+
+    /// @brief Creates a point in the xyz-space.
+    explicit Point(float x, float y, float z);
+
+    /// @brief Creates a point in the xyzw-space.
+    explicit Point(float x, float y, float z, float w);
+
     /// @brief Creates a specific point.
     ///
     /// The created point will have \p coordinates as its coordinates.
@@ -90,6 +102,22 @@ namespace engine::geometry {
 
   template <unsigned int N>
   Point<N>::Point() = default;
+
+  template <unsigned int N>
+  Point<N>::Point(float x)
+          : _coordinates({x}) {}
+
+  template <unsigned int N>
+  Point<N>::Point(float x, float y)
+          : _coordinates({x, y}) {}
+
+  template <unsigned int N>
+  Point<N>::Point(float x, float y, float z)
+          : _coordinates({x, y, z}) {}
+
+  template <unsigned int N>
+  Point<N>::Point(float x, float y, float z, float w)
+          : _coordinates({x, y, z, w}) {}
 
   template <unsigned int N>
   Point<N>::Point(std::array<float, N> coordinates)
