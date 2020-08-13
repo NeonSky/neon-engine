@@ -18,6 +18,7 @@ namespace engine::geometry {
   /// @todo add swap_columns()
   /// @todo add scale(scalar) which only multiplies the bottom-right element
   /// @todo rename rotate() to rotate_slow() and add the fast version from page 258.
+  /// @todo extract translate, rotate, and scale since they are usage-specific.
   template <unsigned int R, unsigned int C = R>
   class Matrix {
   public:
@@ -91,6 +92,13 @@ namespace engine::geometry {
     /// @brief This matrix multiplied with matrix \p other.
     template <unsigned int C2>
     auto operator*(const Matrix<C, C2>& other) const -> Matrix<R, C2>;
+
+    /// @brief Creates a submatrix of this matrix.
+    ///
+    /// The extracted submatrix will start at row \p r0 and column \p c0.
+    /// From there, it will span \p R2 rows and \p C2 columns.
+    template <unsigned int R2 = R, unsigned int C2 = C>
+    [[nodiscard]] auto submatrix(unsigned int r0 = 0, unsigned int c0 = 0) const -> Matrix<R2, C2>;
 
     /// @brief The transpose of this matrix.
     [[nodiscard]] auto transpose() const -> Matrix<C, R>;
@@ -392,7 +400,21 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  [[nodiscard]] auto Matrix<R, C>::transpose() const -> Matrix<C, R> {
+  template <unsigned int R2, unsigned int C2>
+  auto Matrix<R, C>::submatrix(unsigned int r0, unsigned int c0) const -> Matrix<R2, C2> {
+    if (r0 + R2 > R || c0 + C2 > C)
+      LOG_ERROR("The specified submatrix is not completely inside the original matrix.");
+
+    Matrix<R2, C2> m;
+    for (unsigned int r = 0; r < R2; r++)
+      for (unsigned int c = 0; c < C2; c++)
+        m[r][c] = _elements[r + r0][c + c0];
+
+    return m;
+  }
+
+  template <unsigned int R, unsigned int C>
+  auto Matrix<R, C>::transpose() const -> Matrix<C, R> {
     Matrix<C, R> res;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)

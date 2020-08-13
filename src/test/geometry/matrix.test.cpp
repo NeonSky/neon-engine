@@ -682,6 +682,71 @@ TEST(MatrixTest, SwapsRows10) {
                })));
 }
 
+TEST(MatrixTest, Submatrix1) {
+  Matrix<3, 4> m{
+    {0.0F, 9.0F, 9.0F, 0.0F},
+    {7.7F, 0.0F, 0.0F, 7.7F},
+    {0.0F, 3.0F, 3.0F, 0.0F}};
+
+  EXPECT_EQ((m.submatrix<3, 3>()), (Matrix<3>({
+                                     {0.0F, 9.0F, 9.0F},
+                                     {7.7F, 0.0F, 0.0F},
+                                     {0.0F, 3.0F, 3.0F},
+                                   })));
+  EXPECT_EQ((m.submatrix<2, 4>()), (Matrix<2, 4>({
+                                     {0.0F, 9.0F, 9.0F, 0.0F},
+                                     {7.7F, 0.0F, 0.0F, 7.7F},
+                                   })));
+}
+
+TEST(MatrixTest, Submatrix2) {
+  Matrix<3, 4> m{
+    {1.0F, 2.0F, 3.0F, 4.0F},
+    {5.0F, 6.0F, 7.0F, 8.0F},
+    {4.0F, 3.0F, 2.0F, 1.0F}};
+
+  EXPECT_EQ((m.submatrix<2, 2>()), (Matrix<2>({
+                                     {1, 2},
+                                     {5, 6},
+                                   })));
+  EXPECT_EQ((m.submatrix<2, 2>(1)), (Matrix<2>({
+                                      {5, 6},
+                                      {4, 3},
+                                    })));
+
+  EXPECT_EQ((m.submatrix<2, 2>(0, 1)), (Matrix<2>({
+                                         {2, 3},
+                                         {6, 7},
+                                       })));
+  EXPECT_EQ((m.submatrix<2, 2>(1, 1)), (Matrix<2>({
+                                         {6, 7},
+                                         {3, 2},
+                                       })));
+
+  EXPECT_EQ((m.submatrix<2, 2>(0, 2)), (Matrix<2>({
+                                         {3, 4},
+                                         {7, 8},
+                                       })));
+  EXPECT_EQ((m.submatrix<2, 2>(1, 2)), (Matrix<2>({
+                                         {7, 8},
+                                         {2, 1},
+                                       })));
+}
+
+TEST(MatrixTest, Submatrix3) {
+  Matrix<3, 4> m{
+    {1.0F, 2.0F, 3.0F, 4.0F},
+    {5.0F, 6.0F, 7.0F, 8.0F},
+    {4.0F, 3.0F, 2.0F, 1.0F}};
+
+  ASSERT_NO_THROW((m = m.submatrix()));
+  ASSERT_NO_THROW((m = m.submatrix<3, 4>()));
+
+  ASSERT_THROW((m = m.submatrix<3, 4>(1, 0)), std::runtime_error);
+  ASSERT_THROW((m = m.submatrix<3, 4>(0, 1)), std::runtime_error);
+  ASSERT_THROW((m = m.submatrix<3, 4>(1, 1)), std::runtime_error);
+}
+
 TEST(MatrixTest, Translates1) {
   Matrix<3> m{
     {2.0F, 0.0F, 0.0F},

@@ -85,10 +85,22 @@ TEST(PointTest, ConvertsToLowerDimension1) {
   EXPECT_EQ((Point<1>) point1, point2);
 }
 
+TEST(PointTest, ConvertsToLowerDimension2) {
+  Point<4> point1({1.4F, 3.8F, -22.3, 7.7F});
+  Point<3> point2({1.4F, 3.8F, -22.3});
+  EXPECT_EQ((Point<3>) point1, point2);
+}
+
 TEST(PointTest, ConvertsToHigherDimension1) {
   Point<3> point1({1.4F, 3.8F, 0.0F});
   Point<2> point2({1.4F, 3.8F});
   EXPECT_EQ(point1, (Point<3>) point2);
+}
+
+TEST(PointTest, ConvertsToHigherDimension2) {
+  Point<4> point1({1.4F, 3.8F, -22.3, 0.0F});
+  Point<3> point2({1.4F, 3.8F, -22.3});
+  EXPECT_EQ(point1, (Point<4>) point2);
 }
 
 TEST(PointTest, Iterates1) {

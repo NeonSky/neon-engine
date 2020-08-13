@@ -290,6 +290,28 @@ TEST(VectorTest, Aliases4) {
   EXPECT_EQ(vector.q(), vector[3]);
 }
 
+TEST(VectorTest, Normalizes1) {
+  Vector<2> vector;
+  ASSERT_THROW(vector.normalized(), std::runtime_error);
+}
+
+TEST(VectorTest, Normalizes2) {
+  Vector<3> vector(1.0F, 2.0F, 3.0F);
+  EXPECT_EQ(vector.normalized(), vector / sqrt(14.0F));
+}
+
+TEST(VectorTest, ConvertsToLowerDimension1) {
+  Vector<4> vector1(1.4F, 3.8F, 0.1F, -93.4F);
+  Vector<3> vector2(1.4F, 3.8F, 0.1F);
+  EXPECT_EQ((Vector<3>) vector1, vector2);
+}
+
+TEST(VectorTest, ConvertsToHigherDimension1) {
+  Vector<4> vector1(1.4F, 3.8F, 0.1F, 0.0F);
+  Vector<3> vector2(1.4F, 3.8F, 0.1F);
+  EXPECT_EQ(vector1, (Vector<4>) vector2);
+}
+
 TEST(VectorTest, ConvertsToArray1) {
   Vector<2> vector(1.4F, 3.8F);
   std::array<float, 2> arr{1.4F, 3.8F};
@@ -306,16 +328,6 @@ TEST(VectorTest, ConvertsToArray3) {
   Vector<4> vector(1.4F, 3.8F, 0.1F, -93.4F);
   std::array<float, 4> arr{1.4F, 3.8F, 0.1F, -93.4F};
   EXPECT_EQ((std::array<float, 4>) vector, arr);
-}
-
-TEST(VectorTest, Normalizes1) {
-  Vector<2> vector;
-  ASSERT_THROW(vector.normalized(), std::runtime_error);
-}
-
-TEST(VectorTest, Normalizes2) {
-  Vector<3> vector(1.0F, 2.0F, 3.0F);
-  EXPECT_EQ(vector.normalized(), vector / sqrt(14.0F));
 }
 
 TEST(VectorTest, ConvertsToJSON1) {
