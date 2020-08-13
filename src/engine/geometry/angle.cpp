@@ -38,6 +38,22 @@ auto Angle::operator!=(const Angle& other) const -> bool {
   return !((*this) == other);
 }
 
+auto Angle::operator+(const Angle& other) const -> Angle {
+  return Angle(_angle_in_radians + other._angle_in_radians);
+}
+
+auto Angle::operator-(const Angle& other) const -> Angle {
+  return Angle(_angle_in_radians - other._angle_in_radians);
+}
+
+auto Angle::operator*(float scalar) const -> Angle {
+  return Angle(_angle_in_radians * scalar);
+}
+
+auto Angle::operator/(float scalar) const -> Angle {
+  return Angle(_angle_in_radians / scalar);
+}
+
 auto Angle::modulo(const Angle& modulo) const -> Angle {
   // The sign of the steps represents which direction we need to shift in, while
   // the magnitude determines the count of steps.

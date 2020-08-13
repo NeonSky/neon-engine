@@ -53,6 +53,23 @@ TEST(AngleTest, Equality1) {
   EXPECT_NE(angle2, angle3);
 }
 
+TEST(AngleTest, Adds1) {
+  EXPECT_EQ(Angle(1.5F * pi) + Angle(0.5F * pi), Angle(tau));
+  EXPECT_EQ(Angle(1.5F * pi) + Angle(-0.5F * pi), Angle(pi));
+}
+
+TEST(AngleTest, Subtracts1) {
+  EXPECT_EQ(Angle(1.5F * pi) - Angle(0.5F * pi), Angle(pi));
+  EXPECT_EQ(Angle(1.5F * pi) - Angle(-0.5F * pi), Angle(tau));
+}
+
+TEST(AngleTest, Scales1) {
+  EXPECT_EQ(Angle(pi) * 1.5F, Angle(pi * 1.5F));
+  EXPECT_EQ(Angle(-pi) * 0.5F, Angle(-pi * 0.5F));
+  EXPECT_EQ(Angle(pi) / 1.5F, Angle(pi / 1.5F));
+  EXPECT_EQ(Angle(-pi) / 0.5F, Angle(-pi / 0.5F));
+}
+
 TEST(AngleTest, Modulo1) {
   EXPECT_EQ(Angle(0).modulo(), Angle(0));
   EXPECT_EQ(Angle(pi).modulo(), Angle(pi));

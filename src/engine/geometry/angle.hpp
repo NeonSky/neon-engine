@@ -17,8 +17,6 @@ namespace engine::geometry {
   /// @see https://www.wikiwand.com/en/Radian
   /// @see https://www.wikiwand.com/en/Degree_(angle)
   /// @see https://www.wikiwand.com/en/Gradian
-  /// @todo Add operators like +, - with others angles.
-  /// @todo Add operators like *, / with scalars.
   class Angle {
   public:
     /// @brief Unit enumerates all the supported angle units.
@@ -50,13 +48,25 @@ namespace engine::geometry {
     /// @{
 
     /// @brief Checks if this angle is equal to angle \p other.
-    auto operator==(const Angle& other) const -> bool;
+    [[nodiscard]] auto operator==(const Angle& other) const -> bool;
 
     /// @brief Checks if this angle differs from angle \p other.
-    auto operator!=(const Angle& other) const -> bool;
+    [[nodiscard]] auto operator!=(const Angle& other) const -> bool;
+
+    /// @brief Creates the sum angle of this angle and angle \p other.
+    [[nodiscard]] auto operator+(const Angle& other) const -> Angle;
+
+    /// @brief Creates the difference angle of this angle and angle \p other.
+    [[nodiscard]] auto operator-(const Angle& other) const -> Angle;
+
+    /// @brief Creates a copy of this angle that is multiplied by \p scalar.
+    [[nodiscard]] auto operator*(float scalar) const -> Angle;
+
+    /// @brief Creates a copy of this angle that is divided by \p scalar.
+    [[nodiscard]] auto operator/(float scalar) const -> Angle;
 
     /// @brief Creates a duplicate of this angle, but wrapped around the range [0, \p modulo].
-    auto modulo(const Angle& modulo = Angle(tau)) const -> Angle;
+    [[nodiscard]] auto modulo(const Angle& modulo = Angle(tau)) const -> Angle;
 
     /// @brief The current angle in turns.
     [[nodiscard]] auto turns() const -> float;
