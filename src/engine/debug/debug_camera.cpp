@@ -11,8 +11,8 @@ using namespace engine::debug;
 DebugCamera::DebugCamera(engine::gui::Window* window)
         : _window(window) {}
 
-DebugCamera::DebugCamera(engine::gui::Window* window, const engine::geometry::Transform& transform)
-        : _camera(engine::graphics::Camera(transform)),
+DebugCamera::DebugCamera(engine::gui::Window* window, const engine::geometry::Rigidbody& rigidbody)
+        : _camera(engine::graphics::Camera(rigidbody)),
           _window(window) {
 
   _window->add_on_key_callback([this](GLFWwindow* w, [[maybe_unused]] int n) { on_key(w); });
@@ -21,8 +21,8 @@ DebugCamera::DebugCamera(engine::gui::Window* window, const engine::geometry::Tr
 }
 
 // Mutators
-auto DebugCamera::transform() -> engine::geometry::Transform& {
-  return _camera.transform();
+auto DebugCamera::rigidbody() -> engine::geometry::Rigidbody& {
+  return _camera.rigidbody();
 }
 
 // Accessors
@@ -54,7 +54,7 @@ void DebugCamera::on_key(GLFWwindow* window) {
     _camera.move(engine::graphics::Direction::DOWN);
 
   if (glfwGetKey(window, GLFW_KEY_F) != 0)
-    _camera.transform().orientation().flip();
+    _camera.rigidbody().orientation().flip();
 
   if (glfwGetKey(window, GLFW_KEY_P) != 0) {
     if (_projection_type == engine::graphics::ProjectionType::PERSPECTIVE)

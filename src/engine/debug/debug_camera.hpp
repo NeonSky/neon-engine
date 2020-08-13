@@ -9,10 +9,10 @@ namespace engine::debug {
   class DebugCamera {
   public:
     DebugCamera(gui::Window* window);
-    DebugCamera(gui::Window* window, const geometry::Transform& transform);
+    DebugCamera(gui::Window* window, const geometry::Rigidbody& rigidbody);
 
     // Mutators
-    auto transform() -> geometry::Transform&;
+    auto rigidbody() -> geometry::Rigidbody&;
 
     // Accessors
     [[nodiscard]] auto view_matrix() const -> geometry::Matrix<4>;

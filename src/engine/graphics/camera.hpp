@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../geometry/matrix.hpp"
-#include "../geometry/transform.hpp"
+#include "../geometry/rigidbody.hpp"
 
 namespace engine::graphics {
 
@@ -23,10 +23,10 @@ namespace engine::graphics {
   class Camera {
   public:
     Camera();
-    explicit Camera(geometry::Transform);
+    explicit Camera(geometry::Rigidbody);
 
     // Mutators
-    auto transform() -> geometry::Transform&;
+    auto rigidbody() -> geometry::Rigidbody&;
     void move(Direction dir);
     void look_at(geometry::Vector<3> target);
     void lookat_mouse(float mouse_xpos, float mouse_ypos);
@@ -69,7 +69,7 @@ namespace engine::graphics {
       }
     };
 
-    geometry::Transform _transform;
+    geometry::Rigidbody _rigidbody;
     Perspective _perspective;
     Orthographic _orthographic;
     float _movement_speed = 0.5F;

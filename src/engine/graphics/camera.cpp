@@ -13,43 +13,43 @@ float lastY;
 float yaw   = 0.0F;
 float pitch = 0.0F;
 
-Camera::Camera() : Camera(geometry::Transform()) {}
-Camera::Camera(geometry::Transform transform)
-        : _transform(transform) {
+Camera::Camera() : Camera(geometry::Rigidbody()) {}
+Camera::Camera(geometry::Rigidbody rigidbody)
+        : _rigidbody(rigidbody) {
 
-  yaw   = _transform.orientation().rotation().yaw().radians();
-  pitch = _transform.orientation().rotation().pitch().radians();
+  yaw   = _rigidbody.orientation().rotation().yaw().radians();
+  pitch = _rigidbody.orientation().rotation().pitch().radians();
 }
 
-auto Camera::transform() -> geometry::Transform& {
-  return _transform;
+auto Camera::rigidbody() -> geometry::Rigidbody& {
+  return _rigidbody;
 }
 
 void Camera::move(Direction move_dir) {
   geometry::Vector<3> displacement_dir;
   switch (move_dir) {
   case Direction::FORWARD:
-    displacement_dir = +_transform.forward();
+    displacement_dir = +_rigidbody.forward();
     break;
   case Direction::BACKWARD:
-    displacement_dir = -_transform.forward();
+    displacement_dir = -_rigidbody.forward();
     break;
   case Direction::RIGHT:
-    displacement_dir = +_transform.right();
+    displacement_dir = +_rigidbody.right();
     break;
   case Direction::LEFT:
-    displacement_dir = -_transform.right();
+    displacement_dir = -_rigidbody.right();
     break;
   case Direction::UP:
-    displacement_dir = +_transform.up();
+    displacement_dir = +_rigidbody.up();
     break;
   case Direction::DOWN:
-    displacement_dir = -_transform.up();
+    displacement_dir = -_rigidbody.up();
     break;
   default:
     LOG_ERROR("Direction type not supported: " + std::to_string(move_dir));
   }
-  _transform.position() += _movement_speed * displacement_dir;
+  _rigidbody.position() += _movement_speed * displacement_dir;
 }
 
 void Camera::set_zoom(float zoom_level) {
@@ -78,20 +78,20 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 
   pitch = std::clamp(pitch, -geometry::pi / 2.0F, geometry::pi / 2.0F);
 
-  _transform.orientation().rotation() = geometry::Rotation(pitch, yaw, 0.0F, geometry::Angle::Unit::RADIANS);
+  _rigidbody.orientation().rotation() = geometry::Rotation(pitch, yaw, 0.0F, geometry::Angle::Unit::RADIANS);
 }
 
 auto Camera::view_matrix() const -> geometry::Matrix<4> {
 
   // We normally use column major, so row major (i.e. the transpose) becomes the inverse.
   geometry::Matrix<4> inverse_rotation(geometry::Matrix<3>{
-    _transform.right(),  // (R_x, R_y, R_z)
-    _transform.up(),     // (U_x, U_y, U_z)
-    _transform.forward() // (F_x, F_y, F_z)
+    _rigidbody.right(),  // (R_x, R_y, R_z)
+    _rigidbody.up(),     // (U_x, U_y, U_z)
+    _rigidbody.forward() // (F_x, F_y, F_z)
   });
 
   // Move back to origin.
-  geometry::Matrix<4> inverse_translation = geometry::Matrix<4>().translate(-_transform.position());
+  geometry::Matrix<4> inverse_translation = geometry::Matrix<4>().translate(-_rigidbody.position());
 
   return inverse_rotation * inverse_translation;
 }
