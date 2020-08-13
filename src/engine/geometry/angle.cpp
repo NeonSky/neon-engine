@@ -1,5 +1,7 @@
 #include "angle.hpp"
 
+#include <cmath>
+
 #include "../debug/logger.hpp"
 
 using namespace engine::geometry;
@@ -61,7 +63,7 @@ auto Angle::modulo(const Angle& modulo) const -> Angle {
   // NOTE: for negative radians() steps will be rounded further from zero, while
   // positive radians() will be rounded towards 0. This causes positive radians()
   // to stop right before 0, while negative radians() gains an extra step over 0.
-  float full_steps_to_min_positive = -floor(radians() / modulo.radians());
+  float full_steps_to_min_positive = -std::floor(radians() / modulo.radians());
 
   // Here we weight the steps by our modulo.
   float radians_to_min_positive = modulo.radians() * full_steps_to_min_positive;

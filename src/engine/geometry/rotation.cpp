@@ -1,6 +1,6 @@
 #include "rotation.hpp"
 
-#include <math.h>
+#include <cmath>
 
 using namespace engine::geometry;
 

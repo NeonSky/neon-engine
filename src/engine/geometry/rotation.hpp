@@ -59,7 +59,7 @@ namespace engine::geometry {
     auto operator!=(const Rotation& other) const -> bool;
 
     /// @brief Creates a duplicate of this rotation, but with its angles wrapped around the range [0, \p modulo].
-    auto modulo(const Angle& modulo = Angle(tau)) const -> Rotation;
+    [[nodiscard]] auto modulo(const Angle& modulo = Angle(tau)) const -> Rotation;
 
     /// @brief The pitch of this rotation.
     [[nodiscard]] auto pitch() const -> const Angle&;

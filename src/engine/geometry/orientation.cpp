@@ -6,7 +6,7 @@ const Vector<3> Orientation::world_right   = Vector<3>(1.0F, 0.0F, 0.0F);
 const Vector<3> Orientation::world_up      = Vector<3>(0.0F, 1.0F, 0.0F);
 const Vector<3> Orientation::world_forward = Vector<3>(0.0F, 0.0F, 1.0F);
 
-Orientation::Orientation() {}
+Orientation::Orientation() = default;
 Orientation::Orientation(Rotation rotation)
         : _rotation(rotation) {}
 
