@@ -58,7 +58,7 @@ namespace engine::geometry {
     /// @brief Checks if this rotation differs from to rotation \p other.
     auto operator!=(const Rotation& other) const -> bool;
 
-    /// @brief Creates a duplicate of this rotation, but with its angles wrapped around the range [0, \p modulo ].
+    /// @brief Creates a duplicate of this rotation, but with its angles wrapped around the range [0, \p modulo].
     auto modulo(const Angle& modulo = Angle(tau)) const -> Rotation;
 
     /// @brief The pitch of this rotation.

@@ -39,8 +39,8 @@ auto Rectangle::to_json() const -> debug::JSON {
 
 // Mutators
 void Rectangle::update_corners() {
-  Vector<3> xoffset = (_width / 2.0F) * Vector<3>(Orientation::world_right);
-  Vector<3> yoffset = (_height / 2.0F) * Vector<3>(Orientation::world_up);
+  Vector<3> xoffset = (_width / 2.0F) * Orientation::world_right;
+  Vector<3> yoffset = (_height / 2.0F) * Orientation::world_up;
 
   _botleft  = _transform.matrix() * Vector<4>(+xoffset - yoffset, 1.0F);
   _botright = _transform.matrix() * Vector<4>(-xoffset - yoffset, 1.0F);
