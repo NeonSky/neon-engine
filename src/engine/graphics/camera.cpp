@@ -17,8 +17,8 @@ Camera::Camera() : Camera(geometry::Transform()) {}
 Camera::Camera(geometry::Transform transform)
         : _transform(transform) {
 
-  yaw   = _transform.yaw();
-  pitch = _transform.pitch();
+  yaw   = _transform.orientation().rotation().yaw().radians();
+  pitch = _transform.orientation().rotation().pitch().radians();
 }
 
 auto Camera::transform() -> geometry::Transform& {
@@ -78,7 +78,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 
   pitch = std::clamp(pitch, -geometry::pi / 2.0F, geometry::pi / 2.0F);
 
-  _transform.set_rotation(0.0F, pitch, yaw);
+  _transform.orientation().rotation() = geometry::Rotation(pitch, yaw, 0.0F, geometry::Angle::Unit::RADIANS);
 }
 
 auto Camera::view_matrix() const -> geometry::Matrix<4> {

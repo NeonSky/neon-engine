@@ -1,7 +1,7 @@
 #pragma once
 
-#include "angle.hpp"
 #include "matrix.hpp"
+#include "orientation.hpp"
 #include "vector.hpp"
 
 namespace engine::geometry {
@@ -14,81 +14,78 @@ namespace engine::geometry {
   /// 2. Rotation
   /// 3. Translation
   ///
-  /// @todo set_rotation should take Angles
-  /// @todo flip_rotation needs more tests.
   /// @see https://www.wikiwand.com/en/Transformation_(function)
   /// @see https://www.wikiwand.com/en/Affine_transformation
+  /// @todo extract rigid body. Doesn't make sense that camera has scale.
   class Transform {
   public:
     /// @brief Creates the identity transform.
     Transform();
 
-    /// @brief Creates a transform that translates.
+    /// @brief Creates a transform that only translates.
     ///
     /// The created transform translates by \p position.
     Transform(const Vector<3>& position);
 
-    /// @brief Creates a transform that rotates and translates.
+    /// @brief Creates a transform that only rotates and translates.
     ///
     /// The created transform rotates by \p rotation and translates by \p position.
-    Transform(const Vector<3>& position, const Vector<3>& rotation);
+    Transform(const Vector<3>& position, const Orientation& orientation);
 
     /// @brief Creates a transform that scales, rotates, and translates.
     ///
     /// The created transform scales by \p scale, rotates by \p rotation, and translates by \p position.
-    Transform(Vector<3> position, Vector<3> rotation, Vector<3> scale);
+    Transform(const Vector<3>& position, const Orientation& orientation, const Vector<3>& scale);
 
     /// @name Mutators
     /// @{
 
-    /// @brief Sets the current rotation using aircraft principal axes.
-    ///
-    /// The new rotation will rotate by \p yaw around the yaw axis, \p pitch around the pitch axis, and \p roll around the roll axis.
-    ///
-    /// @see https://www.wikiwand.com/en/Aircraft_principal_axes
-    void set_rotation(float roll, float pitch, float yaw);
-    void flip_rotation();
-
+    /// @brief The position of this transform.
     [[nodiscard]] auto position() -> Vector<3>&;
-    [[nodiscard]] auto rotation() -> Vector<3>&;
+
+    /// @brief The orientation of this transform.
+    [[nodiscard]] auto orientation() -> Orientation&;
+
+    /// @brief The scale of this transform.
     [[nodiscard]] auto scale() -> Vector<3>&;
 
     /// @}
     /// @name Accessors
     /// @{
 
-    // Accessors
+    /// @brief Checks if this transform is equal to transform \p other.
+    [[nodiscard]] auto operator==(const Transform& other) const -> bool;
+
+    /// @brief Checks if this transform differs from transform \p other.
+    [[nodiscard]] auto operator!=(const Transform& other) const -> bool;
+
+    /// @brief Creates a column-major matrix in homogeneous coordinates that represents this transform.
+    ///
+    /// The individual transforms are applied in the following order.
+    /// 1. Scale
+    /// 2. Rotate
+    /// 3. Translate
     [[nodiscard]] auto matrix() const -> Matrix<4>;
 
-    /// @brief Produces a rotation matrix from the current rotation.
-    ///
-    /// Here we apply z-rotation (roll), then x-rotation (pitch), and finally y-rotation (yaw).
-    [[nodiscard]] auto rotation_matrix() const -> Matrix<4>;
-
-    /// @brief Produces a rotation matrix from the current rotation.
-    ///
-    /// Here we apply y-rotation (yaw), then x-rotation (pitch), and finally z-rotation (roll).
-    ///
-    /// @image html geometry/img1.png
-    /// @see Image source: https://tinyurl.com/y6fo7ps7
-    /// @see https://www.wikiwand.com/en/Rotation_matrix
-    /// @see https://www.wikiwand.com/en/Euler_angles
-    /// @see https://www.wikiwand.com/en/Aircraft_principal_axes
-    /// @see https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
-    [[nodiscard]] auto rotation_matrix_slow() const -> Matrix<4>;
-
-    [[nodiscard]] auto forward() const -> Vector<3>;
-    [[nodiscard]] auto up() const -> Vector<3>;
-    [[nodiscard]] auto right() const -> Vector<3>;
-
-    [[nodiscard]] auto yaw() const -> float;
-    [[nodiscard]] auto pitch() const -> float;
-    [[nodiscard]] auto roll() const -> float;
-
+    /// @brief The position of this transform.
     [[nodiscard]] auto position() const -> const Vector<3>&;
-    [[nodiscard]] auto rotation() const -> const Vector<3>&;
+
+    /// @brief The orientation of this transform.
+    [[nodiscard]] auto orientation() const -> const Orientation&;
+
+    /// @brief The scale of this transform.
     [[nodiscard]] auto scale() const -> const Vector<3>&;
 
+    /// @brief This transform's right vector.
+    [[nodiscard]] auto right() const -> Vector<3>;
+
+    /// @brief This transform's up vector.
+    [[nodiscard]] auto up() const -> Vector<3>;
+
+    /// @brief This transform's forward vector.
+    [[nodiscard]] auto forward() const -> Vector<3>;
+
+    /// @brief Serializes the current state to JSON.
     [[nodiscard]] auto to_json(bool debug = false) const -> debug::JSON;
 
     /// @}
@@ -97,7 +94,7 @@ namespace engine::geometry {
     /// @{
     /// Private state.
     Vector<3> _position;
-    Vector<3> _rotation;
+    Orientation _orientation;
     Vector<3> _scale;
     /// @}
   };

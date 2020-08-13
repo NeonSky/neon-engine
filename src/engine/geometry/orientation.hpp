@@ -42,10 +42,10 @@ namespace engine::geometry {
     /// @{
 
     /// @brief Checks if this orientation is equal to orientation \p other.
-    auto operator==(const Orientation& other) const -> bool;
+    [[nodiscard]] auto operator==(const Orientation& other) const -> bool;
 
     /// @brief Checks if this orientation differs from orientation \p other.
-    auto operator!=(const Orientation& other) const -> bool;
+    [[nodiscard]] auto operator!=(const Orientation& other) const -> bool;
 
     /// @brief This orientation's rotation relative to the world reference directions.
     [[nodiscard]] auto rotation() const -> const Rotation&;

@@ -54,7 +54,7 @@ void DebugCamera::on_key(GLFWwindow* window) {
     _camera.move(engine::graphics::Direction::DOWN);
 
   if (glfwGetKey(window, GLFW_KEY_F) != 0)
-    _camera.transform().flip_rotation();
+    _camera.transform().orientation().flip();
 
   if (glfwGetKey(window, GLFW_KEY_P) != 0) {
     if (_projection_type == engine::graphics::ProjectionType::PERSPECTIVE)
