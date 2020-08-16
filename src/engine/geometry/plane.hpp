@@ -1,19 +1,15 @@
 #pragma once
 
-#include "rectangle.hpp"
+#include "vector.hpp"
 
 namespace engine::geometry {
 
+  /// @brief Plane models an infinite plane in 3D space.
+  ///
+  /// @see https://www.wikiwand.com/en/Plane_(geometry)
   struct Plane {
-    Vector<3> point_on_plane;
-    Vector<3> normal;
-
-    Plane()
-            : normal(Vector<3>(0.0F, 1.0F, 0.0F)) {}
-
-    Plane(const Rectangle& rectangle)
-            : point_on_plane(rectangle.botleft()),
-              normal(rectangle.rigidbody().forward()) {}
+    Point<3> point;       //< A point on the plane.
+    UnitVector<3> normal; //< The normal vector of the plane.
   };
 
 }

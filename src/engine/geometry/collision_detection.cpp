@@ -17,7 +17,7 @@ auto engine::geometry::ray_plane_intersection(const Ray& ray, const Plane& plane
   if (normal.inner_product(dir) == 0)
     return nullptr;
 
-  float d0      = -normal.inner_product(plane.point_on_plane);
+  float d0      = -normal.inner_product(Vector<3>(plane.point));
   float t       = -(normal.inner_product(from) + d0) / normal.inner_product(dir);
   Vector<3> hit = from + dir * t;
 
@@ -25,7 +25,7 @@ auto engine::geometry::ray_plane_intersection(const Ray& ray, const Plane& plane
 }
 
 auto engine::geometry::ray_rectangle_intersection(const Ray& ray, const Rectangle& rectangle) -> std::unique_ptr<Intersection> {
-  std::unique_ptr<Intersection> hit = ray_plane_intersection(ray, Plane(rectangle));
+  std::unique_ptr<Intersection> hit = ray_plane_intersection(ray, (Plane) rectangle);
   if (hit == nullptr)
     return nullptr;
 

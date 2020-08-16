@@ -1,7 +1,8 @@
 #pragma once
 
+#include "plane.hpp"
+#include "point.hpp"
 #include "rigidbody.hpp"
-#include "vector.hpp"
 
 namespace engine::geometry {
 
@@ -32,16 +33,19 @@ namespace engine::geometry {
     [[nodiscard]] auto height() const -> float;
 
     /// @brief The bottom-left corner of this rectangle.
-    [[nodiscard]] auto botleft() const -> Vector<3>;
+    [[nodiscard]] auto botleft() const -> Point<3>;
 
     /// @brief The bottom-right corner of this rectangle.
-    [[nodiscard]] auto botright() const -> Vector<3>;
+    [[nodiscard]] auto botright() const -> Point<3>;
 
     /// @brief The top-left corner of this rectangle.
-    [[nodiscard]] auto topleft() const -> Vector<3>;
+    [[nodiscard]] auto topleft() const -> Point<3>;
 
     /// @brief The top-right corner of this rectangle.
-    [[nodiscard]] auto topright() const -> Vector<3>;
+    [[nodiscard]] auto topright() const -> Point<3>;
+
+    /// @brief Converts this rectangle to a plane.
+    [[nodiscard]] operator Plane() const;
 
     /// @brief Serializes the current state to JSON.
     [[nodiscard]] auto to_json(bool debug = false) const -> debug::JSON;
@@ -58,10 +62,10 @@ namespace engine::geometry {
     float _width;
     float _height;
 
-    Vector<3> _botleft{};
-    Vector<3> _botright{};
-    Vector<3> _topleft{};
-    Vector<3> _topright{};
+    Point<3> _botleft{};
+    Point<3> _botright{};
+    Point<3> _topleft{};
+    Point<3> _topright{};
     /// @}
   };
 }
