@@ -64,13 +64,13 @@ namespace engine::geometry {
     [[nodiscard]] auto orientation() const -> const Orientation&;
 
     /// @brief This rigidbody's right vector.
-    [[nodiscard]] auto right() const -> Vector<3>;
+    [[nodiscard]] auto right() const -> UnitVector<3>;
 
     /// @brief This rigidbody's up vector.
-    [[nodiscard]] auto up() const -> Vector<3>;
+    [[nodiscard]] auto up() const -> UnitVector<3>;
 
     /// @brief This rigidbody's forward vector.
-    [[nodiscard]] auto forward() const -> Vector<3>;
+    [[nodiscard]] auto forward() const -> UnitVector<3>;
 
     /// @brief Serializes the current state to JSON.
     [[nodiscard]] virtual auto to_json(bool debug = false) const -> debug::JSON;

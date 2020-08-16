@@ -12,13 +12,13 @@ namespace engine::geometry {
   class Orientation {
   public:
     /// @brief The reference right direction of the world.
-    static const Vector<3> world_right;
+    static const UnitVector<3> world_right;
 
     /// @brief The reference up direction of the world.
-    static const Vector<3> world_up;
+    static const UnitVector<3> world_up;
 
     /// @brief The reference forward direction of the world.
-    static const Vector<3> world_forward;
+    static const UnitVector<3> world_forward;
 
     /// @brief Creates the identity orientation.
     Orientation();
@@ -35,7 +35,7 @@ namespace engine::geometry {
     [[nodiscard]] auto rotation() -> Rotation&;
 
     /// @brief Flips the current orientation about the axis spanned by \p axis.
-    void flip(Vector<3> axis = world_up);
+    void flip(UnitVector<3> axis = world_up);
 
     /// @}
     /// @name Accessors
@@ -51,13 +51,13 @@ namespace engine::geometry {
     [[nodiscard]] auto rotation() const -> const Rotation&;
 
     /// @brief This orientation's right vector.
-    [[nodiscard]] auto right() const -> Vector<3>;
+    [[nodiscard]] auto right() const -> UnitVector<3>;
 
     /// @brief This orientation's up vector.
-    [[nodiscard]] auto up() const -> Vector<3>;
+    [[nodiscard]] auto up() const -> UnitVector<3>;
 
     /// @brief This orientation's forward vector.
-    [[nodiscard]] auto forward() const -> Vector<3>;
+    [[nodiscard]] auto forward() const -> UnitVector<3>;
 
     /// @brief Serializes the current state to JSON.
     [[nodiscard]] auto to_json(bool debug = false) const -> debug::JSON;

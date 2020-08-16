@@ -45,15 +45,15 @@ auto Rigidbody::orientation() -> Orientation& {
   return _orientation;
 }
 
-auto Rigidbody::right() const -> Vector<3> {
+auto Rigidbody::right() const -> UnitVector<3> {
   return _orientation.right();
 }
 
-auto Rigidbody::up() const -> Vector<3> {
+auto Rigidbody::up() const -> UnitVector<3> {
   return _orientation.up();
 }
 
-auto Rigidbody::forward() const -> Vector<3> {
+auto Rigidbody::forward() const -> UnitVector<3> {
   return _orientation.forward();
 }
 
