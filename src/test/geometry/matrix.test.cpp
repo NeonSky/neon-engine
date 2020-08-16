@@ -32,6 +32,22 @@ TEST(MatrixTest, Constructor3) {
                }));
 }
 
+
+TEST(MatrixTest, Constructor4) {
+  Matrix<3, 3> m{
+                 UnitVector<3>{0.0F, 0.0F, 1.0F},
+                 UnitVector<3>{0.0F, 1.0F, 0.0F},
+                 UnitVector<3>{1.0F, 0.0F, 0.0F},
+  };
+  Matrix<3, 3> expected{
+                        {0.0F, 0.0F, 1.0F},
+                        {0.0F, 1.0F, 0.0F},
+                        {1.0F, 0.0F, 0.0F},
+  };
+
+  EXPECT_EQ(m, expected);
+}
+
 TEST(MatrixTest, Size1) {
   Matrix<1> m1;
   Matrix<2> m2;
@@ -758,7 +774,7 @@ TEST(MatrixTest, Translates1) {
     {0.0F, 1.0F, 0.0F},
     {0.0F, 0.0F, 1.0F},
   };
-  EXPECT_EQ(m.translate({2.0F}), expected);
+  EXPECT_EQ(m.translate({2.0F, 0.0F}), expected);
 }
 
 TEST(MatrixTest, Translates2) {
@@ -818,7 +834,7 @@ TEST(MatrixTest, Rotates1) {
     {0.0F, -1.0F, 0.0F, 0.0F},
     {0.0F, 0.0F, 0.0F, 1.0F},
   };
-  m = m.rotate(Angle(90, Angle::Unit::DEGREES), Vector<3>(1.0F, 0.0F, 0.0F));
+  m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(1.0F, 0.0F, 0.0F));
   EXPECT_EQ(m, expected);
 
   for (auto& e : m)
@@ -838,7 +854,7 @@ TEST(MatrixTest, Rotates2) {
     {1.0F, 0.0F, 0.0F, 0.0F},
     {0.0F, 0.0F, 0.0F, 1.0F},
   };
-  m = m.rotate(Angle(90, Angle::Unit::DEGREES), Vector<3>(0.0F, 1.0F, 0.0F));
+  m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 1.0F, 0.0F));
   EXPECT_EQ(m, expected);
 
   for (auto& e : m)
@@ -858,7 +874,7 @@ TEST(MatrixTest, Rotates3) {
     {0.0F, 0.0F, 1.0F, 0.0F},
     {0.0F, 0.0F, 0.0F, 1.0F},
   };
-  m = m.rotate(Angle(90, Angle::Unit::DEGREES), Vector<3>(0.0F, 0.0F, 1.0F));
+  m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 0.0F, 1.0F));
   EXPECT_EQ(m, expected);
 
   for (auto& e : m)

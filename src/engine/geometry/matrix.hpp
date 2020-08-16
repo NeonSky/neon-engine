@@ -19,6 +19,7 @@ namespace engine::geometry {
   /// @todo add scale(scalar) which only multiplies the bottom-right element
   /// @todo rename rotate() to rotate_slow() and add the fast version from page 258.
   /// @todo extract translate, rotate, and scale since they are usage-specific.
+  /// @todo Maybe add V param to matrix which guarantees that each row in the matrix is normalized (i.e. the matrix is orthogonal).
   template <unsigned int R, unsigned int C = R>
   class Matrix {
   public:
@@ -26,10 +27,12 @@ namespace engine::geometry {
     Matrix();
 
     /// @brief Creates a specific matrix.
-    Matrix(std::initializer_list<Vector<C>> elements);
+    template <bool U = false>
+    Matrix(std::initializer_list<Vector<C, U>> elements);
 
     /// @brief Creates a specific matrix.
-    Matrix(std::array<Vector<C>, R> elements);
+    template <bool U = false>
+    Matrix(std::array<Vector<C, U>, R> elements);
 
     /// @brief Creates a higher dimensional matrix from an existing matrix.
     ///
@@ -41,7 +44,8 @@ namespace engine::geometry {
     Matrix(const Matrix<M>& other);
 
     /// @brief The outer product of vector \p lhs and vector \p rhs as a Matrix.
-    [[nodiscard]] static auto outer_product(Vector<R> lhs, Vector<C> rhs) -> Matrix<R, C>;
+    template <bool U = false>
+    [[nodiscard]] static auto outer_product(Vector<R, U> lhs, Vector<C, U> rhs) -> Matrix<R, C>;
 
     /// @name Mutators
     /// @{
@@ -87,7 +91,8 @@ namespace engine::geometry {
     auto operator/(float scalar) const -> Matrix<R, C>;
 
     /// @brief This matrix multiplied with vector \p vector.
-    auto operator*(const Vector<C>& vector) const -> Vector<R>;
+    template <bool U = false>
+    auto operator*(const Vector<C, U>& vector) const -> Vector<R>;
 
     /// @brief This matrix multiplied with matrix \p other.
     template <unsigned int C2>
@@ -207,20 +212,20 @@ namespace engine::geometry {
     ///
     /// @see https://www.wikiwand.com/en/Translation_(geometry)
     /// @see https://www.wikiwand.com/en/Transformation_matrix
-    template <unsigned int N = R - 1>
-    auto translate(Vector<N> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>>;
+    template <unsigned int N = R - 1, bool U = false>
+    auto translate(Vector<N, U> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>>;
 
     /// @brief This matrix rotated by \p angle around the vector \p axis.
     ///
     /// @see https://www.wikiwand.com/en/Rotation_matrix
     template <unsigned int N = 4>
-    auto rotate(Angle angle, Vector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>>;
+    auto rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>>;
 
     /// @brief This matrix scaled by the vector \p scale.
     ///
     /// @see https://www.wikiwand.com/en/Scaling_(geometry)
-    template <unsigned int N = R>
-    auto scale(Vector<N> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>>;
+    template <unsigned int N = R, bool U = false>
+    auto scale(Vector<N, U> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>>;
 
     /// @}
 
@@ -256,7 +261,8 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  Matrix<R, C>::Matrix(std::initializer_list<Vector<C>> elements) {
+  template <bool U>
+  Matrix<R, C>::Matrix(std::initializer_list<Vector<C, U>> elements) {
     if (elements.size() != R)
       LOG_ERROR("Must provide exactly R elements."); // LCOV_EXCL_BR_LINE
 
@@ -264,7 +270,8 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  Matrix<R, C>::Matrix(std::array<Vector<C>, R> elements) : _elements(elements) {}
+  template <bool U>
+  Matrix<R, C>::Matrix(std::array<Vector<C, U>, R> elements) : _elements(elements) {}
 
   template <unsigned int R, unsigned int C>
   template <unsigned int M, class Enable>
@@ -276,8 +283,8 @@ namespace engine::geometry {
         _elements[r][c] = other[r][c];
   }
 
-  template <unsigned int R, unsigned int C>
-  [[nodiscard]] static auto outer_product(Vector<R> lhs, Vector<C> rhs) -> Matrix<R, C> {
+  template <unsigned int R, unsigned int C, bool U>
+  static auto outer_product(Vector<R, U> lhs, Vector<C, U> rhs) -> Matrix<R, C> {
     Matrix<R, C> matrix;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)
@@ -286,12 +293,12 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  [[nodiscard]] auto Matrix<R, C>::begin() -> float* {
+  auto Matrix<R, C>::begin() -> float* {
     return _elements[0].begin();
   }
 
   template <unsigned int R, unsigned int C>
-  [[nodiscard]] auto Matrix<R, C>::end() -> float* {
+  auto Matrix<R, C>::end() -> float* {
     return _elements[R - 1].end();
   }
 
@@ -385,7 +392,8 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  auto Matrix<R, C>::operator*(const Vector<C>& vector) const -> Vector<R> {
+  template <bool U>
+  auto Matrix<R, C>::operator*(const Vector<C, U>& vector) const -> Vector<R> {
     Vector<R> res;
     for (unsigned int r = 0; r < R; r++) {
 
@@ -633,8 +641,8 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  template <unsigned int N>
-  auto Matrix<R, C>::translate(Vector<N> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>> {
+  template <unsigned int N, bool U>
+  auto Matrix<R, C>::translate(Vector<N, U> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>> {
     Matrix<R> m;
     for (unsigned int r = 0; r < N; r++)
       m[r][C - 1] = translation[r];
@@ -645,9 +653,7 @@ namespace engine::geometry {
   // See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
-  auto Matrix<R, C>::rotate(Angle angle, Vector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>> {
-    axis = axis.normalized();
-
+  auto Matrix<R, C>::rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>> {
     // NOTE: pair = point + axis
     // 1. Rotate the pair so that the axis is in the XZ-plane.
     Matrix<3> m_xz;
@@ -689,8 +695,8 @@ namespace engine::geometry {
   }
 
   template <unsigned int R, unsigned int C>
-  template <unsigned int N>
-  auto Matrix<R, C>::scale(Vector<N> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>> {
+  template <unsigned int N, bool U>
+  auto Matrix<R, C>::scale(Vector<N, U> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>> {
     Matrix<R> m;
     for (unsigned int i = 0; i < N; i++)
       m[i][i] = scale[i];

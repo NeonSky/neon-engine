@@ -54,11 +54,13 @@ TEST(VectorTest, Constructor6) {
   Point<2> from(3.4F, 2.4F);
   Point<2> to(1.8F, 3.8F);
 
-  Vector<2> vector(from, to);
-  EXPECT_EQ(vector, Vector<2>(-1.6F, 1.4F));
+  EXPECT_EQ(Vector<2>(from, to), Vector<2>(-1.6F, 1.4F));
 
-  ASSERT_THROW(Vector<2>(from, from), std::runtime_error);
-  ASSERT_THROW(Vector<2>(to, to), std::runtime_error);
+  ASSERT_NO_THROW(Vector<2>(from, from));
+  ASSERT_NO_THROW(Vector<2>(to, to));
+
+  ASSERT_THROW(UnitVector<2>(from, from), std::runtime_error);
+  ASSERT_THROW(UnitVector<2>(to, to), std::runtime_error);
 }
 
 TEST(VectorTest, Constructor7) {
@@ -72,14 +74,22 @@ TEST(VectorTest, Constructor7) {
 TEST(VectorTest, Assignment1) {
   Vector<2> vector1(3.2F, -2.4F);
   Vector<2> vector2(1.3F, 9.2F);
+
   EXPECT_NE(vector1, vector2);
-
   vector1 = vector2;
-
   EXPECT_EQ(vector1, vector2);
 }
 
 TEST(VectorTest, Assignment2) {
+  UnitVector<2> vector1(3.2F, -2.4F);
+  UnitVector<2> vector2(1.3F, 9.2F);
+
+  EXPECT_NE(vector1, vector2);
+  vector1 = vector2;
+  EXPECT_EQ(vector1, vector2);
+}
+
+TEST(VectorTest, Assignment3) {
   Vector<2> vector1(3.2F, -2.4F);
   Vector<2> vector2(1.3F, 9.2F);
 
@@ -96,7 +106,7 @@ TEST(VectorTest, Assignment2) {
   EXPECT_EQ(vector1, Vector<2>(3.2F, -2.4F));
 }
 
-TEST(VectorTest, Assignment3) {
+TEST(VectorTest, Assignment4) {
   Vector<3> vector1(3.2F, -2.4F, 1.1F);
   Vector<3> vector2;
   EXPECT_EQ(vector1 + vector2, vector1);
@@ -128,12 +138,16 @@ TEST(VectorTest, AddsAndSubtracts2) {
   EXPECT_EQ(vector2 - vector2, Vector<3>());
 }
 
-TEST(VectorTest, Negation1) {
-  Vector<2> vector(3.2F, -2.4F);
-  EXPECT_EQ(vector, vector);
-  EXPECT_EQ(-(-vector), vector);
-  EXPECT_EQ(-vector, -vector);
-  EXPECT_NE(-vector, vector);
+TEST(VectorTest, Magnitude1) {
+  Vector<1> v1(7.3F);
+  Vector<2> v2(3.2F, -2.4F);
+  Vector<3> v3(1.3F, 9.2F, -0.1F);
+  Vector<4> v4(1.0F, 2.0F, 3.0F, 4.0F);
+
+  EXPECT_EQ(v1.magnitude(), 7.3F);
+  EXPECT_EQ(v2.magnitude(), 4.0F);
+  EXPECT_EQ(v3.magnitude(), 9.29193198425F);
+  EXPECT_EQ(v4.magnitude(), 5.47722557505F);
 }
 
 TEST(VectorTest, Affirmation1) {
@@ -154,6 +168,45 @@ TEST(VectorTest, Affirmation2) {
   EXPECT_EQ(+v4, +v4);
 }
 
+TEST(VectorTest, Affirmation3) {
+  UnitVector<1> v1;
+  UnitVector<2> v2;
+  UnitVector<3> v3;
+  UnitVector<4> v4;
+  EXPECT_EQ(+v1, +v1);
+  EXPECT_EQ(+v2, +v2);
+  EXPECT_EQ(+v3, +v3);
+  EXPECT_EQ(+v4, +v4);
+}
+
+TEST(VectorTest, Negation1) {
+  Vector<2> vector(3.2F, -2.4F);
+  EXPECT_EQ(vector, vector);
+  EXPECT_EQ(-(-vector), vector);
+  EXPECT_EQ(-vector, -vector);
+  EXPECT_NE(-vector, vector);
+}
+
+TEST(VectorTest, Negation2) {
+  UnitVector<2> vector(3.2F, -2.4F);
+  EXPECT_EQ(vector, vector);
+  EXPECT_EQ(-(-vector), vector);
+  EXPECT_EQ(-vector, -vector);
+  EXPECT_NE(-vector, vector);
+}
+
+TEST(VectorTest, Negation3) {
+  UnitVector<1> v1;
+  UnitVector<2> v2;
+  UnitVector<3> v3;
+  UnitVector<4> v4;
+
+  EXPECT_EQ(-v1, Vector<1>(-1.0F));
+  EXPECT_EQ(-v2, Vector<2>(-1.0F, 0.0F));
+  EXPECT_EQ(-v3, Vector<3>(-1.0F, 0.0F, 0.0F));
+  EXPECT_EQ(-v4, Vector<4>(-1.0F, 0.0F, 0.0F, 0.0F));
+}
+
 TEST(VectorTest, Scales1) {
   Vector<2> vector(1.3F, 0.4F);
   EXPECT_EQ(1.5F * vector, Vector<2>(1.95F, 0.6F));
@@ -168,6 +221,11 @@ TEST(VectorTest, Scales2) {
   EXPECT_EQ(vector * 2.0F, Vector<3>(2.0F, 4.0F, 6.0F));
   vector *= 2.0F;
   EXPECT_EQ(vector, Vector<3>(2.0F, 4.0F, 6.0F));
+}
+
+TEST(VectorTest, Scales3) {
+  Vector<3> vector(1.0F, 2.0F, 3.0F);
+  ASSERT_THROW(vector = vector / 0.0F, std::runtime_error);
 }
 
 TEST(VectorTest, InnerProduct1) {
@@ -292,7 +350,7 @@ TEST(VectorTest, Aliases4) {
 
 TEST(VectorTest, Normalizes1) {
   Vector<2> vector;
-  ASSERT_THROW(vector.normalized(), std::runtime_error);
+  ASSERT_THROW(vector = vector.normalized(), std::runtime_error);
 }
 
 TEST(VectorTest, Normalizes2) {
@@ -334,4 +392,33 @@ TEST(VectorTest, ConvertsToJSON1) {
   Vector<3> vector{1.4F, 3.8F, 0.1F};
   JSON json = {1.4F, 3.8F, 0.1F};
   EXPECT_EQ(vector.to_json(), json);
+}
+
+TEST(VectorTest, UnitVector1) {
+  Vector<3> raw(1.4F, 3.8F, 0.1F);
+  UnitVector<3> v = raw.normalized();
+
+  EXPECT_EQ(v.magnitude(), 1.0F);
+  EXPECT_NE(v, raw);
+  EXPECT_EQ(v, raw.normalized());
+}
+
+TEST(VectorTest, UnitVector2) {
+  UnitVector<1> v1;
+  UnitVector<2> v2;
+  UnitVector<3> v3;
+  UnitVector<4> v4;
+  UnitVector<5> v5;
+
+  EXPECT_EQ(v1.magnitude(), 1.0F);
+  EXPECT_EQ(v2.magnitude(), 1.0F);
+  EXPECT_EQ(v3.magnitude(), 1.0F);
+  EXPECT_EQ(v4.magnitude(), 1.0F);
+  EXPECT_EQ(v5.magnitude(), 1.0F);
+
+  EXPECT_EQ(v1[0], 1.0F);
+  EXPECT_EQ(v2[0], 1.0F);
+  EXPECT_EQ(v3[0], 1.0F);
+  EXPECT_EQ(v4[0], 1.0F);
+  EXPECT_EQ(v5[0], 1.0F);
 }
