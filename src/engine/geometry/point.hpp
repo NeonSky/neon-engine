@@ -18,15 +18,19 @@ namespace engine::geometry {
     explicit Point();
 
     /// @brief Creates a point in the x-axis.
+    template <unsigned int N2 = N, typename std::enable_if_t<(N2 == 1), int> = 0>
     explicit Point(float x);
 
     /// @brief Creates a point in the xy-plane.
+    template <unsigned int N2 = N, typename std::enable_if_t<(N2 == 2), int> = 0>
     explicit Point(float x, float y);
 
     /// @brief Creates a point in the xyz-space.
+    template <unsigned int N2 = N, typename std::enable_if_t<(N2 == 3), int> = 0>
     explicit Point(float x, float y, float z);
 
     /// @brief Creates a point in the xyzw-space.
+    template <unsigned int N2 = N, typename std::enable_if_t<(N2 == 4), int> = 0>
     explicit Point(float x, float y, float z, float w);
 
     /// @brief Creates a specific point.
@@ -55,16 +59,16 @@ namespace engine::geometry {
     /// If the new point has fewer dimensions, then coordinates of higher dimensions will be omitted.
     /// If the new point has more dimensions, then the new coordinates will be set to 0.
     template <unsigned int M>
-    operator Point<M>() const;
+    [[nodiscard]] operator Point<M>() const;
 
     /// @brief The \p i th coordinate.
-    auto operator[](unsigned int i) const -> float;
+    [[nodiscard]] auto operator[](unsigned int i) const -> float;
 
     /// @brief Checks if this point has the same coordinates as point \p other.
-    auto operator==(const Point<N>& other) const -> bool;
+    [[nodiscard]] auto operator==(const Point<N>& other) const -> bool;
 
     /// @brief Checks if this point has different coordinates than point \p other.
-    auto operator!=(const Point<N>& other) const -> bool;
+    [[nodiscard]] auto operator!=(const Point<N>& other) const -> bool;
 
     /// @brief The memory address of the first coordinate.
     [[nodiscard]] auto begin() const -> const float*;
@@ -104,20 +108,24 @@ namespace engine::geometry {
   Point<N>::Point() = default;
 
   template <unsigned int N>
+  template <unsigned int N2, typename std::enable_if_t<(N2 == 1), int>>
   Point<N>::Point(float x)
-          : _coordinates({x}) {}
+          : _coordinates(std::array<float, N2>{x}) {}
 
   template <unsigned int N>
+  template <unsigned int N2, typename std::enable_if_t<(N2 == 2), int>>
   Point<N>::Point(float x, float y)
-          : _coordinates({x, y}) {}
+          : _coordinates(std::array<float, N2>{x, y}) {}
 
   template <unsigned int N>
+  template <unsigned int N2, typename std::enable_if_t<(N2 == 3), int>>
   Point<N>::Point(float x, float y, float z)
-          : _coordinates({x, y, z}) {}
+          : _coordinates(std::array<float, N2>{x, y, z}) {}
 
   template <unsigned int N>
+  template <unsigned int N2, typename std::enable_if_t<(N2 == 4), int>>
   Point<N>::Point(float x, float y, float z, float w)
-          : _coordinates({x, y, z, w}) {}
+          : _coordinates(std::array<float, N2>{x, y, z, w}) {}
 
   template <unsigned int N>
   Point<N>::Point(std::array<float, N> coordinates)
@@ -184,7 +192,7 @@ namespace engine::geometry {
   }
 
   template <unsigned int N>
-  [[nodiscard]] auto Point<N>::euclidean_distance_squared(const Point<N>& other) const -> float {
+  auto Point<N>::euclidean_distance_squared(const Point<N>& other) const -> float {
     float sum = 0.0F;
     for (unsigned int i = 0; i < N; i++)
       sum += std::pow(_coordinates[i] - other[i], 2); // See: https://stackoverflow.com/a/6321226/8418261
@@ -193,12 +201,12 @@ namespace engine::geometry {
   }
 
   template <unsigned int N>
-  [[nodiscard]] auto Point<N>::euclidean_distance(const Point<N>& other) const -> float {
+  auto Point<N>::euclidean_distance(const Point<N>& other) const -> float {
     return sqrt(euclidean_distance_squared(other));
   }
 
   template <unsigned int N>
-  [[nodiscard]] auto Point<N>::manhattan_distance(const Point<N>& other) const -> float {
+  auto Point<N>::manhattan_distance(const Point<N>& other) const -> float {
     float sum = 0;
     for (unsigned int i = 0; i < N; i++)
       sum += std::abs(_coordinates[i] - other[i]);

@@ -32,17 +32,16 @@ TEST(MatrixTest, Constructor3) {
                }));
 }
 
-
 TEST(MatrixTest, Constructor4) {
   Matrix<3, 3> m{
-                 UnitVector<3>{0.0F, 0.0F, 1.0F},
-                 UnitVector<3>{0.0F, 1.0F, 0.0F},
-                 UnitVector<3>{1.0F, 0.0F, 0.0F},
+    UnitVector<3>{0.0F, 0.0F, 1.0F},
+    UnitVector<3>{0.0F, 1.0F, 0.0F},
+    UnitVector<3>{1.0F, 0.0F, 0.0F},
   };
   Matrix<3, 3> expected{
-                        {0.0F, 0.0F, 1.0F},
-                        {0.0F, 1.0F, 0.0F},
-                        {1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+    {0.0F, 1.0F, 0.0F},
+    {1.0F, 0.0F, 0.0F},
   };
 
   EXPECT_EQ(m, expected);

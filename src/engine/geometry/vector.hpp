@@ -71,7 +71,7 @@ namespace engine::geometry {
     [[nodiscard]] auto end() -> float*;
 
     /// @brief The \p i th element.
-    auto operator[](unsigned int i) -> float&;
+    [[nodiscard]] auto operator[](unsigned int i) -> float&;
 
     /// @brief Adds the direction and magnitude of vector \p other to this vector.
     template <bool U2>
@@ -231,7 +231,7 @@ namespace engine::geometry {
 
   template <unsigned int N, bool U>
   Vector<N, U>::Vector()
-          : Vector(U ? Vector(Point<N>(1.0F)) : Vector(Point<N>())) {}
+          : Vector(U ? Vector(Point<N>({1.0F})) : Vector(Point<N>())) {}
 
   template <unsigned int N, bool U>
   template <unsigned int N2, typename std::enable_if_t<(N2 == 1), int>>
