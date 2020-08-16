@@ -74,6 +74,7 @@ TEST(RectangleTest, ConvertsToJSON1) {
   json["height"]    = r.height();
   EXPECT_EQ(r.to_json(), json);
 
+  json["rigidbody"]         = r.rigidbody().to_json(true);
   json["debug"]["botleft"]  = r.botleft().to_json();
   json["debug"]["botright"] = r.botright().to_json();
   json["debug"]["topleft"]  = r.topleft().to_json();

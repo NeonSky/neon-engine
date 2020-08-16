@@ -11,7 +11,7 @@ namespace engine::geometry {
   /// @see https://www.wikiwand.com/en/Rectangle
   class Rectangle {
   public:
-    /// @brief Creates a 1.0 x 1.0 square on the XY plane.
+    /// @brief Creates a 1.0 x 1.0 square at the origin.
     Rectangle();
 
     /// @brief Creates a specific rectangle.

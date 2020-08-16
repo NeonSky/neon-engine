@@ -33,7 +33,7 @@ Rectangle::operator Plane() const {
 
 auto Rectangle::to_json(bool debug) const -> debug::JSON {
   debug::JSON json;
-  json["rigidbody"] = _rigidbody.to_json();
+  json["rigidbody"] = _rigidbody.to_json(debug);
   json["width"]     = _width;
   json["height"]    = _height;
 
