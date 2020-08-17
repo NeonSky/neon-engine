@@ -38,6 +38,12 @@ namespace engine::geometry {
     /// @name Mutators
     /// @{
 
+    /// @brief Sets this angle to the sum of this angle and angle \p other.
+    auto operator+=(const Angle& other) -> Angle;
+
+    /// @brief Sets this angle to the difference of this angle and angle \p other.
+    auto operator-=(const Angle& other) -> Angle;
+
     /// @brief Sets the current angle.
     ///
     /// The new angle will be set to \p angle amount in the \p unit angle unit.

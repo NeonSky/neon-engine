@@ -58,9 +58,21 @@ TEST(AngleTest, Adds1) {
   EXPECT_EQ(Angle(1.5F * pi) + Angle(-0.5F * pi), Angle(pi));
 }
 
+TEST(AngleTest, Adds2) {
+  Angle a(1.5F * pi);
+  a += Angle(0.5F * pi);
+  EXPECT_EQ(a, Angle(tau));
+}
+
 TEST(AngleTest, Subtracts1) {
   EXPECT_EQ(Angle(1.5F * pi) - Angle(0.5F * pi), Angle(pi));
   EXPECT_EQ(Angle(1.5F * pi) - Angle(-0.5F * pi), Angle(tau));
+}
+
+TEST(AngleTest, Subtracts2) {
+  Angle a(1.5F * pi);
+  a -= Angle(0.5F * pi);
+  EXPECT_EQ(a, Angle(pi));
 }
 
 TEST(AngleTest, Scales1) {

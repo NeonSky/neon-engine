@@ -12,6 +12,16 @@ Angle::Angle(float angle, Unit unit) {
   set(angle, unit);
 }
 
+auto Angle::operator+=(const Angle& other) -> Angle {
+  _angle_in_radians += other._angle_in_radians;
+  return (*this);
+}
+
+auto Angle::operator-=(const Angle& other) -> Angle {
+  _angle_in_radians -= other._angle_in_radians;
+  return (*this);
+}
+
 void Angle::set(float angle, Unit unit) {
   switch (unit) {
   case Unit::TURNS:
