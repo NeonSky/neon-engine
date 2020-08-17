@@ -15,6 +15,7 @@ namespace engine::geometry {
   /// @see https://www.wikiwand.com/en/Aircraft_principal_axes
   /// @see https://www.wikiwand.com/en/Euler_angles
   /// @see https://www.wikiwand.com/simple/Pitch,_yaw,_and_roll
+  /// @todo add operator* to combine/chain rotations.
   class Rotation {
   public:
     /// @brief Creates the identity rotation.
@@ -53,10 +54,10 @@ namespace engine::geometry {
     /// @{
 
     /// @brief Checks if this rotation is equal to rotation \p other.
-    auto operator==(const Rotation& other) const -> bool;
+    [[nodiscard]] auto operator==(const Rotation& other) const -> bool;
 
     /// @brief Checks if this rotation differs from to rotation \p other.
-    auto operator!=(const Rotation& other) const -> bool;
+    [[nodiscard]] auto operator!=(const Rotation& other) const -> bool;
 
     /// @brief Creates a duplicate of this rotation, but with its angles wrapped around the range [0, \p modulo].
     [[nodiscard]] auto modulo(const Angle& modulo = Angle(tau)) const -> Rotation;

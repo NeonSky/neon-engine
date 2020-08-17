@@ -21,10 +21,6 @@ Rotation::Rotation(Angle pitch, Angle yaw, Angle roll)
 /// @see https://www.wikiwand.com/en/Gimbal_lock
 /// @see https://www.wikiwand.com/en/List_of_trigonometric_identities
 Rotation::Rotation(Matrix<3> matrix, Angle::Unit angle_unit) {
-  // : _pitch(Angle(std::atan2(-matrix[2][1], matrix[2][2]), angle_unit)),
-  //   _yaw(Angle(std::asin(matrix[2][0]), angle_unit)),
-  //   _roll(Angle(std::atan2(-matrix[1][0], matrix[0][0]), angle_unit)) {
-
   // Since yaw is the second axis rotation applied, it can gimbal lock roll.
 
   // sin(a \plusminus b) = sin(a) cos(b) \plusminus cos(a) sin(b)

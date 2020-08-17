@@ -18,7 +18,7 @@ namespace engine::geometry {
   /// @todo add swap_columns()
   /// @todo add scale(scalar) which only multiplies the bottom-right element
   /// @todo rename rotate() to rotate_slow() and add the fast version from page 258.
-  /// @todo extract translate, rotate, and scale since they are usage-specific.
+  /// @todo extract translate, rotate, and scale since they are usage-specific. Also, the order which they apply is sometimes undesired.
   /// @todo Maybe add V param to matrix which guarantees that each row in the matrix is normalized (i.e. the matrix is orthogonal).
   template <unsigned int R, unsigned int C = R>
   class Matrix {
@@ -218,8 +218,8 @@ namespace engine::geometry {
     /// @brief This matrix rotated by \p angle around the vector \p axis.
     ///
     /// @see https://www.wikiwand.com/en/Rotation_matrix
-    template <unsigned int N = 4>
-    auto rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>>;
+    template <unsigned int N = 3>
+    auto rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 3 && R == C), Matrix<3>>;
 
     /// @brief This matrix scaled by the vector \p scale.
     ///
@@ -653,7 +653,7 @@ namespace engine::geometry {
   // See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
   template <unsigned int R, unsigned int C>
   template <unsigned int N>
-  auto Matrix<R, C>::rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 4 && R == C), Matrix<4>> {
+  auto Matrix<R, C>::rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 3 && R == C), Matrix<3>> {
     // NOTE: pair = point + axis
     // 1. Rotate the pair so that the axis is in the XZ-plane.
     Matrix<3> m_xz;
@@ -689,7 +689,7 @@ namespace engine::geometry {
     // 5. Reverse rotate the pair from the XZ-plane so that the axis is as it was initially.
     Matrix<3> inv_m_xz = m_xz.transpose();
 
-    Matrix<4> m = Matrix<4>(inv_m_xz * inv_m_z * rot_z * m_z * m_xz);
+    Matrix<3> m = (inv_m_xz * inv_m_z * rot_z * m_z * m_xz);
 
     return m * (*this);
   }

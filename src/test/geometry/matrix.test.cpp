@@ -821,17 +821,15 @@ TEST(MatrixTest, Translates4) {
 }
 
 TEST(MatrixTest, Rotates1) {
-  Matrix<4> m{
-    {1.0F, 0.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 0.0F, 1.0F},
+  Matrix<3> m{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
   };
-  Matrix<4> expected{
-    {1.0F, 0.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F, 0.0F},
-    {0.0F, -1.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 0.0F, 1.0F},
+  Matrix<3> expected{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+    {0.0F, -1.0F, 0.0F},
   };
   m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(1.0F, 0.0F, 0.0F));
   EXPECT_EQ(m, expected);
@@ -841,17 +839,15 @@ TEST(MatrixTest, Rotates1) {
 }
 
 TEST(MatrixTest, Rotates2) {
-  Matrix<4> m{
-    {1.0F, 0.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 0.0F, 1.0F},
+  Matrix<3> m{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
   };
-  Matrix<4> expected{
-    {0.0F, 0.0F, -1.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F, 0.0F},
-    {1.0F, 0.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 0.0F, 1.0F},
+  Matrix<3> expected{
+    {0.0F, 0.0F, -1.0F},
+    {0.0F, 1.0F, 0.0F},
+    {1.0F, 0.0F, 0.0F},
   };
   m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 1.0F, 0.0F));
   EXPECT_EQ(m, expected);
@@ -861,17 +857,15 @@ TEST(MatrixTest, Rotates2) {
 }
 
 TEST(MatrixTest, Rotates3) {
-  Matrix<4> m{
-    {1.0F, 0.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 0.0F, 1.0F},
+  Matrix<3> m{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
   };
-  Matrix<4> expected{
-    {0.0F, 1.0F, 0.0F, 0.0F},
-    {-1.0F, 0.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 0.0F, 1.0F},
+  Matrix<3> expected{
+    {0.0F, 1.0F, 0.0F},
+    {-1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
   };
   m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 0.0F, 1.0F));
   EXPECT_EQ(m, expected);

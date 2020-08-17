@@ -8,7 +8,6 @@ namespace engine::geometry {
   /// @brief Orientation defines the reference orientation of the world.
   ///
   /// @see https://www.wikiwand.com/en/Orientation_(geometry)
-  /// @todo flip() implementation should not have to extract submatrix.
   class Orientation {
   public:
     /// @brief The reference right direction of the world.
