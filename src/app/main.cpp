@@ -3,6 +3,7 @@
 #include "../engine/debug/logger.hpp"
 #include "../engine/geometry/matrix.hpp"
 #include "../engine/geometry/ray.hpp"
+#include "../engine/graphics/cuboid.hpp"
 #include "../engine/graphics/gltf_model.hpp"
 #include "../engine/gui/window.hpp"
 
@@ -16,9 +17,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <thread>
 
 // #include <entt/entt.hpp>
 #include <entt/entity/registry.hpp>
+
+using namespace engine;
 
 struct position {
   float x;
@@ -60,11 +64,11 @@ void update(std::uint64_t dt,
 auto main() -> int {
   srand(time(nullptr));
 
-  engine::debug::Logger::set_profile(engine::debug::Logger::Profile::DEBUG);
+  debug::Logger::set_profile(debug::Logger::Profile::DEBUG);
   LOG_INFO("Program started.");
   auto start = std::chrono::system_clock::now();
 
-  std::unique_ptr<engine::gui::Window> window = std::make_unique<engine::gui::Window>(1920, 1080, "Application");
+  std::unique_ptr<gui::Window> window = std::make_unique<gui::Window>(1920, 1080, "Application");
 
   int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
   if (status == 0) {
@@ -101,9 +105,23 @@ auto main() -> int {
     }
   }
 
-  engine::graphics::GLTFModel model("cube/Cube.gltf", engine::geometry::Transform());
-  engine::debug::DebugCamera camera(window.get(), engine::geometry::Transform(engine::geometry::Vector<3>(0.0F, 0.0F, -20.0F)));
-  engine::debug::DebugDrawer dd;
+  graphics::GLTFModel model("cube/Cube.gltf", geometry::Transform(geometry::Vector<3>(-1.0F, 1.0F, -1.0F)));
+  debug::DebugCamera camera(window.get(), geometry::Rigidbody(geometry::Vector<3>(1.0F, 5.0F, -20.0F)));
+  debug::DebugDrawer dd;
+  CHECK_GL_ERROR();
+
+  graphics::Cuboid cuboid1(geometry::Transform(geometry::Vector<3>(0.5F, 0.5F, 0.5F), geometry::Orientation(), geometry::Vector<3>(1.0F, 1.0F, 1.0F)),
+                           geometry::Vector<3>(0.6F, 1.0F, 1.0F));
+
+  graphics::Cuboid cuboid2(geometry::Transform(geometry::Vector<3>(3.5F, 1.0F, 3.5F), geometry::Orientation(), geometry::Vector<3>(1.0F, 2.0F, 1.0F)),
+                           geometry::Vector<3>(0.6F, 1.0F, 0.6F));
+
+  graphics::Cuboid cuboid3(geometry::Transform(geometry::Vector<3>(6.0F, 0.25F, 1.5F), geometry::Orientation(), geometry::Vector<3>(2.0F, 0.5F, 1.0F)),
+                           geometry::Vector<3>(1.0F, 0.6F, 0.6F));
+
+  float time = 0.0F;
+
+  auto time_before_frame = std::chrono::system_clock::now();
 
   CHECK_GL_ERROR();
   while (!window->is_closing()) {
@@ -116,15 +134,45 @@ auto main() -> int {
     glUseProgram(0);
 
     CHECK_GL_ERROR();
-    engine::geometry::Matrix<4> view_projection = camera.projection_matrix() * camera.view_matrix();
+    geometry::Matrix<4> view_projection = camera.projection_matrix() * camera.view_matrix();
 
     model.render(view_projection);
 
-    dd.draw_transform(engine::geometry::Transform());
+    auto t    = geometry::Transform();
+    t.scale() = {10.0F, 10.0F, 10.0F};
+
+    // Coordinate axis
+    dd.draw_transform(t);
+
+    // Grid
+    for (int x = -10; x <= 10; x++)
+      dd.draw_line(geometry::Vector<3>((float) x, 0, 10), geometry::Vector<3>((float) x, 0, -10));
+    for (int z = -10; z <= 10; z++)
+      dd.draw_line(geometry::Vector<3>(10, 0, (float) z), geometry::Vector<3>(-10, 0, (float) z));
+
     dd.render(view_projection);
+
+    cuboid1.transform().orientation() = geometry::Rotation(0, 0, time);
+    cuboid2.transform().orientation() = geometry::Rotation(0, time, 0);
+    cuboid3.transform().orientation() = geometry::Rotation(time, 0, 0);
+
+    cuboid1.render(view_projection, true);
+    cuboid2.render(view_projection, true);
+    cuboid3.render(view_projection, true);
 
     window->update();
     CHECK_GL_ERROR();
+
+    time += 0.02F;
+
+    auto time_spent_on_frame = std::chrono::system_clock::now() - time_before_frame;
+    if (time_spent_on_frame.count() < 1000.0F / 60.0F) {
+      std::chrono::duration<double, std::milli> time_left_on_frame((1000.0 / 60.0) - time_spent_on_frame.count());
+      std::this_thread::sleep_for(time_left_on_frame);
+    }
+    time_before_frame = std::chrono::system_clock::now();
+    // std::time_t tnow  = std::chrono::system_clock::to_time_t(time_before_frame);
+    // LOG_DEBUG(std::ctime(&tnow));
   }
 
   auto end = std::chrono::system_clock::now();
