@@ -1,9 +1,11 @@
 #include "cuboid.hpp"
 
+#include <utility>
+
 using namespace engine::graphics;
 
 Cuboid::Cuboid(geometry::Cuboid geometry, geometry::Vector<3> color)
-        : _geometry(geometry),
+        : _geometry(std::move(std::move(geometry))),
           _color(color),
           _shader(Shader("unicolor.vert", "color.frag")) {
 

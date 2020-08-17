@@ -15,7 +15,7 @@ float pitch = 0.0F;
 
 Camera::Camera() : Camera(geometry::Rigidbody()) {}
 Camera::Camera(geometry::Rigidbody rigidbody)
-        : _rigidbody(rigidbody) {
+        : _rigidbody(std::move(std::move(rigidbody))) {
 
   yaw   = _rigidbody.orientation().rotation().yaw().radians();
   pitch = _rigidbody.orientation().rotation().pitch().radians();
