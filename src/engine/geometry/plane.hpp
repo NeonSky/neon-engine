@@ -8,8 +8,11 @@ namespace engine::geometry {
   ///
   /// @see https://www.wikiwand.com/en/Plane_(geometry)
   struct Plane {
+    /// @{
+    /// State.
     Point<3> point;       //< A point on the plane.
     UnitVector<3> normal; //< The normal vector of the plane.
+    /// @}
   };
 
 }

@@ -1,16 +1,22 @@
 #pragma once
 
-#include "../debug/json.hpp"
 #include "vector.hpp"
-
-#include "glm/gtx/string_cast.hpp"
 
 namespace engine::geometry {
 
+  /// Ray represents a vector originating from a point.
+  ///
+  /// It can also be seen as half of a line.
+  ///
+  /// @see https://www.wikiwand.com/en/Line_(geometry)
   struct Ray {
-    Vector<3> origin;
-    Vector<3> direction; // TODO: Use a UnitVector<3> here instead.
+    /// @{
+    /// State.
+    Vector<3> origin; //< The origin/tail of this ray.
+    UnitVector<3> direction; //< The direction of this ray.
+    /// @}
 
+    /// @brief Serializes the current state to JSON.
     [[nodiscard]] auto to_json() const -> debug::JSON {
       return {
         {"origin", origin.to_json()},
