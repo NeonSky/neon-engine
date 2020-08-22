@@ -226,6 +226,13 @@ TEST(VectorTest, Scales2) {
 TEST(VectorTest, Scales3) {
   Vector<3> vector(1.0F, 2.0F, 3.0F);
   ASSERT_THROW(vector = vector / 0.0F, std::runtime_error);
+  ASSERT_THROW(vector /= 0.0F, std::runtime_error);
+}
+
+TEST(VectorTest, Scales4) {
+  Vector<3> vector;
+  ASSERT_THROW(vector = vector / 0.0F, std::runtime_error);
+  ASSERT_THROW(vector /= 0.0F, std::runtime_error);
 }
 
 TEST(VectorTest, InnerProduct1) {
@@ -404,11 +411,11 @@ TEST(VectorTest, UnitVector1) {
 }
 
 TEST(VectorTest, UnitVector2) {
-  UnitVector<1> v1;
-  UnitVector<2> v2;
-  UnitVector<3> v3;
-  UnitVector<4> v4;
-  UnitVector<5> v5;
+  const UnitVector<1> v1;
+  const UnitVector<2> v2;
+  const UnitVector<3> v3;
+  const UnitVector<4> v4;
+  const UnitVector<5> v5;
 
   EXPECT_EQ(v1.magnitude(), 1.0F);
   EXPECT_EQ(v2.magnitude(), 1.0F);

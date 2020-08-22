@@ -16,7 +16,6 @@ namespace engine::geometry {
   ///
   /// @see https://www.wikiwand.com/en/Euclidean_vector
   /// @todo Add cross product. Preferably generalized to N dimensions.
-  /// @todo Mutators should be disabled for U = true i.e. unit vectors.
   template <unsigned int N, bool U = false>
   class Vector {
   public:
@@ -274,28 +273,38 @@ namespace engine::geometry {
     for (unsigned int i = 0; i < N; i++)
       _elements[i] = to[i] - from[i];
 
-    if constexpr (U)
-      (*this) /= magnitude();
+    if constexpr (U) {
+      float m = magnitude();
+      if (m == 0.0F)
+        LOG_ERROR("The provided points may not coincide when creating a unit vector."); // LCOV_EXCL_BR_LINE
+
+      for (auto& e : _elements)
+        e /= m;
+    }
   }
 
   template <unsigned int N, bool U>
   auto Vector<N, U>::begin() -> float* {
+    static_assert(!U, "This method is not allowed for unit vectors.");
     return _elements.begin();
   }
 
   template <unsigned int N, bool U>
   auto Vector<N, U>::end() -> float* {
+    static_assert(!U, "This method is not allowed for unit vectors.");
     return _elements.end();
   }
 
   template <unsigned int N, bool U>
   auto Vector<N, U>::operator[](unsigned int i) -> float& {
+    static_assert(!U, "This method is not allowed for unit vectors.");
     return _elements[i];
   }
 
   template <unsigned int N, bool U>
   template <bool U2>
   void Vector<N, U>::operator+=(const Vector<N, U2>& other) {
+    static_assert(!U, "This method is not allowed for unit vectors.");
     for (unsigned int i = 0; i < N; i++)
       _elements[i] += other[i];
   }
@@ -303,18 +312,23 @@ namespace engine::geometry {
   template <unsigned int N, bool U>
   template <bool U2>
   void Vector<N, U>::operator-=(const Vector<N, U2>& other) {
+    static_assert(!U, "This method is not allowed for unit vectors.");
     for (unsigned int i = 0; i < N; i++)
       _elements[i] -= other[i];
   }
 
   template <unsigned int N, bool U>
   void Vector<N, U>::operator*=(float scalar) {
+    static_assert(!U, "This method is not allowed for unit vectors.");
+
     for (unsigned int i = 0; i < N; i++)
       _elements[i] *= scalar;
   }
 
   template <unsigned int N, bool U>
   void Vector<N, U>::operator/=(float scalar) {
+    static_assert(!U, "This method is not allowed for unit vectors.");
+
     if (scalar == 0.0F) {
       if (magnitude() == 0.0F) {
         LOG_ERROR("Can't divide vector by 0. This is the identity vector, so this error might have occured from an attempt to normalize it."); // LCOV_EXCL_BR_LINE
