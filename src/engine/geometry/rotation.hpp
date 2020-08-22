@@ -37,6 +37,11 @@ namespace engine::geometry {
     /// It is assumed that all elements in \p matrix are provided in the \p angle_unit unit.
     explicit Rotation(Matrix<3> matrix, Angle::Unit angle_unit = Angle::Unit::RADIANS);
 
+    /// @brief Creates a rotation by \p angle around the vector \p axis.
+    ///
+    /// @see https://www.wikiwand.com/en/Rotation_matrix
+    explicit Rotation(Angle angle, UnitVector<3> axis);
+
     /// @name Mutators
     /// @{
 

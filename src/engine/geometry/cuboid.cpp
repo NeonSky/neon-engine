@@ -18,7 +18,7 @@ auto Cuboid::transform() -> Transform& {
 
 auto Cuboid::left_face() -> Rectangle {
   Transform t                = _transform;
-  Matrix<3> m                = t.orientation().rotation().matrix() * Matrix<3>().rotate(Angle(pi / 2.0F), Orientation::world_up);
+  Matrix<3> m                = t.orientation().rotation().matrix() * Rotation(Angle(pi / 2.0F), Orientation::world_up).matrix();
   t.orientation().rotation() = Rotation(m);
   t.position() += t.forward() * t.scale().x() / 2.0F;
   return Rectangle((const Rigidbody&) t, t.scale().z(), t.scale().y());
@@ -26,7 +26,7 @@ auto Cuboid::left_face() -> Rectangle {
 
 auto Cuboid::right_face() -> Rectangle {
   Transform t                = _transform;
-  Matrix<3> m                = t.orientation().rotation().matrix() * Matrix<3>().rotate(Angle(-pi / 2.0F), Orientation::world_up);
+  Matrix<3> m                = t.orientation().rotation().matrix() * Rotation(Angle(-pi / 2.0F), Orientation::world_up).matrix();
   t.orientation().rotation() = Rotation(m);
   t.position() += t.forward() * t.scale().x() / 2.0F;
   return Rectangle((const Rigidbody&) t, t.scale().z(), t.scale().y());
@@ -48,7 +48,7 @@ auto Cuboid::top_face() -> Rectangle {
 
 auto Cuboid::back_face() -> Rectangle {
   Transform t                = _transform;
-  Matrix<3> m                = t.orientation().rotation().matrix() * Matrix<3>().rotate(Angle(pi), Orientation::world_up);
+  Matrix<3> m                = t.orientation().rotation().matrix() * Rotation(Angle(pi), Orientation::world_up).matrix();
   t.orientation().rotation() = Rotation(m);
   t.position() += t.forward() * t.scale().z() / 2.0F;
   return Rectangle((const Rigidbody&) t, t.scale().x(), t.scale().y());

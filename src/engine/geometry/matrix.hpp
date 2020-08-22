@@ -16,10 +16,7 @@ namespace engine::geometry {
   /// @todo add is_diagonal() https://www.wikiwand.com/en/Diagonal_matrix
   /// @todo add adjoint()
   /// @todo add swap_columns()
-  /// @todo add scale(scalar) which only multiplies the bottom-right element
   /// @todo rename rotate() to rotate_slow() and add the fast version from page 258.
-  /// @todo extract translate, rotate, and scale since they are usage-specific. Also, the order which they apply is sometimes undesired.
-  /// @todo Maybe add V param to matrix which guarantees that each row in the matrix is normalized (i.e. the matrix is orthogonal).
   template <unsigned int R, unsigned int C = R>
   class Matrix {
   public:
@@ -57,7 +54,7 @@ namespace engine::geometry {
     [[nodiscard]] auto end() -> float*;
 
     /// @brief The \p i th row.
-    auto operator[](unsigned int i) -> Vector<C>&;
+    [[nodiscard]] auto operator[](unsigned int i) -> Vector<C>&;
 
     /// @brief Swaps the rows indexed by \p i and \p j.
     auto swap_rows(unsigned int i, unsigned int j);
@@ -133,7 +130,7 @@ namespace engine::geometry {
     [[nodiscard]] auto column_vector(unsigned int c) const -> Vector<R>;
 
     /// @brief Converts this matrix into a 2D array.
-    operator std::array<std::array<float, C>, R>() const;
+    [[nodiscard]] operator std::array<std::array<float, C>, R>() const;
 
     /// @brief Serializes the current state to JSON.
     [[nodiscard]] auto to_json() const -> debug::JSON;
@@ -146,39 +143,39 @@ namespace engine::geometry {
     ///
     /// @see https://www.wikiwand.com/en/Main_diagonal
     template <unsigned int N = R>
-    auto main_diagonal() const -> std::enable_if_t<(N == R && R == C), Vector<N>>;
+    [[nodiscard]] auto main_diagonal() const -> std::enable_if_t<(N == R && R == C), Vector<N>>;
 
     /// @brief The trace of this matrix.
     ///
     /// @see https://www.wikiwand.com/en/Trace_(linear_algebra)
     template <unsigned int N = R>
-    auto trace() const -> std::enable_if_t<(N == R && R == C), float>;
+    [[nodiscard]] auto trace() const -> std::enable_if_t<(N == R && R == C), float>;
 
     /// @brief The minor matrix obtained from excluding row \p r and column \p c.
     ///
     /// @see https://www.wikiwand.com/en/Minor_(linear_algebra)
     template <unsigned int N = R>
-    auto minor_matrix(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), Matrix<N - 1, N - 1>>;
+    [[nodiscard]] auto minor_matrix(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), Matrix<N - 1, N - 1>>;
 
     /// @brief The determinant of the minor matrix obtained from excluding row \p r and column \p c.
     ///
     /// @see https://www.wikiwand.com/en/Minor_(linear_algebra)
     template <unsigned int N = R>
-    auto minor(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), float>;
+    [[nodiscard]] auto minor(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), float>;
 
     /// @brief The cofactor of the element at row \p r and column \p c.
     ///
     /// @see https://www.mathwords.com/c/cofactor_matrix.htm
     /// @see https://www.wikiwand.com/en/Minor_(linear_algebra)
     template <unsigned int N = R>
-    auto cofactor(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), float>;
+    [[nodiscard]] auto cofactor(unsigned int r, unsigned int c) const -> std::enable_if_t<(N == R && R == C), float>;
 
     /// @brief The cofactor matrix of this matrix.
     ///
     /// @see https://www.mathwords.com/c/cofactor_matrix.htm
     /// @see https://www.wikiwand.com/en/Minor_(linear_algebra)
     template <unsigned int N = R>
-    auto cofactor_matrix() const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
+    [[nodiscard]] auto cofactor_matrix() const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
 
     /// @brief The adjugate matrix of this matrix.
     ///
@@ -186,13 +183,13 @@ namespace engine::geometry {
     ///
     /// @see https://www.wikiwand.com/en/Adjugate_matrix
     template <unsigned int N = R>
-    auto adjugate() const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
+    [[nodiscard]] auto adjugate() const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
 
     /// @brief The inverse of this matrix.
     ///
     /// @see https://www.wikiwand.com/en/Invertible_matrix
     template <unsigned int N = R>
-    auto inverse() const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
+    [[nodiscard]] auto inverse() const -> std::enable_if_t<(N == R && R == C), Matrix<N>>;
 
     /// @brief The determinant of this matrix.
     ///
@@ -200,32 +197,13 @@ namespace engine::geometry {
     ///
     /// @see https://www.wikiwand.com/en/Determinant
     template <unsigned int N = R>
-    auto determinant() const -> std::enable_if_t<(N == R && R == C && N == 1), float>;
+    [[nodiscard]] auto determinant() const -> std::enable_if_t<(N == R && R == C && N == 1), float>;
 
     /// @brief The determinant of this matrix.
     ///
     /// @see https://www.wikiwand.com/en/Determinant
     template <unsigned int N = R>
-    auto determinant() const -> std::enable_if_t<(N == R && R == C && N > 1), float>;
-
-    /// @brief This matrix but with the translation vector \p translation added.
-    ///
-    /// @see https://www.wikiwand.com/en/Translation_(geometry)
-    /// @see https://www.wikiwand.com/en/Transformation_matrix
-    template <unsigned int N = R - 1, bool U = false>
-    auto translate(Vector<N, U> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>>;
-
-    /// @brief This matrix rotated by \p angle around the vector \p axis.
-    ///
-    /// @see https://www.wikiwand.com/en/Rotation_matrix
-    template <unsigned int N = 3>
-    auto rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 3 && R == C), Matrix<3>>;
-
-    /// @brief This matrix scaled by the vector \p scale.
-    ///
-    /// @see https://www.wikiwand.com/en/Scaling_(geometry)
-    template <unsigned int N = R, bool U = false>
-    auto scale(Vector<N, U> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>>;
+    [[nodiscard]] auto determinant() const -> std::enable_if_t<(N == R && R == C && N > 1), float>;
 
     /// @}
 
@@ -638,70 +616,6 @@ namespace engine::geometry {
     for (unsigned int c = 0; c < N; c++)
       res += _elements[0][c] * cofactor(0, c);
     return res;
-  }
-
-  template <unsigned int R, unsigned int C>
-  template <unsigned int N, bool U>
-  auto Matrix<R, C>::translate(Vector<N, U> translation) const -> std::enable_if_t<(N < R && R == C), Matrix<R>> {
-    Matrix<R> m;
-    for (unsigned int r = 0; r < N; r++)
-      m[r][C - 1] = translation[r];
-
-    return m * (*this);
-  }
-
-  // See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
-  template <unsigned int R, unsigned int C>
-  template <unsigned int N>
-  auto Matrix<R, C>::rotate(Angle angle, UnitVector<3> axis) const -> std::enable_if_t<(N == 3 && R == C), Matrix<3>> {
-    // NOTE: pair = point + axis
-    // 1. Rotate the pair so that the axis is in the XZ-plane.
-    Matrix<3> m_xz;
-    float xy_len = sqrtf(powf(axis.x(), 2) + powf(axis.y(), 2));
-
-    if (xy_len != 0.0F) { // Avoid division by 0 for vectors along Z-axis. We don't need to rotate in that case so the identity matrix will be used.
-      m_xz = {
-        {axis.x() / xy_len, axis.y() / xy_len, 0},
-        {-axis.y() / xy_len, axis.x() / xy_len, 0},
-        {0, 0, 1},
-      };
-    }
-
-    // 2. Rotate the pair so that the axis is equivalent to the Z-axis.
-    Matrix<3> m_z = {
-      {axis.z() / axis.magnitude(), 0, -xy_len / axis.magnitude()},
-      {0, 1, 0},
-      {xy_len / axis.magnitude(), 0, axis.z() / axis.magnitude()},
-    };
-
-    // 3. Rotate the point about the Z-axis by the desired rotation angle.
-    float rads = angle.radians();
-    Matrix<3> rot_z{
-      // NOTE: Left-handed Z-rotation
-      {std::cos(rads), std::sin(rads), 0},
-      {-std::sin(rads), std::cos(rads), 0},
-      {0, 0, 1},
-    };
-
-    // 4. Reverse rotate the pair from Z-axis so that the axis is in the XY-plane as before.
-    Matrix<3> inv_m_z = m_z.transpose(); // We could also have flipped sign of angles.
-
-    // 5. Reverse rotate the pair from the XZ-plane so that the axis is as it was initially.
-    Matrix<3> inv_m_xz = m_xz.transpose();
-
-    Matrix<3> m = (inv_m_xz * inv_m_z * rot_z * m_z * m_xz);
-
-    return m * (*this);
-  }
-
-  template <unsigned int R, unsigned int C>
-  template <unsigned int N, bool U>
-  auto Matrix<R, C>::scale(Vector<N, U> scale) const -> std::enable_if_t<(N <= R && R == C), Matrix<R>> {
-    Matrix<R> m;
-    for (unsigned int i = 0; i < N; i++)
-      m[i][i] = scale[i];
-
-    return m * (*this);
   }
 
 }

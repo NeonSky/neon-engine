@@ -324,7 +324,7 @@ TEST(MatrixTest, Inverse4) {
     {-1.0F, 1.5F},
     {2.0F / 3.0F, -1.0F},
   });
-  ASSERT_THROW(m.inverse(), std::runtime_error);
+  ASSERT_THROW(m = m.inverse(), std::runtime_error);
 }
 
 TEST(MatrixTest, CofactorMatrix1) {
@@ -762,118 +762,6 @@ TEST(MatrixTest, Submatrix3) {
   ASSERT_THROW((m = m.submatrix<3, 4>(1, 1)), std::runtime_error);
 }
 
-TEST(MatrixTest, Translates1) {
-  Matrix<3> m{
-    {2.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  Matrix<3> expected{
-    {2.0F, 0.0F, 2.0F},
-    {0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  EXPECT_EQ(m.translate({2.0F, 0.0F}), expected);
-}
-
-TEST(MatrixTest, Translates2) {
-  Matrix<3> m{
-    {1.5F, 0.0F, 0.0F},
-    {0.0F, 3.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  Matrix<3> expected{
-    {1.5F, 0.0F, 2.0F},
-    {0.0F, 3.0F, -1.2F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  EXPECT_EQ(m.translate({2.0F, -1.2F}), expected);
-}
-
-TEST(MatrixTest, Translates3) {
-  Matrix<3> m{
-    {-2.7F, 5.0F, 12.0F},
-    {8.0F, 1.3F, 0.0F},
-    {-22.0F, 2.3F, 1.0F},
-  };
-  Matrix<3> expected{
-    {96.3F, -5.35F, 7.5F},
-    {-75.6F, 10.04F, 3.8F},
-    {-22.0F, 2.3F, 1.0F},
-  };
-  EXPECT_EQ(m.translate({-4.5F, 3.8F}), expected);
-}
-
-TEST(MatrixTest, Translates4) {
-  Matrix<4> m{
-    {1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 1},
-  };
-  Matrix<4> expected{
-    {1, 0, 0, -4.5F},
-    {0, 1, 0, 3.8F},
-    {0, 0, 1, 2.4F},
-    {0, 0, 0, 1},
-  };
-  EXPECT_EQ(m.translate({-4.5F, 3.8F, 2.4F}), expected);
-}
-
-TEST(MatrixTest, Rotates1) {
-  Matrix<3> m{
-    {1.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  Matrix<3> expected{
-    {1.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-    {0.0F, -1.0F, 0.0F},
-  };
-  m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(1.0F, 0.0F, 0.0F));
-  EXPECT_EQ(m, expected);
-
-  for (auto& e : m)
-    EXPECT_FALSE(std::isnan(e));
-}
-
-TEST(MatrixTest, Rotates2) {
-  Matrix<3> m{
-    {1.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  Matrix<3> expected{
-    {0.0F, 0.0F, -1.0F},
-    {0.0F, 1.0F, 0.0F},
-    {1.0F, 0.0F, 0.0F},
-  };
-  m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 1.0F, 0.0F));
-  EXPECT_EQ(m, expected);
-
-  for (auto& e : m)
-    EXPECT_FALSE(std::isnan(e));
-}
-
-TEST(MatrixTest, Rotates3) {
-  Matrix<3> m{
-    {1.0F, 0.0F, 0.0F},
-    {0.0F, 1.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  Matrix<3> expected{
-    {0.0F, 1.0F, 0.0F},
-    {-1.0F, 0.0F, 0.0F},
-    {0.0F, 0.0F, 1.0F},
-  };
-  m = m.rotate(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 0.0F, 1.0F));
-  EXPECT_EQ(m, expected);
-
-  for (auto& e : m)
-    EXPECT_FALSE(std::isnan(e));
-}
-
 TEST(MatrixTest, Scales1) {
   Matrix<3, 2> m{
     {4.0F, 5.0F},
@@ -900,34 +788,6 @@ TEST(MatrixTest, Scales2) {
     {6.0F, 7.5F},
   };
   EXPECT_EQ(m / 2.0F, expected);
-}
-
-TEST(MatrixTest, Scales3) {
-  Matrix<2, 2> m{
-    {-2.7F, 5.0F},
-    {8.0F, 1.3F},
-  };
-  Matrix<2, 2> expected{
-    {-5.4F, 10.0F},
-    {24.0F, 3.9F},
-  };
-  EXPECT_EQ(m.scale({2.0F, 3.0F}), expected);
-}
-
-TEST(MatrixTest, Scales4) {
-  Matrix<4> m{
-    {1.0F, 1.0F, 1.0F, 1.0F},
-    {1.0F, 1.0F, 1.0F, 1.0F},
-    {1.0F, 1.0F, 1.0F, 1.0F},
-    {1.0F, 1.0F, 1.0F, 1.0F},
-  };
-  Matrix<4> expected{
-    {2.0F, 2.0F, 2.0F, 2.0F},
-    {0.8F, 0.8F, 0.8F, 0.8F},
-    {-1.0F, -1.0F, -1.0F, -1.0F},
-    {1.0F, 1.0F, 1.0F, 1.0F},
-  };
-  EXPECT_EQ(m.scale(Vector<3>(2.0F, 0.8F, -1.0F)), expected);
 }
 
 TEST(MatrixTest, ConvertsTo2DArray1) {

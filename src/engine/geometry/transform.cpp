@@ -1,9 +1,7 @@
 #include "transform.hpp"
 
-#include "angle.hpp"
-#include "orientation.hpp"
-
-#include <utility>
+#include "scale.hpp"
+#include "translation.hpp"
 
 using namespace engine::geometry;
 
@@ -33,7 +31,7 @@ auto Transform::operator!=(const Transform& other) const -> bool {
 }
 
 auto Transform::matrix() const -> Matrix<4> {
-  return (Matrix<4>(_orientation.rotation().matrix()) * Matrix<4>().scale(_scale)).translate(_position);
+  return translation_matrix(_position) * Matrix<4>(_orientation.rotation().matrix() * scale_matrix(_scale));
 }
 
 auto Transform::scale() -> Vector<3>& {

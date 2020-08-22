@@ -1,5 +1,8 @@
 #include "camera.hpp"
+
 #include "../debug/logger.hpp"
+#include "../geometry/scale.hpp"
+#include "../geometry/translation.hpp"
 
 #include <algorithm>
 #include <utility>
@@ -83,7 +86,7 @@ void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
 
 auto Camera::view_matrix() const -> geometry::Matrix<4> {
 
-  // We normally use column major, so row major (i.e. the transpose) becomes the inverse.
+  // We normally use column-major order, so row-major order (i.e. the transpose) becomes the inverse.
   geometry::Matrix<4> inverse_rotation(geometry::Matrix<3>{
     _rigidbody.right(),  // (R_x, R_y, R_z)
     _rigidbody.up(),     // (U_x, U_y, U_z)
@@ -91,7 +94,7 @@ auto Camera::view_matrix() const -> geometry::Matrix<4> {
   });
 
   // Move back to origin.
-  geometry::Matrix<4> inverse_translation = geometry::Matrix<4>().translate(-_rigidbody.position());
+  geometry::Matrix<4> inverse_translation = translation_matrix(-_rigidbody.position());
 
   return inverse_rotation * inverse_translation;
 }
@@ -128,15 +131,15 @@ auto Camera::perspective_projection_matrix() const -> geometry::Matrix<4> {
 }
 
 auto Camera::orthographic_projection_matrix() const -> geometry::Matrix<4> {
-  geometry::Matrix<4> scale_matrix;
-  scale_matrix[0][0] = 2.0F / (_orthographic.right - _orthographic.left);
-  scale_matrix[1][1] = 2.0F / (_orthographic.top - _orthographic.bot);
-  scale_matrix[2][2] = 2.0F / (_orthographic.far - _orthographic.near);
+  geometry::Vector<3> scale(
+    2.0F / (_orthographic.right - _orthographic.left),
+    2.0F / (_orthographic.top - _orthographic.bot),
+    2.0F / (_orthographic.far - _orthographic.near));
 
   geometry::Vector<3> translation(
     -(_orthographic.left + _orthographic.right) / 2.0F,
     -(_orthographic.bot + _orthographic.top) / 2.0F,
     -(_orthographic.near + _orthographic.far) / 2.0F);
 
-  return scale_matrix * geometry::Matrix<4>().translate(translation);
+  return geometry::Matrix<4>(scale_matrix(scale)) * translation_matrix(translation);
 }

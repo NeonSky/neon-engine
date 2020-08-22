@@ -1,9 +1,6 @@
 #include "rigidbody.hpp"
 
-#include "angle.hpp"
-#include "orientation.hpp"
-
-#include <utility>
+#include "translation.hpp"
 
 using namespace engine::geometry;
 
@@ -34,7 +31,7 @@ auto Rigidbody::operator!=(const Rigidbody& other) const -> bool {
 }
 
 auto Rigidbody::matrix() const -> Matrix<4> {
-  return Matrix<4>(_orientation.rotation().matrix()).translate(_position);
+  return translation_matrix(_position) * Matrix<4>(_orientation.rotation().matrix());
 }
 
 auto Rigidbody::position() -> Vector<3>& {

@@ -192,6 +192,60 @@ TEST(RotationTest, RotationMatrix6) {
   EXPECT_EQ(r.matrix_slow(), r.matrix());
 }
 
+TEST(RotationTest, Rotates1) {
+  Matrix<3> m{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  Matrix<3> expected{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+    {0.0F, -1.0F, 0.0F},
+  };
+  m = Rotation(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(1.0F, 0.0F, 0.0F)).matrix() * m;
+  EXPECT_EQ(m, expected);
+
+  for (auto& e : m)
+    EXPECT_FALSE(std::isnan(e));
+}
+
+TEST(RotationTest, Rotates2) {
+  Matrix<3> m{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  Matrix<3> expected{
+    {0.0F, 0.0F, -1.0F},
+    {0.0F, 1.0F, 0.0F},
+    {1.0F, 0.0F, 0.0F},
+  };
+  m = Rotation(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 1.0F, 0.0F)).matrix() * m;
+  EXPECT_EQ(m, expected);
+
+  for (auto& e : m)
+    EXPECT_FALSE(std::isnan(e));
+}
+
+TEST(RotationTest, Rotates3) {
+  Matrix<3> m{
+    {1.0F, 0.0F, 0.0F},
+    {0.0F, 1.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  Matrix<3> expected{
+    {0.0F, 1.0F, 0.0F},
+    {-1.0F, 0.0F, 0.0F},
+    {0.0F, 0.0F, 1.0F},
+  };
+  m = Rotation(Angle(90, Angle::Unit::DEGREES), UnitVector<3>(0.0F, 0.0F, 1.0F)).matrix() * m;
+  EXPECT_EQ(m, expected);
+
+  for (auto& e : m)
+    EXPECT_FALSE(std::isnan(e));
+}
+
 TEST(RotationTest, ConvertsToJSON1) {
   Rotation rotation(0, -pi, pi);
   JSON json;

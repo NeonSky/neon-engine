@@ -56,6 +56,47 @@ Rotation::Rotation(Matrix<3> matrix, Angle::Unit angle_unit) {
   }
 }
 
+/// @internal See section 9.2: https://repository.lboro.ac.uk/articles/Modelling_CPV/9523520
+Rotation::Rotation(Angle angle, UnitVector<3> axis) {
+  // NOTE: pair = point + axis
+  // 1. Rotate the pair so that the axis is in the XZ-plane.
+  Matrix<3> m_xz;
+  float xy_len = sqrtf(powf(axis.x(), 2) + powf(axis.y(), 2));
+
+  if (xy_len != 0.0F) { // Avoid division by 0 for vectors along Z-axis. We don't need to rotate in that case so the identity matrix will be used.
+    m_xz = {
+      {axis.x() / xy_len, axis.y() / xy_len, 0},
+      {-axis.y() / xy_len, axis.x() / xy_len, 0},
+      {0, 0, 1},
+    };
+  }
+
+  // 2. Rotate the pair so that the axis is equivalent to the Z-axis.
+  Matrix<3> m_z = {
+    {axis.z() / axis.magnitude(), 0, -xy_len / axis.magnitude()},
+    {0, 1, 0},
+    {xy_len / axis.magnitude(), 0, axis.z() / axis.magnitude()},
+  };
+
+  // 3. Rotate the point about the Z-axis by the desired rotation angle.
+  float rads = angle.radians();
+  Matrix<3> rot_z{
+    // NOTE: Left-handed Z-rotation
+    {std::cos(rads), std::sin(rads), 0},
+    {-std::sin(rads), std::cos(rads), 0},
+    {0, 0, 1},
+  };
+
+  // 4. Reverse rotate the pair from Z-axis so that the axis is in the XY-plane as before.
+  Matrix<3> inv_m_z = m_z.transpose(); // We could also have flipped sign of angles.
+
+  // 5. Reverse rotate the pair from the XZ-plane so that the axis is as it was initially.
+  Matrix<3> inv_m_xz = m_xz.transpose();
+
+  Matrix<3> m = (inv_m_xz * inv_m_z * rot_z * m_z * m_xz);
+  (*this)     = Rotation(m);
+}
+
 auto Rotation::pitch() -> Angle& { return _pitch; }
 auto Rotation::yaw() -> Angle& { return _yaw; }
 auto Rotation::roll() -> Angle& { return _roll; }
