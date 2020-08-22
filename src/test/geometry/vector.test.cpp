@@ -366,15 +366,37 @@ TEST(VectorTest, Normalizes2) {
 }
 
 TEST(VectorTest, ConvertsToLowerDimension1) {
-  Vector<4> vector1(1.4F, 3.8F, 0.1F, -93.4F);
-  Vector<3> vector2(1.4F, 3.8F, 0.1F);
-  EXPECT_EQ((Vector<3>) vector1, vector2);
+  Vector<1> vector1(1.4F);
+  Vector<2> vector2(1.4F, 3.8F);
+  Vector<3> vector3(1.4F, 3.8F, 0.1F);
+  Vector<4> vector4(1.4F, 3.8F, 0.1F, -93.4F);
+
+  EXPECT_EQ((Vector<3>) vector4, vector3);
+  EXPECT_EQ((Vector<2>) vector4, vector2);
+  EXPECT_EQ((Vector<1>) vector4, vector1);
+
+  EXPECT_EQ((Vector<2>) vector3, vector2);
+  EXPECT_EQ((Vector<1>) vector3, vector1);
+
+  EXPECT_EQ((Vector<1>) vector2, vector1);
 }
 
 TEST(VectorTest, ConvertsToHigherDimension1) {
   Vector<4> vector1(1.4F, 3.8F, 0.1F, 0.0F);
   Vector<3> vector2(1.4F, 3.8F, 0.1F);
   EXPECT_EQ(vector1, (Vector<4>) vector2);
+}
+
+TEST(VectorTest, ConvertsToHigherDimension2) {
+  Vector<3> vector1(1.4F, 3.8F, 0.0F);
+  Vector<2> vector2(1.4F, 3.8F);
+  EXPECT_EQ(vector1, (Vector<3>) vector2);
+}
+
+TEST(VectorTest, ConvertsToHigherDimension3) {
+  Vector<2> vector1(1.4F, 0.0F);
+  Vector<1> vector2(1.4F);
+  EXPECT_EQ(vector1, (Vector<2>) vector2);
 }
 
 TEST(VectorTest, ConvertsToArray1) {
@@ -399,6 +421,18 @@ TEST(VectorTest, ConvertsToJSON1) {
   Vector<3> vector{1.4F, 3.8F, 0.1F};
   JSON json = {1.4F, 3.8F, 0.1F};
   EXPECT_EQ(vector.to_json(), json);
+}
+
+TEST(VectorTest, ConvertsToNonUnitVector1) {
+  UnitVector<1> vector1(1.0F);
+  UnitVector<2> vector2(0.0F, 1.0F);
+  UnitVector<3> vector3(0.0F, 0.0F, 1.0F);
+  UnitVector<4> vector4(0.0F, 0.0F, 0.0F, 1.0F);
+
+  EXPECT_EQ((Vector<1>) vector1, Vector<1>(1.0F));
+  EXPECT_EQ((Vector<2>) vector2, Vector<2>(0.0F, 1.0F));
+  EXPECT_EQ((Vector<3>) vector3, Vector<3>(0.0F, 0.0F, 1.0F));
+  EXPECT_EQ((Vector<4>) vector4, Vector<4>(0.0F, 0.0F, 0.0F, 1.0F));
 }
 
 TEST(VectorTest, UnitVector1) {

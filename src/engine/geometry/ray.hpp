@@ -12,7 +12,7 @@ namespace engine::geometry {
   struct Ray {
     /// @{
     /// State.
-    Vector<3> origin; //< The origin/tail of this ray.
+    Point<3> origin;         //< The origin/tail of this ray.
     UnitVector<3> direction; //< The direction of this ray.
     /// @}
 

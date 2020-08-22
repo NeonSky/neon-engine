@@ -5,19 +5,14 @@
 #include "rectangle.hpp"
 #include "vector.hpp"
 
-#include <memory>
+#include <optional>
 
 namespace engine::geometry {
 
-  class Intersection {
-  public:
-    Vector<3> point;
+  /// @brief Finds the intersection point between ray \p ray and plane \p plane, if any.
+  auto ray_plane_intersection(const Ray& ray, const engine::geometry::Plane& plane) -> std::optional<Point<3>>;
 
-    Intersection(Vector<3> point);
-  };
-
-  // Accessors
-  auto ray_plane_intersection(const Ray& ray, const engine::geometry::Plane& plane) -> std::unique_ptr<Intersection>;
-  auto ray_rectangle_intersection(const Ray& ray, const Rectangle& rectangle) -> std::unique_ptr<Intersection>;
+  /// @brief Finds the intersection point between ray \p ray and rectangle \p rectangle, if any.
+  auto ray_rectangle_intersection(const Ray& ray, const Rectangle& rectangle) -> std::optional<Point<3>>;
 
 }
