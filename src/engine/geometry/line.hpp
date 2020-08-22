@@ -9,7 +9,6 @@ namespace engine::geometry {
 
   /// @brief Line represents an infinite line in N-dimensional space.
   ///
-  /// @todo replace vector with UnitVector class.
   /// @see https://www.wikiwand.com/en/Line_(geometry)
   template <unsigned int N>
   class Line {
@@ -43,14 +42,14 @@ namespace engine::geometry {
     /// @{
     /// Private state.
     Point<N> _pivot;
-    Vector<N> _vector; //< All points reachable by this vector as it is rescaled belongs to this line.
+    UnitVector<N> _vector; //< All points reachable by this vector as it is rescaled belongs to this line.
     /// @}
   };
 
   template <unsigned int N>
   Line<N>::Line(const Point<N>& a, const Point<N>& b)
           : _pivot(a),
-            _vector(Vector<N>(a, b).normalized()) {}
+            _vector(Vector<N, true>(a, b)) {}
 
   template <unsigned int N>
   auto Line<N>::operator==(const Line<N>& other) const -> bool {

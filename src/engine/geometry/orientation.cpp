@@ -15,8 +15,7 @@ auto Orientation::rotation() -> Rotation& {
 }
 
 void Orientation::flip(UnitVector<3> axis) {
-  Matrix<3> m = _rotation.matrix().rotate(Angle(pi), axis);
-  _rotation   = Rotation(m, Angle::Unit::RADIANS);
+  _rotation = Rotation(Angle(pi), axis) * _rotation;
 }
 
 auto Orientation::operator==(const Orientation& other) const -> bool {
@@ -31,7 +30,6 @@ auto Orientation::rotation() const -> const Rotation& {
   return _rotation;
 }
 
-// TODO: This cast will not be needed if we add ortho type to Matrix.
 auto Orientation::right() const -> UnitVector<3> {
   return (UnitVector<3>) (_rotation.matrix() * Orientation::world_right);
 }

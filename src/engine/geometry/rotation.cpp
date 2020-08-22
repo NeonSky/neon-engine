@@ -109,6 +109,10 @@ auto Rotation::operator!=(const Rotation& other) const -> bool {
   return !((*this) == other);
 }
 
+auto Rotation::operator*(const Rotation& other) const -> Rotation {
+  return Rotation(matrix() * other.matrix());
+}
+
 auto Rotation::modulo(const Angle& modulo) const -> Rotation {
   return Rotation(_pitch.modulo(modulo), _yaw.modulo(modulo), _roll.modulo(modulo));
 }
