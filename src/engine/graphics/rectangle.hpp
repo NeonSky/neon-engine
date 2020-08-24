@@ -1,5 +1,6 @@
 #pragma once
 
+#include "color.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 
@@ -12,7 +13,7 @@ namespace engine::graphics {
 
   class Rectangle {
   public:
-    Rectangle(const geometry::Rectangle& rectangle, const Texture* texture = nullptr);
+    Rectangle(const geometry::Rectangle& rectangle, const Color& color);
 
     // Mutators
     auto transform() -> geometry::Transform&;
@@ -21,7 +22,7 @@ namespace engine::graphics {
   private:
     geometry::Transform _transform;
     GLuint _vao;
-    const Texture* _texture;
+    const Color _color;
     std::unique_ptr<Shader> _shader;
   };
 

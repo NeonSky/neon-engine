@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../geometry/matrix.hpp"
+#include "color.hpp"
 
 #include <glad/glad.h>
 
@@ -15,6 +16,8 @@ namespace engine::graphics {
 
     // Mutators
     void use() const;
+    void set_uniform_rgb(const GLchar* uniform, const Color& color) const;
+    void set_uniform_rgba(const GLchar* uniform, const Color& color) const;
     void set_uniform_vec3(const GLchar* uniform, const geometry::Vector<3>& vector) const;
     void set_uniform_mat4(const GLchar* uniform, const geometry::Matrix<4>& matrix) const;
 

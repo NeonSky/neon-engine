@@ -31,6 +31,18 @@ void Shader::use() const {
   glUseProgram(this->program);
 }
 
+void Shader::set_uniform_rgb(const GLchar* uniform, const Color& color) const {
+  int loc   = glGetUniformLocation(this->program, uniform);
+  auto data = color.rgb();
+  glUniform3fv(loc, 1, data.begin());
+}
+
+void Shader::set_uniform_rgba(const GLchar* uniform, const Color& color) const {
+  int loc   = glGetUniformLocation(this->program, uniform);
+  auto data = color.rgba();
+  glUniform4fv(loc, 1, data.begin());
+}
+
 void Shader::set_uniform_vec3(const GLchar* uniform, const geometry::Vector<3>& vector) const {
   int loc           = glGetUniformLocation(this->program, uniform);
   const float* data = vector.begin();
