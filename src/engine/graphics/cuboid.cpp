@@ -4,8 +4,8 @@
 
 using namespace engine::graphics;
 
-Cuboid::Cuboid(geometry::Cuboid geometry, geometry::Vector<3> color)
-        : _geometry(std::move(std::move(geometry))),
+Cuboid::Cuboid(geometry::Cuboid geometry, const Color& color)
+        : _geometry(std::move(geometry)),
           _color(color),
           _shader(Shader("unicolor.vert", "color.frag")) {
 
@@ -50,7 +50,7 @@ void Cuboid::render(geometry::Matrix<4> view_projection, bool draw_corners) {
 
   _shader.use();
   _shader.set_uniform_mat4("model_view_projection", view_projection);
-  _shader.set_uniform_vec3("color", _color);
+  _shader.set_uniform_rgb("color", _color);
 
   glBindVertexArray(_vao);
 

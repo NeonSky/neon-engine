@@ -9,11 +9,11 @@ RubiksCubePiece::RubiksCubePiece()
         : RubiksCubePiece(geometry::Transform(), ColorConfiguration()) {}
 
 RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfiguration color_config)
-        : _cuboid(geometry::Cuboid(std::move(transform)), geometry::Vector<3>()) {
+        : _transform(std::move(transform)),
+          _cuboid(geometry::Cuboid(), graphics::Color()) {
 
-  geometry::Vector<3> center = _cuboid.transform().position();
-  geometry::Vector<3> scale  = _cuboid.transform().scale();
-  float offset               = 1.005F;
+  geometry::Vector<3> scale = _transform.scale();
+  float offset              = 1.005F;
 
   struct FaceData {
     geometry::Vector<3> pos;
@@ -26,7 +26,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   if (color_config.left != graphics::Color()) {
     FaceData face;
-    face.pos    = center + offset * geometry::Vector<3>(-scale.x() / 2.0F, 0, 0);
+    face.pos    = offset * geometry::Vector<3>(-scale.x() / 2.0F, 0, 0);
     face.rot    = geometry::Rotation(0, geometry::pi / 2.0F, 0);
     face.width  = scale.z();
     face.height = scale.y();
@@ -36,7 +36,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   if (color_config.right != graphics::Color()) {
     FaceData face;
-    face.pos    = center + offset * geometry::Vector<3>(scale.x() / 2.0F, 0, 0);
+    face.pos    = offset * geometry::Vector<3>(scale.x() / 2.0F, 0, 0);
     face.rot    = geometry::Rotation(0, -geometry::pi / 2.0F, 0);
     face.width  = scale.z();
     face.height = scale.y();
@@ -46,7 +46,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   if (color_config.bot != graphics::Color()) {
     FaceData face;
-    face.pos    = center + offset * geometry::Vector<3>(0, -scale.y() / 2.0F, 0);
+    face.pos    = offset * geometry::Vector<3>(0, -scale.y() / 2.0F, 0);
     face.rot    = geometry::Rotation(-geometry::pi / 2.0F, 0, 0);
     face.width  = scale.x();
     face.height = scale.z();
@@ -56,7 +56,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   if (color_config.top != graphics::Color()) {
     FaceData face;
-    face.pos    = center + offset * geometry::Vector<3>(0, scale.y() / 2.0F, 0);
+    face.pos    = offset * geometry::Vector<3>(0, scale.y() / 2.0F, 0);
     face.rot    = geometry::Rotation(geometry::pi / 2.0F, 0, 0);
     face.width  = scale.x();
     face.height = scale.z();
@@ -66,7 +66,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   if (color_config.back != graphics::Color()) {
     FaceData face;
-    face.pos    = center + offset * geometry::Vector<3>(0, 0, -scale.z() / 2.0F);
+    face.pos    = offset * geometry::Vector<3>(0, 0, -scale.z() / 2.0F);
     face.rot    = geometry::Rotation(0, geometry::pi, 0);
     face.width  = scale.x();
     face.height = scale.y();
@@ -76,7 +76,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   if (color_config.front != graphics::Color()) {
     FaceData face;
-    face.pos    = center + offset * geometry::Vector<3>(0, 0, scale.z() / 2.0F);
+    face.pos    = offset * geometry::Vector<3>(0, 0, scale.z() / 2.0F);
     face.rot    = geometry::Rotation();
     face.width  = scale.x();
     face.height = scale.y();
@@ -89,8 +89,12 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
     _faces.emplace_back(geometry::Rectangle(geometry::Rigidbody(face.pos, face.rot), face_ratio * face.width, face_ratio * face.height), face.color);
 }
 
+auto RubiksCubePiece::transform() -> engine::geometry::Transform& {
+  return _transform;
+}
+
 void RubiksCubePiece::render(geometry::Matrix<4> view_projection) {
-  _cuboid.render(view_projection);
+  _cuboid.render(view_projection * _transform.matrix());
   for (auto& face : _faces)
-    face.render(view_projection);
+    face.render(view_projection * _transform.matrix());
 }

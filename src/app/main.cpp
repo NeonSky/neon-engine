@@ -114,19 +114,35 @@ auto main() -> int {
   CHECK_GL_ERROR();
 
   graphics::Cuboid cuboid1(geometry::Transform(geometry::Vector<3>(0.5F, 0.5F, 0.5F), geometry::Orientation(), geometry::Vector<3>(1.0F, 1.0F, 1.0F)),
-                           geometry::Vector<3>(0.6F, 1.0F, 1.0F));
+                           graphics::Color(0.6F, 1.0F, 1.0F));
 
   graphics::Cuboid cuboid2(geometry::Transform(geometry::Vector<3>(3.5F, 1.0F, 3.5F), geometry::Orientation(), geometry::Vector<3>(1.0F, 2.0F, 1.0F)),
-                           geometry::Vector<3>(0.6F, 1.0F, 0.6F));
+                           graphics::Color(0.6F, 1.0F, 0.6F));
 
   graphics::Cuboid cuboid3(geometry::Transform(geometry::Vector<3>(6.0F, 0.25F, 1.5F), geometry::Orientation(), geometry::Vector<3>(2.0F, 0.5F, 1.0F)),
-                           geometry::Vector<3>(1.0F, 0.6F, 0.6F));
+                           graphics::Color(1.0F, 0.6F, 0.6F));
 
   RubiksCube rubik(geometry::Transform(geometry::Vector<3>(-4.5F, 2, -4.5F)));
 
   float time = 0.0F;
 
   auto time_before_frame = std::chrono::system_clock::now();
+
+  window->add_on_key_callback([&rubik](GLFWwindow* w, [[maybe_unused]] int n) mutable {
+    bool shift_down = (glfwGetKey(w, GLFW_KEY_LEFT_SHIFT) != 0);
+    if (glfwGetKey(w, GLFW_KEY_KP_4) != 0)
+      rubik.rotate_left(shift_down);
+    if (glfwGetKey(w, GLFW_KEY_KP_6) != 0)
+      rubik.rotate_right(shift_down);
+    if (glfwGetKey(w, GLFW_KEY_KP_2) != 0)
+      rubik.rotate_bot(shift_down);
+    if (glfwGetKey(w, GLFW_KEY_KP_8) != 0)
+      rubik.rotate_top(shift_down);
+    if (glfwGetKey(w, GLFW_KEY_KP_5) != 0)
+      rubik.rotate_back(shift_down);
+    if (glfwGetKey(w, GLFW_KEY_KP_0) != 0)
+      rubik.rotate_front(shift_down);
+  });
 
   CHECK_GL_ERROR();
   while (!window->is_closing()) {

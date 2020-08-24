@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../geometry/cuboid.hpp"
+#include "color.hpp"
 #include "shader.hpp"
 
 namespace engine::graphics {
@@ -9,7 +10,7 @@ namespace engine::graphics {
   /// @todo Add colored outline option by using Polygon Offset.
   class Cuboid {
   public:
-    Cuboid(geometry::Cuboid geometry, geometry::Vector<3> color);
+    Cuboid(geometry::Cuboid geometry, const Color& color);
 
     void render(geometry::Matrix<4> view_projection, bool draw_corners = false);
 
@@ -19,7 +20,7 @@ namespace engine::graphics {
     void update_vbos();
 
     geometry::Cuboid _geometry;
-    geometry::Vector<3> _color;
+    Color _color;
     Shader _shader;
     GLuint _vao = 0;
     GLuint _vbo = 0;

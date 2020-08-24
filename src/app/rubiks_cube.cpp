@@ -43,8 +43,188 @@ RubiksCube::RubiksCube(engine::geometry::Transform transform)
   }
 }
 
-auto RubiksCube::transform() -> engine::geometry::Transform& {
+auto RubiksCube::transform() -> geometry::Transform& {
   return _transform;
+}
+
+void RubiksCube::rotate_left(bool ccw) {
+  geometry::Rotation rot = geometry::Rotation(geometry::pi / 2.0F * (ccw ? 1.0F : -1.0F), 0.0F, 0.0F);
+
+  for (unsigned int z = 0; z < 3; z++) {
+    for (unsigned int y = 0; y < 3; y++) {
+      geometry::Transform& t = _pieces[z][y][0].transform();
+      t                      = geometry::Transform(rot.matrix() * t.position(),
+                              rot * t.orientation().rotation());
+    }
+  }
+
+  // Move corner pieces
+  std::swap(_pieces[0][0][0], _pieces[2][0][0]);
+  std::swap(_pieces[0][2][0], _pieces[2][2][0]);
+
+  if (ccw)
+    std::swap(_pieces[0][0][0], _pieces[2][2][0]);
+  else
+    std::swap(_pieces[2][0][0], _pieces[0][2][0]);
+
+  // Move center pieces
+  std::swap(_pieces[0][1][0], _pieces[1][0][0]);
+  std::swap(_pieces[2][1][0], _pieces[1][2][0]);
+
+  if (ccw)
+    std::swap(_pieces[0][1][0], _pieces[2][1][0]);
+  else
+    std::swap(_pieces[1][0][0], _pieces[1][2][0]);
+}
+
+void RubiksCube::rotate_right(bool ccw) {
+  geometry::Rotation rot = geometry::Rotation(geometry::pi / 2.0F * (ccw ? 1.0F : -1.0F), 0.0F, 0.0F);
+
+  for (unsigned int z = 0; z < 3; z++) {
+    for (unsigned int y = 0; y < 3; y++) {
+      geometry::Transform& t = _pieces[z][y][2].transform();
+      t                      = geometry::Transform(rot.matrix() * t.position(),
+                              rot * t.orientation().rotation());
+    }
+  }
+
+  // Move corner pieces
+  std::swap(_pieces[0][0][2], _pieces[2][0][2]);
+  std::swap(_pieces[0][2][2], _pieces[2][2][2]);
+
+  if (ccw)
+    std::swap(_pieces[0][0][2], _pieces[2][2][2]);
+  else
+    std::swap(_pieces[2][0][2], _pieces[0][2][2]);
+
+  // Move center pieces
+  std::swap(_pieces[0][1][2], _pieces[1][0][2]);
+  std::swap(_pieces[2][1][2], _pieces[1][2][2]);
+
+  if (ccw)
+    std::swap(_pieces[0][1][2], _pieces[2][1][2]);
+  else
+    std::swap(_pieces[1][0][2], _pieces[1][2][2]);
+}
+
+void RubiksCube::rotate_bot(bool ccw) {
+  geometry::Rotation rot = geometry::Rotation(0.0F, geometry::pi / 2.0F * (ccw ? 1.0F : -1.0F), 0.0F);
+
+  for (unsigned int z = 0; z < 3; z++) {
+    for (unsigned int x = 0; x < 3; x++) {
+      geometry::Transform& t = _pieces[z][0][x].transform();
+      t                      = geometry::Transform(rot.matrix() * t.position(),
+                              rot * t.orientation().rotation());
+    }
+  }
+
+  // Move corner pieces
+  std::swap(_pieces[0][0][0], _pieces[2][0][0]);
+  std::swap(_pieces[0][0][2], _pieces[2][0][2]);
+
+  if (ccw)
+    std::swap(_pieces[0][0][2], _pieces[2][0][0]);
+  else
+    std::swap(_pieces[0][0][0], _pieces[2][0][2]);
+
+  // Move center pieces
+  std::swap(_pieces[0][0][1], _pieces[1][0][0]);
+  std::swap(_pieces[1][0][2], _pieces[2][0][1]);
+
+  if (ccw)
+    std::swap(_pieces[1][0][0], _pieces[1][0][2]);
+  else
+    std::swap(_pieces[0][0][1], _pieces[2][0][1]);
+}
+
+void RubiksCube::rotate_top(bool ccw) {
+  geometry::Rotation rot = geometry::Rotation(0.0F, (ccw ? 1.0F : -1.0F) * geometry::pi / 2.0F, 0.0F);
+
+  for (unsigned int z = 0; z < 3; z++) {
+    for (unsigned int x = 0; x < 3; x++) {
+      geometry::Transform& t = _pieces[z][2][x].transform();
+      t                      = geometry::Transform(rot.matrix() * t.position(),
+                              rot * t.orientation().rotation());
+    }
+  }
+
+  // // Move corner pieces
+  std::swap(_pieces[0][2][0], _pieces[2][2][0]);
+  std::swap(_pieces[0][2][2], _pieces[2][2][2]);
+
+  if (ccw)
+    std::swap(_pieces[0][2][2], _pieces[2][2][0]);
+  else
+    std::swap(_pieces[0][2][0], _pieces[2][2][2]);
+
+  // // Move center pieces
+  std::swap(_pieces[0][2][1], _pieces[1][2][0]);
+  std::swap(_pieces[1][2][2], _pieces[2][2][1]);
+
+  if (ccw)
+    std::swap(_pieces[1][2][0], _pieces[1][2][2]);
+  else
+    std::swap(_pieces[0][2][1], _pieces[2][2][1]);
+}
+
+void RubiksCube::rotate_back(bool ccw) {
+  geometry::Rotation rot = geometry::Rotation(0.0F, 0.0F, geometry::pi / 2.0F * (ccw ? 1.0F : -1.0F));
+
+  for (unsigned int y = 0; y < 3; y++) {
+    for (unsigned int x = 0; x < 3; x++) {
+      geometry::Transform& t = _pieces[0][y][x].transform();
+      t                      = geometry::Transform(rot.matrix() * t.position(),
+                              rot * t.orientation().rotation());
+    }
+  }
+
+  // Move corner pieces
+  std::swap(_pieces[0][0][0], _pieces[0][0][2]);
+  std::swap(_pieces[0][2][0], _pieces[0][2][2]);
+
+  if (ccw)
+    std::swap(_pieces[0][2][0], _pieces[0][0][2]);
+  else
+    std::swap(_pieces[0][0][0], _pieces[0][2][2]);
+
+  // Move center pieces
+  std::swap(_pieces[0][1][0], _pieces[0][0][1]);
+  std::swap(_pieces[0][2][1], _pieces[0][1][2]);
+
+  if (ccw)
+    std::swap(_pieces[0][0][1], _pieces[0][2][1]);
+  else
+    std::swap(_pieces[0][1][0], _pieces[0][1][2]);
+}
+
+void RubiksCube::rotate_front(bool ccw) {
+  geometry::Rotation rot = geometry::Rotation(0.0F, 0.0F, geometry::pi / 2.0F * (ccw ? 1.0F : -1.0F));
+
+  for (unsigned int y = 0; y < 3; y++) {
+    for (unsigned int x = 0; x < 3; x++) {
+      geometry::Transform& t = _pieces[2][y][x].transform();
+      t                      = geometry::Transform(rot.matrix() * t.position(),
+                              rot * t.orientation().rotation());
+    }
+  }
+
+  // Move corner pieces
+  std::swap(_pieces[2][0][0], _pieces[2][0][2]);
+  std::swap(_pieces[2][2][0], _pieces[2][2][2]);
+
+  if (ccw)
+    std::swap(_pieces[2][2][0], _pieces[2][0][2]);
+  else
+    std::swap(_pieces[2][0][0], _pieces[2][2][2]);
+
+  // Move center pieces
+  std::swap(_pieces[2][1][0], _pieces[2][0][1]);
+  std::swap(_pieces[2][2][1], _pieces[2][1][2]);
+
+  if (ccw)
+    std::swap(_pieces[2][0][1], _pieces[2][2][1]);
+  else
+    std::swap(_pieces[2][1][0], _pieces[2][1][2]);
 }
 
 void RubiksCube::render(geometry::Matrix<4> view_projection) {

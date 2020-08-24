@@ -8,7 +8,6 @@
 
 namespace app {
 
-  /// @todo Replace Vector<3> with Color
   class RubiksCubePiece {
   public:
     struct ColorConfiguration {
@@ -23,9 +22,12 @@ namespace app {
     RubiksCubePiece();
     RubiksCubePiece(engine::geometry::Transform transform, ColorConfiguration color_config);
 
+    auto transform() -> engine::geometry::Transform&;
+
     void render(engine::geometry::Matrix<4> view_projection);
 
   private:
+    engine::geometry::Transform _transform;
     engine::graphics::Cuboid _cuboid;
     std::vector<engine::graphics::Rectangle> _faces;
   };
