@@ -29,6 +29,8 @@ build:
 
 # Produces coverage report: ./build/CODE_COVERAGE/index.html
 #
+# NOTE: Make sure your g++ and gcov versions match: https://stackoverflow.com/questions/12454175/gcov-out-of-memory-mismatched-version
+#
 # Explanation:
 # 1. Generates a baseline report through --intial (this makes sure that files with no test coverage are also included).
 # 2. Generates a test report without --intial, and then merges it with the baseline.
