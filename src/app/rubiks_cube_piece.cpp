@@ -1,5 +1,7 @@
 #include "rubiks_cube_piece.hpp"
 
+#include <utility>
+
 using namespace engine;
 using namespace app;
 
@@ -7,7 +9,7 @@ RubiksCubePiece::RubiksCubePiece()
         : RubiksCubePiece(geometry::Transform(), ColorConfiguration()) {}
 
 RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfiguration color_config)
-        : _cuboid(geometry::Cuboid(transform), geometry::Vector<3>()) {
+        : _cuboid(geometry::Cuboid(std::move(transform)), geometry::Vector<3>()) {
 
   geometry::Vector<3> center = _cuboid.transform().position();
   geometry::Vector<3> scale  = _cuboid.transform().scale();
@@ -16,8 +18,8 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
   struct FaceData {
     geometry::Vector<3> pos;
     geometry::Rotation rot;
-    float width;
-    float height;
+    float width  = 0.0F;
+    float height = 0.0F;
     engine::graphics::Color color;
   };
   std::vector<FaceData> face_data;
@@ -84,7 +86,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   float face_ratio = 0.9F;
   for (auto& face : face_data)
-    _faces.push_back(graphics::Rectangle(geometry::Rectangle(geometry::Rigidbody(face.pos, face.rot), face_ratio * face.width, face_ratio * face.height), face.color));
+    _faces.emplace_back(geometry::Rectangle(geometry::Rigidbody(face.pos, face.rot), face_ratio * face.width, face_ratio * face.height), face.color);
 }
 
 void RubiksCubePiece::render(geometry::Matrix<4> view_projection) {

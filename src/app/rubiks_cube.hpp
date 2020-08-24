@@ -9,7 +9,7 @@ namespace app {
   class RubiksCube {
   public:
     RubiksCube();
-    RubiksCube(const engine::geometry::Transform& transform);
+    RubiksCube(engine::geometry::Transform transform);
 
     auto transform() -> engine::geometry::Transform&;
 

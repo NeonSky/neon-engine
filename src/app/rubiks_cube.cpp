@@ -20,14 +20,14 @@ static const graphics::Color black(0.0F, 0.0F, 0.0F);
 RubiksCube::RubiksCube()
         : RubiksCube(geometry::Transform()) {}
 
-RubiksCube::RubiksCube(const engine::geometry::Transform& transform)
-        : _transform(transform) {
+RubiksCube::RubiksCube(engine::geometry::Transform transform)
+        : _transform(std::move(transform)) {
 
   for (int z = 0; z < 3; z++) {
     for (int y = 0; y < 3; y++) {
       for (int x = 0; x < 3; x++) {
 
-        auto pos = geometry::Vector<3>(x - 1, y - 1, z - 1);
+        auto pos = geometry::Vector<3>((float) x - 1.0F, (float) y - 1.0F, (float) z - 1.0F);
 
         RubiksCubePiece::ColorConfiguration color_config;
         color_config.left  = x == 0 ? yellow : black;
