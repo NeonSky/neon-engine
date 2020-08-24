@@ -7,6 +7,8 @@
 #include "../engine/graphics/gltf_model.hpp"
 #include "../engine/gui/window.hpp"
 
+#include "rubiks_cube.hpp"
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <imgui.h>
@@ -23,6 +25,7 @@
 #include <entt/entity/registry.hpp>
 
 using namespace engine;
+using namespace app;
 
 struct position {
   float x;
@@ -119,6 +122,8 @@ auto main() -> int {
   graphics::Cuboid cuboid3(geometry::Transform(geometry::Vector<3>(6.0F, 0.25F, 1.5F), geometry::Orientation(), geometry::Vector<3>(2.0F, 0.5F, 1.0F)),
                            geometry::Vector<3>(1.0F, 0.6F, 0.6F));
 
+  RubiksCube rubik(geometry::Transform(geometry::Vector<3>(-4.5F, 2, -4.5F)));
+
   float time = 0.0F;
 
   auto time_before_frame = std::chrono::system_clock::now();
@@ -159,6 +164,10 @@ auto main() -> int {
     cuboid1.render(view_projection, true);
     cuboid2.render(view_projection, true);
     cuboid3.render(view_projection, true);
+
+    rubik.transform().orientation() = geometry::Rotation(0, time, 0);
+
+    rubik.render(view_projection);
 
     window->update();
     CHECK_GL_ERROR();
