@@ -32,7 +32,7 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
     glfw_window_parent = parent->_window.get();
 
   _window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>(
-                                                             glfwCreateWindow((int) width, (int) height, title, nullptr, glfw_window_parent),
+    glfwCreateWindow((int) width, (int) height, title, nullptr, glfw_window_parent),
     [](GLFWwindow* window) {
       glfwDestroyWindow(window);
     });
