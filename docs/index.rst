@@ -1,4 +1,4 @@
-Welcome to ecs-scenes's documentation!
+Welcome to neon-engine's documentation!
 ======================================
 
 .. toctree::

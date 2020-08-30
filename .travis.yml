@@ -3,7 +3,7 @@ language: cpp
 services: docker
 
 before_install:
-  - docker pull neonsky/ecs-scenes
+  - docker pull neonsky/neon-engine
   - make docker-linter-build
 
 script:

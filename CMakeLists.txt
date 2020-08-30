@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 
 SET(CMAKE_TOOLCHAIN_FILE "/usr/share/vcpkg/scripts/buildsystems/vcpkg.cmake")
-project(ECS_Scenes VERSION 1.0.0)
+project(Neon_Engine VERSION 1.0.0)
 
 # Global options.
 set(CMAKE_CXX_STANDARD 17)
@@ -56,14 +56,14 @@ endif()
 
 # Application
 file(GLOB_RECURSE src_files "src/app/*.c" "src/app/*.h" "src/app/*.cpp" "src/app/*.hpp")
-add_executable(ECS_Scenes "${src_files}")
-target_link_libraries(ECS_Scenes PRIVATE Engine)
+add_executable(Neon_Engine "${src_files}")
+target_link_libraries(Neon_Engine PRIVATE Engine)
 
 # Engine Unit Tests
 file(GLOB_RECURSE src_files "src/test/*.c" "src/test/*.h" "src/test/*.cpp" "src/test/*.hpp")
-add_executable(ECS_Scenes_Test "${src_files}")
-target_link_libraries(ECS_Scenes_Test PRIVATE Engine)
-target_link_libraries(ECS_Scenes_Test PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+add_executable(Neon_Engine_Test "${src_files}")
+target_link_libraries(Neon_Engine_Test PRIVATE Engine)
+target_link_libraries(Neon_Engine_Test PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 
 enable_testing()
-add_test(EngineUnitTests ECS_Scenes_Test)
+add_test(EngineUnitTests Neon_Engine_Test)

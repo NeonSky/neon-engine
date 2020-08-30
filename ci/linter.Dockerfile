@@ -1,11 +1,11 @@
-FROM neonsky/ecs-scenes:latest
+FROM neonsky/neon-engine:latest
 
 USER aur
 
 RUN yay -Syu --noconfirm
 RUN yay -S --noconfirm clang
-WORKDIR /home/aur/ecs-scenes/build
-WORKDIR /home/aur/ecs-scenes
+WORKDIR /home/aur/neon-engine/build
+WORKDIR /home/aur/neon-engine
 COPY res res
 COPY src src
 COPY CMakeLists.txt .

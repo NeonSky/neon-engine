@@ -1,7 +1,7 @@
 # NOTE: This recipe needs to be at the top to cover calling "make" without arguments
 .PHONY: help
 help:
-	@ echo "Welcome to ECS Scenes!"
+	@ echo "Welcome to Neon Engine!"
 	@ echo ""
 	@ echo "Options"
 	@ echo "- build"
@@ -53,20 +53,20 @@ dependencies:
 	sudo vcpkg install glfw3 boost stb imgui[bindings] spdlog cpp-httplib nlohmann-json entt tinygltf gtest
 
 # FIXME: Takes ages when including all the paths
-# docker-slim build ecs-scenes --http-probe=false --tag=neonsky/ecs-scenes --include-path=/usr/share/cmake-3.17 --include-path=/usr/share/vcpkg/scripts/buildsystems/vcpkg.cmake --include-bin=/usr/sbin/make --include-bin=/usr/sbin/cmake --include-bin=/usr/bin/ls --include-shell
+# docker-slim build neon-engine --http-probe=false --tag=neonsky/neon-engine --include-path=/usr/share/cmake-3.17 --include-path=/usr/share/vcpkg/scripts/buildsystems/vcpkg.cmake --include-bin=/usr/sbin/make --include-bin=/usr/sbin/cmake --include-bin=/usr/bin/ls --include-shell
 .PHONY: docker-hub-push
 docker-hub-push:
-	docker build -t ecs-scenes -f ci/Dockerfile .
-	docker tag ecs-scenes neonsky/ecs-scenes
-	docker push neonsky/ecs-scenes
+	docker build -t neon-engine -f ci/Dockerfile .
+	docker tag neon-engine neonsky/neon-engine
+	docker push neonsky/neon-engine
 
 .PHONY: docker-linter-build
 docker-linter-build:
-	docker build -t ecs-scenes-linter -f ci/linter.Dockerfile .
+	docker build -t neon-engine-linter -f ci/linter.Dockerfile .
 
 .PHONY: docker-linter-run
 docker-linter-run:
-	docker run ecs-scenes-linter
+	docker run neon-engine-linter
 
 .PHONY: docs
 docs:
@@ -100,11 +100,11 @@ retidy:
 
 .PHONY: run
 run:
-	./build/ECS_Scenes
+	./build/Neon_Engine
 
 .PHONY: run-tests
 run-tests:
-	./build/ECS_Scenes_Test
+	./build/Neon_Engine_Test
 
 .PHONY: setup
 setup: dependencies build run

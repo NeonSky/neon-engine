@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'ecs-scenes'
+project = 'neon-engine'
 copyright = '2020, Jacob Eriksson'
 author = 'Jacob Eriksson'
 
@@ -70,9 +70,9 @@ highlight_language = 'cpp'
 
 # Breathe extension configuration
 breathe_projects = {
-        'ecs-scenes': './doxygen/xml'
+        'neon-engine': './doxygen/xml'
 }
-breathe_default_project = "ecs-scenes"
+breathe_default_project = "neon-engine"
 
 # Exhale extension configuration
 def specificationsForKind(kind):
