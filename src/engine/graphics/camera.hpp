@@ -34,7 +34,7 @@ namespace engine::graphics {
 
     // Accessors
     [[nodiscard]] auto view_matrix() const -> geometry::Matrix<4>;
-    [[nodiscard]] auto projection_matrix(ProjectionType projection_type) const -> geometry::Matrix<4>;
+    [[nodiscard]] auto projection_matrix(ProjectionType projection_type = ProjectionType::PERSPECTIVE) const -> geometry::Matrix<4>;
 
   private:
     struct Perspective {

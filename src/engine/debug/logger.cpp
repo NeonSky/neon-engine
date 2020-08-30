@@ -5,6 +5,7 @@
 
 using namespace engine::debug;
 
+// https://www.khronos.org/opengl/wiki/OpenGL_Error#Meaning_of_errors
 auto checkGLError(const char* file, int line) -> bool {
   bool was_error = false;
   for (GLenum gl_err = glGetError(); gl_err != GL_NO_ERROR; gl_err = glGetError()) {
