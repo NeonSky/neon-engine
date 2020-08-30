@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../engine/geometry/transform.hpp"
+#include "../engine/graphics/renderer.hpp"
 #include "../engine/graphics/shader.hpp"
 #include "rubiks_cube_piece.hpp"
 
@@ -8,8 +9,8 @@ namespace app {
 
   class RubiksCube {
   public:
-    RubiksCube();
-    RubiksCube(engine::geometry::Transform transform);
+    RubiksCube(engine::graphics::Renderer& renderer);
+    RubiksCube(engine::graphics::Renderer& renderer, engine::geometry::Transform transform);
 
     auto transform() -> engine::geometry::Transform&;
 
@@ -49,8 +50,9 @@ namespace app {
   private:
     /// @{
     /// Private state.
+    std::reference_wrapper<engine::graphics::Renderer> _renderer;
     engine::geometry::Transform _transform;
-    std::array<std::array<std::array<RubiksCubePiece, 3>, 3>, 3> _pieces;
+    std::array<std::array<std::array<std::unique_ptr<RubiksCubePiece>, 3>, 3>, 3> _pieces;
     /// @}
   };
 

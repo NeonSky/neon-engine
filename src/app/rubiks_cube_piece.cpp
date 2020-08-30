@@ -5,12 +5,10 @@
 using namespace engine;
 using namespace app;
 
-RubiksCubePiece::RubiksCubePiece()
-        : RubiksCubePiece(geometry::Transform(), ColorConfiguration()) {}
-
-RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfiguration color_config)
-        : _transform(std::move(transform)),
-          _cuboid(geometry::Cuboid(), graphics::Color()) {
+RubiksCubePiece::RubiksCubePiece(graphics::Renderer* renderer, geometry::Transform transform, ColorConfiguration color_config)
+        : _renderer(*renderer),
+          _transform(std::move(transform)),
+          _cuboid(*renderer, geometry::Cuboid(), graphics::Color()) {
 
   geometry::Vector<3> scale = _transform.scale();
   float offset              = 1.005F;
@@ -86,7 +84,7 @@ RubiksCubePiece::RubiksCubePiece(geometry::Transform transform, ColorConfigurati
 
   float face_ratio = 0.9F;
   for (auto& face : face_data)
-    _faces.emplace_back(geometry::Rectangle(geometry::Rigidbody(face.pos, face.rot), face_ratio * face.width, face_ratio * face.height), face.color);
+    _faces.emplace_back(_renderer, geometry::Rectangle(geometry::Rigidbody(face.pos, face.rot), face_ratio * face.width, face_ratio * face.height), face.color);
 }
 
 auto RubiksCubePiece::transform() -> engine::geometry::Transform& {

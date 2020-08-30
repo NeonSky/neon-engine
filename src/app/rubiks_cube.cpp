@@ -3,7 +3,6 @@
 #include <utility>
 
 #include "../engine/debug/logger.hpp"
-#include "../engine/graphics/cuboid.hpp"
 #include "../engine/graphics/rectangle.hpp"
 
 using namespace app;
@@ -17,11 +16,12 @@ static const graphics::Color orange(1.0F, 0.65F, 0.0F);
 static const graphics::Color red(1.0F, 0.0F, 0.0F);
 static const graphics::Color black(0.0F, 0.0F, 0.0F);
 
-RubiksCube::RubiksCube()
-        : RubiksCube(geometry::Transform()) {}
+RubiksCube::RubiksCube(graphics::Renderer& renderer)
+        : RubiksCube(renderer, geometry::Transform()) {}
 
-RubiksCube::RubiksCube(engine::geometry::Transform transform)
-        : _transform(std::move(transform)) {
+RubiksCube::RubiksCube(graphics::Renderer& renderer, engine::geometry::Transform transform)
+        : _renderer(renderer),
+          _transform(std::move(transform)) {
 
   for (int z = 0; z < 3; z++) {
     for (int y = 0; y < 3; y++) {
@@ -37,7 +37,7 @@ RubiksCube::RubiksCube(engine::geometry::Transform transform)
         color_config.back  = z == 0 ? red : black;
         color_config.front = z == 2 ? orange : black;
 
-        _pieces[z][y][x] = RubiksCubePiece(geometry::Transform(pos), color_config);
+        _pieces[z][y][x] = std::make_unique<RubiksCubePiece>(&_renderer.get(), geometry::Transform(pos), color_config);
       }
     }
   }
@@ -52,7 +52,7 @@ void RubiksCube::rotate_left(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int y = 0; y < 3; y++) {
-      geometry::Transform& t = _pieces[z][y][0].transform();
+      geometry::Transform& t = _pieces[z][y][0]->transform();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -82,7 +82,7 @@ void RubiksCube::rotate_right(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int y = 0; y < 3; y++) {
-      geometry::Transform& t = _pieces[z][y][2].transform();
+      geometry::Transform& t = _pieces[z][y][2]->transform();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -112,7 +112,7 @@ void RubiksCube::rotate_bot(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[z][0][x].transform();
+      geometry::Transform& t = _pieces[z][0][x]->transform();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -142,7 +142,7 @@ void RubiksCube::rotate_top(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[z][2][x].transform();
+      geometry::Transform& t = _pieces[z][2][x]->transform();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -172,7 +172,7 @@ void RubiksCube::rotate_back(bool ccw) {
 
   for (unsigned int y = 0; y < 3; y++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[0][y][x].transform();
+      geometry::Transform& t = _pieces[0][y][x]->transform();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -202,7 +202,7 @@ void RubiksCube::rotate_front(bool ccw) {
 
   for (unsigned int y = 0; y < 3; y++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[2][y][x].transform();
+      geometry::Transform& t = _pieces[2][y][x]->transform();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -231,5 +231,5 @@ void RubiksCube::render(geometry::Matrix<4> view_projection) {
   for (unsigned int z = 0; z < 3; z++)
     for (unsigned int y = 0; y < 3; y++)
       for (unsigned int x = 0; x < 3; x++)
-        _pieces[z][y][x].render(view_projection * _transform.matrix());
+        _pieces[z][y][x]->render(view_projection * _transform.matrix());
 }
