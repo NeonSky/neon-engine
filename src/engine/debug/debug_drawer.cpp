@@ -82,3 +82,7 @@ void DebugDrawer::draw_rectangle(const geometry::Rectangle& rectangle) {
   this->line_queue.emplace_back(rectangle.botright(), rectangle.botleft());
   this->line_queue.emplace_back(rectangle.botright(), rectangle.topright());
 }
+
+void DebugDrawer::set_line_width(float width) {
+  line_width = width;
+}

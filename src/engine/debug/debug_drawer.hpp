@@ -33,9 +33,10 @@ namespace engine::debug {
     void draw_line(const geometry::Vector<3>& from, const geometry::Vector<3>& to, const geometry::Vector<3>& color);
     void draw_transform(const geometry::Transform& transform);
     void draw_rectangle(const geometry::Rectangle& rectangle);
+    void set_line_width(float width);
 
   private:
-    const float line_width = 5.0F;
+    float line_width = 1.0F;
 
     graphics::Shader shader;
 
