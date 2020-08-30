@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.com/NeonSky/neon-engine.svg?token=TptU3mWb3ppa6yPiyN4b&branch=master&status=started)](https://travis-ci.com/github/NeonSky/neon-engine)
 
+![](docs/screenshots/rubik_scene.gif)
+
 ## Getting Started
 
 ```
