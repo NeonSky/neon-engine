@@ -4,14 +4,21 @@
 
 using namespace engine::graphics;
 
-Cuboid::Cuboid(geometry::Cuboid geometry, const Color& color)
-        : _geometry(std::move(geometry)),
+Cuboid::Cuboid(Renderer& renderer, geometry::Cuboid geometry, const Color& color)
+        : _renderer(renderer),
+          _geometry(std::move(geometry)),
           _color(color),
           _shader(Shader("unicolor.vert", "color.frag")) {
 
-  glGenVertexArrays(1, &_vao);
-  glBindVertexArray(_vao);
-  glGenBuffers(1, &_vbo);
+  _vao = _renderer.get().current_context().gen_vao();
+  _vbo = _renderer.get().current_context().gen_buffer();
+
+  compile();
+}
+
+void Cuboid::compile() {
+  CHECK_GL_ERROR();
+  glBindVertexArray(_renderer.get().current_context().vao(_vao));
 
   update_vbos();
 
@@ -43,18 +50,23 @@ Cuboid::Cuboid(geometry::Cuboid geometry, const Color& color)
     {7, 6, 5},
   }};
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
+  CHECK_GL_ERROR();
 }
 
 void Cuboid::render(geometry::Matrix<4> view_projection, bool draw_corners) {
+  if (!_renderer.get().current_context().is_vao(_vao))
+    compile();
+
   update_vbos();
 
   _shader.use();
   _shader.set_uniform_mat4("model_view_projection", view_projection);
   _shader.set_uniform_rgb("color", _color);
 
-  glBindVertexArray(_vao);
+  glBindVertexArray(_renderer.get().current_context().vao(_vao));
 
   glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, nullptr);
+
   if (draw_corners) {
     glPointSize(10.0F);
     glDrawElements(GL_POINTS, 3 * 12, GL_UNSIGNED_INT, nullptr);
@@ -82,6 +94,6 @@ void Cuboid::update_vbos() {
   vertices[6]                    = front_face.topleft();
   vertices[7]                    = front_face.topright();
 
-  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, _renderer.get().current_context().buffer(_vbo));
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 }

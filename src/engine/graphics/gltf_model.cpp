@@ -18,11 +18,13 @@ using namespace engine::graphics;
 
 #define BUFFER_OFFSET(i) ((char*) (i))
 
-GLTFModel::GLTFModel(const std::string& model_path,
+GLTFModel::GLTFModel(engine::graphics::Renderer& renderer,
+                     const std::string& model_path,
                      geometry::Transform transform,
                      bool invert,
                      GLTFFileFormat format)
-        : _transform(std::move(transform)),
+        : _renderer(renderer),
+          _transform(std::move(transform)),
           _shader(Shader("gltf.vert", "gltf.frag")),
           _invert(invert) {
 
@@ -46,14 +48,15 @@ GLTFModel::GLTFModel(const std::string& model_path,
   if (!ok)
     LOG_ERROR("Failed to load .glTF model: " + full_path);
 
+  _vao = _renderer.get().current_context().gen_vao();
+
   bind_model();
 }
 
 void GLTFModel::bind_model() {
+  glBindVertexArray(_renderer.get().current_context().vao(_vao));
+
   std::map<int, GLuint> vbos;
-  GLuint vao = 0;
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
 
   const tinygltf::Scene& scene = _model.scenes[_model.defaultScene];
   for (int node : scene.nodes) {
@@ -67,8 +70,6 @@ void GLTFModel::bind_model() {
   // cleanup vbos
   for (auto& [key, val] : vbos)
     glDeleteBuffers(1, &val);
-
-  _vao = vao;
 }
 
 void GLTFModel::bind_model_nodes(const std::map<int, GLuint>& vbos, tinygltf::Node& node) {
@@ -199,7 +200,7 @@ void GLTFModel::draw_model_nodes(tinygltf::Node& node) {
 }
 
 void GLTFModel::draw_model() {
-  glBindVertexArray(_vao);
+  glBindVertexArray(_renderer.get().current_context().vao(_vao));
 
   const tinygltf::Scene& scene = _model.scenes[_model.defaultScene];
   for (int node : scene.nodes) {
@@ -210,6 +211,9 @@ void GLTFModel::draw_model() {
 }
 
 void GLTFModel::render(const geometry::Matrix<4>& projection_view) {
+  if (!_renderer.get().current_context().is_vao(_vao))
+    bind_model();
+
   geometry::Matrix<4> model(_transform.matrix());
   if (_invert) {
     model[0][0] *= -1;

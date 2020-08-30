@@ -2,6 +2,7 @@
 
 #include "../geometry/matrix.hpp"
 #include "../geometry/transform.hpp"
+#include "../graphics/renderer.hpp"
 #include "shader.hpp"
 
 #include <glad/glad.h>
@@ -19,7 +20,8 @@ namespace engine::graphics {
 
   class GLTFModel {
   public:
-    GLTFModel(const std::string& model_path,
+    GLTFModel(engine::graphics::Renderer& renderer,
+              const std::string& model_path,
               geometry::Transform transform,
               bool invert           = true,
               GLTFFileFormat format = GLTFFileFormat::ASCII);
@@ -27,6 +29,7 @@ namespace engine::graphics {
     void render(const geometry::Matrix<4>& projection_view);
 
   private:
+    std::reference_wrapper<engine::graphics::Renderer> _renderer;
     geometry::Transform _transform;
     engine::graphics::Shader _shader;
     bool _invert;
