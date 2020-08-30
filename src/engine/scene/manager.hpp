@@ -17,7 +17,7 @@ namespace engine::scene {
   /// @todo Give the user their own logger.
   class Manager {
   public:
-    Manager(const os::InputManager& input_manager, graphics::Renderer& renderer, std::vector<std::unique_ptr<IFactory>> scenes);
+    Manager(const os::InputManager& input_manager, graphics::Renderer& renderer, std::vector<std::unique_ptr<IFactory>> scene_factories);
 
     /// @brief Updates the physics and game logic of all active scenes.
     void update(float delta_time);

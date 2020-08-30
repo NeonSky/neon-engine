@@ -45,9 +45,9 @@ void UpdateScheduler::run(const bool& b) {
 
     if (std::chrono::system_clock::now() - prev_log > std::chrono::seconds(1)) {
       LOG_DEBUG("Scheduler");
-      for (unsigned int i = 0; i < _ticks.size(); i++) {
-        LOG_DEBUG(_ticks[i]);
-        _ticks[i] = 0;
+      for (auto& _tick : _ticks) {
+        LOG_DEBUG(_tick);
+        _tick = 0;
       }
       prev_log = std::chrono::system_clock::now();
     }

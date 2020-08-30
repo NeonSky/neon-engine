@@ -27,7 +27,7 @@ namespace engine {
     void start();
     void stop();
 
-    auto is_running() const -> bool;
+    [[nodiscard]] auto is_running() const -> bool;
 
   private:
     Config _config;

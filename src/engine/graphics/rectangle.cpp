@@ -2,14 +2,15 @@
 
 #include "../debug/logger.hpp"
 
+#include <utility>
 #include <vector>
 
 using namespace engine;
 using namespace engine::graphics;
 
-Rectangle::Rectangle(Renderer& renderer, const geometry::Rectangle& rectangle, const Color& color)
+Rectangle::Rectangle(Renderer& renderer, geometry::Rectangle rectangle, const Color& color)
         : _renderer(renderer),
-          _model(rectangle),
+          _model(std::move(rectangle)),
           _color(color) {
 
   _shader = std::make_unique<Shader>("unicolor.vert", "color.frag");

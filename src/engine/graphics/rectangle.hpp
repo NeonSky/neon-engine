@@ -14,7 +14,7 @@ namespace engine::graphics {
 
   class Rectangle {
   public:
-    Rectangle(Renderer& renderer, const geometry::Rectangle& rectangle, const Color& color);
+    Rectangle(Renderer& renderer, geometry::Rectangle rectangle, const Color& color);
 
     // Mutators
     void compile();

@@ -12,7 +12,7 @@ Renderer::Renderer(os::WindowManager& wm)
   LOG_INFO("OpenGL renderer: " + std::string((const char*) glGetString(GL_RENDERER)));
   LOG_INFO("OpenGL vendor: " + std::string((const char*) glGetString(GL_VENDOR)));
 
-  GLint extension_count;
+  GLint extension_count = 0;
   glGetIntegerv(GL_NUM_EXTENSIONS, &extension_count);
   LOG_INFO(std::to_string(extension_count) + " OpenGL extensions found.");
   for (int i = 0; i < extension_count; i++)
@@ -22,7 +22,7 @@ Renderer::Renderer(os::WindowManager& wm)
 
   _wm.on_window_created([this]([[maybe_unused]] unsigned int window_id) {
     _wm.set_render_target(window_id);
-    _render_contexts.push_back(opengl::Context());
+    _render_contexts.emplace_back();
     _wm.set_render_target(_current_context);
   });
 
@@ -32,7 +32,7 @@ Renderer::Renderer(os::WindowManager& wm)
 
   for (unsigned int i = 0; i < _wm.window_count(); i++) {
     _wm.set_render_target(i);
-    _render_contexts.push_back(opengl::Context());
+    _render_contexts.emplace_back();
   }
 
   _wm.set_render_target(0);

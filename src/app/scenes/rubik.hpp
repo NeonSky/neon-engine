@@ -12,9 +12,9 @@ namespace app::scenes {
   public:
     Rubik(engine::scene::SceneAPI& api);
 
-    virtual void update(float delta_time) override;
-    virtual void render() override;
-    virtual void gui() override;
+    void update(float delta_time) override;
+    void render() override;
+    void gui() override;
 
   private:
     std::unique_ptr<engine::debug::DebugCamera> _camera;

@@ -18,7 +18,7 @@ Context::Context() {
 }
 
 auto Context::gen_vao() -> unsigned int {
-  GLuint vao;
+  GLuint vao = 0;
   glGenVertexArrays(1, &vao);
 
   unsigned int id = (_vao_count++);
@@ -31,8 +31,8 @@ auto Context::vao(unsigned int id) -> GLuint {
   if (id >= _vao_count)
     LOG_ERROR("VAO with ID " + std::to_string(id) + " does not exist.");
 
-  if (!_vao_db.count(id)) {
-    GLuint vao;
+  if (_vao_db.count(id) == 0) {
+    GLuint vao = 0;
     glGenVertexArrays(1, &vao);
     _vao_db[id] = vao;
   }
@@ -58,8 +58,8 @@ auto Context::buffer(unsigned int id) -> GLuint {
   if (id >= _buffer_count)
     LOG_ERROR("Buffer with ID " + std::to_string(id) + " does not exist.");
 
-  if (!_buffer_db.count(id)) {
-    GLuint buffer;
+  if (_buffer_db.count(id) == 0) {
+    GLuint buffer = 0;
     glGenBuffers(1, &buffer);
     _buffer_db[id] = buffer;
   }

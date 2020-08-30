@@ -20,7 +20,7 @@ namespace engine::graphics {
     void render(IRenderable& renderable, unsigned int window_id);
 
     auto current_context() -> opengl::Context&;
-    auto context_count() const -> unsigned int;
+    [[nodiscard]] auto context_count() const -> unsigned int;
 
   private:
     os::WindowManager& _wm;

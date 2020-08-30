@@ -28,7 +28,7 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
           _clear_color(0.2F, 0.2F, 0.2F, 1.0F) {
 
   GLFWwindow* glfw_window_parent = nullptr;
-  if (parent)
+  if (parent != nullptr)
     glfw_window_parent = parent->_window.get();
 
   _window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>(
@@ -53,12 +53,12 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 
     ActivatedModifiers modifiers;
-    modifiers.shift     = mods & 0x01;
-    modifiers.control   = mods & 0x02;
-    modifiers.alt       = mods & 0x04;
-    modifiers.super     = mods & 0x08;
-    modifiers.caps_lock = mods & 0x10;
-    modifiers.num_lock  = mods & 0x20;
+    modifiers.shift     = (bool) (mods & 0x01);
+    modifiers.control   = (bool) (mods & 0x02);
+    modifiers.alt       = (bool) (mods & 0x04);
+    modifiers.super     = (bool) (mods & 0x08);
+    modifiers.caps_lock = (bool) (mods & 0x10);
+    modifiers.num_lock  = (bool) (mods & 0x20);
 
     for (auto& c : w->_on_key_callbacks)
       c(key, static_cast<KeyAction>(action), modifiers);
@@ -68,12 +68,12 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
     auto* w = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 
     ActivatedModifiers modifiers;
-    modifiers.shift     = mods & 0x01;
-    modifiers.control   = mods & 0x02;
-    modifiers.alt       = mods & 0x04;
-    modifiers.super     = mods & 0x08;
-    modifiers.caps_lock = mods & 0x10;
-    modifiers.num_lock  = mods & 0x20;
+    modifiers.shift     = (bool) (mods & 0x01);
+    modifiers.control   = (bool) (mods & 0x02);
+    modifiers.alt       = (bool) (mods & 0x04);
+    modifiers.super     = (bool) (mods & 0x08);
+    modifiers.caps_lock = (bool) (mods & 0x10);
+    modifiers.num_lock  = (bool) (mods & 0x20);
 
     for (auto& c : w->_on_mouse_click_callbacks)
       c(button, static_cast<MouseAction>(action), modifiers);

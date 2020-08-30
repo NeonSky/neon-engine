@@ -12,7 +12,7 @@ namespace engine::graphics {
 
   class Shader {
   public:
-    Shader(const std::string& vertex_shader_path, const std::string& fragment_shader_path);
+    Shader(std::string vertex_shader_path, std::string fragment_shader_path);
 
     // Mutators
     void use();
@@ -22,7 +22,7 @@ namespace engine::graphics {
     void set_uniform_mat4(const GLchar* uniform, const geometry::Matrix<4>& matrix) const;
 
   private:
-    GLuint _program;
+    GLuint _program = 0;
     std::string _vertex_shader_path;
     std::string _fragment_shader_path;
 

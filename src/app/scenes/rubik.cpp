@@ -16,7 +16,7 @@ Rubik::Rubik(scene::SceneAPI& api) : IScene(api) {
   _cuboid2 = std::make_unique<graphics::Cuboid>(_api.renderer(), geometry::Transform(geometry::Vector<3>(3.5F, 1.0F, 3.5F), geometry::Orientation(), geometry::Vector<3>(1.0F, 2.0F, 1.0F)), graphics::Color(0.6F, 1.0F, 0.6F));
   _cuboid3 = std::make_unique<graphics::Cuboid>(_api.renderer(), geometry::Transform(geometry::Vector<3>(6.0F, 0.25F, 1.5F), geometry::Orientation(), geometry::Vector<3>(2.0F, 0.5F, 1.0F)), graphics::Color(1.0F, 0.6F, 0.6F));
 
-  auto& input = _api.input_manager();
+  const auto& input = _api.input_manager();
   input.on_key([&]([[maybe_unused]] const os::Window& window,
                    engine::os::KeyCode keycode,
                    engine::os::KeyAction action,

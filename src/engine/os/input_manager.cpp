@@ -5,7 +5,7 @@
 using namespace engine::os;
 
 void InputManager::add_window(Window& window) {
-  _windows.push_back(window);
+  _windows.emplace_back(window);
 
   window.on_key([this, &window](KeyCode code, KeyAction action, const ActivatedModifiers& mods) {
     for (auto& c : _on_key_callbacks)
@@ -54,7 +54,7 @@ void InputManager::on_mouse_scroll(const std::function<void(const Window&, float
 }
 
 auto InputManager::is_key_down(KeyCode keycode) const -> bool {
-  for (auto& w : _windows)
+  for (const auto& w : _windows)
     if (w.get().is_key_down(keycode))
       return true;
   return false;

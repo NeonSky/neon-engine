@@ -10,6 +10,7 @@ namespace engine::os {
 
   /// Each window has its own OpenGL context, but all windows share the same context objects.
   /// @see https://www.khronos.org/opengl/wiki/OpenGL_Context
+  // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
   class WindowManager {
   public:
     WindowManager();

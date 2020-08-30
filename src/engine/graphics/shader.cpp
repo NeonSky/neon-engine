@@ -8,9 +8,9 @@
 
 using namespace engine::graphics;
 
-Shader::Shader(const std::string& vertex_shader_path, const std::string& fragment_shader_path)
-        : _vertex_shader_path(vertex_shader_path),
-          _fragment_shader_path(fragment_shader_path) {
+Shader::Shader(std::string vertex_shader_path, std::string fragment_shader_path)
+        : _vertex_shader_path(std::move(vertex_shader_path)),
+          _fragment_shader_path(std::move(fragment_shader_path)) {
   compile();
 }
 

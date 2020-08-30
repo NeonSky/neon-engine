@@ -26,9 +26,15 @@ void NeonEngine::set_scenes(std::vector<std::unique_ptr<scene::IFactory>> scenes
   _scene_manager = std::make_unique<scene::Manager>(_wm->input_manager(), *_renderer, std::move(scenes));
 
   std::vector<time::UpdateScheduler::Schedule> schedules;
-  schedules.push_back({std::bind(&scene::Manager::update, _scene_manager.get(), std::placeholders::_1), std::chrono::nanoseconds((int) (1000000000.0F / _config.ups)), true});
-  schedules.push_back({std::bind(&scene::Manager::render, _scene_manager.get()), std::chrono::nanoseconds((int) (1000000000.0F / _config.render_fps)), false});
-  schedules.push_back({std::bind(&scene::Manager::gui, _scene_manager.get()), std::chrono::nanoseconds((int) (1000000000.0F / _config.gui_fps)), false});
+  schedules.push_back({[sm = _scene_manager.get()](float dt) { sm->update(dt); },
+                       std::chrono::nanoseconds((int) (1000000000.0F / _config.ups)),
+                       true});
+  schedules.push_back({[sm = _scene_manager.get()]([[maybe_unused]] float dt) { sm->render(); },
+                       std::chrono::nanoseconds((int) (1000000000.0F / _config.render_fps)),
+                       false});
+  schedules.push_back({[sm = _scene_manager.get()]([[maybe_unused]] float dt) { sm->gui(); },
+                       std::chrono::nanoseconds((int) (1000000000.0F / _config.gui_fps)),
+                       false});
 
   _game_loop = std::make_unique<time::UpdateScheduler>(std::move(schedules));
 }
