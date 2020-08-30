@@ -1,15 +1,14 @@
 #pragma once
 
-#include "../geometry/matrix.hpp"
 #include "../graphics/camera.hpp"
-#include "../gui/window.hpp"
+#include "../os/input_manager.hpp"
 
 namespace engine::debug {
 
   class DebugCamera {
   public:
-    DebugCamera(gui::Window* window);
-    DebugCamera(gui::Window* window, const geometry::Rigidbody& rigidbody);
+    DebugCamera(const os::InputManager& input_manager);
+    DebugCamera(const os::InputManager& input_manager, const geometry::Rigidbody& rigidbody);
 
     // Mutators
     auto rigidbody() -> geometry::Rigidbody&;
@@ -24,7 +23,7 @@ namespace engine::debug {
     static constexpr float zoom_max = 45.0F;
 
     graphics::Camera _camera;
-    gui::Window* _window;
+    const os::InputManager& _input_manager;
 
     geometry::Vector<3> _mouse_ray;
     graphics::ProjectionType _projection_type = graphics::ProjectionType::PERSPECTIVE;
@@ -32,8 +31,8 @@ namespace engine::debug {
     float _zoom                               = 0.0F;
 
     // Mutators
-    void on_key(GLFWwindow* window);
-    void on_cursor(GLFWwindow* window, float xpos, float ypos);
-    void on_scroll(GLFWwindow* window, float xoffset, float yoffset);
+    void on_key(const os::Window& window, os::KeyCode keycode, os::KeyAction action);
+    void on_mouse_move(const os::Window& window, float xpos, float ypos);
+    void on_mouse_scroll(const os::Window& window, float xoffset, float yoffset);
   };
 }
