@@ -2,17 +2,14 @@
 
 namespace engine::scene {
 
-  class IScene {
+  /// @todo Consider only exposing update() to the user.
+  class IScene : public graphics::IRenderable {
   public:
-    virtual void update() {}
-    virtual void render() {}
-    virtual void gui() {}
+
+    virtual void update(float delta_time) = 0;
+    virtual void render()                 = 0;
+    virtual void gui()                    = 0;
 
   protected:
-    ~IScene()             = default;
-    IScene(IScene const&) = default;
-    auto operator=(IScene const&) -> IScene& = default;
-    IScene(IScene&&)                         = default;
-    auto operator=(IScene &&) -> IScene& = default;
   };
 }
