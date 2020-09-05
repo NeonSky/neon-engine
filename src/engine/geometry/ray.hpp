@@ -4,7 +4,7 @@
 
 namespace engine::geometry {
 
-  /// Ray represents a vector originating from a point.
+  /// @brief Ray represents a vector originating from a point.
   ///
   /// It can also be seen as half of a line.
   ///

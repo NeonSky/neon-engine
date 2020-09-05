@@ -71,6 +71,13 @@ TEST(MatrixTest, Size2) {
   EXPECT_EQ(sizeof(m4), 4 * 2 * sizeof(float));
 }
 
+TEST(MatrixTest, MultipliesWithVector1) {
+  Matrix<3> m;
+  Vector<3> v(2, 4, 3);
+
+  EXPECT_EQ(m * v, Vector<3>(2, 4, 3));
+}
+
 TEST(MatrixTest, Trace1) {
   Matrix<2> m({
     {1, 2},
