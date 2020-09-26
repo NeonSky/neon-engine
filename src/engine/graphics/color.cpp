@@ -55,3 +55,7 @@ auto Color::rgb() const -> std::array<float, 3> {
 auto Color::rgba() const -> std::array<float, 4> {
   return _components;
 }
+
+auto Color::to_json() const -> debug::JSON {
+  return _components;
+}

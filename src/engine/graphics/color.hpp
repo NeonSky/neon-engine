@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../debug/json.hpp"
+
 #include <array>
 
 namespace engine::graphics {
@@ -57,6 +59,9 @@ namespace engine::graphics {
 
     /// @brief This color in the RGBA model.
     [[nodiscard]] auto rgba() const -> std::array<float, 4>;
+
+    /// @brief Serializes the current state to JSON.
+    [[nodiscard]] auto to_json() const -> debug::JSON;
 
     /// @}
 
