@@ -1,21 +1,28 @@
 #pragma once
 
 #include "api.hpp"
+#include "factory.hpp"
+#include "node.hpp"
+#include "script.hpp"
+
+#include "../architecture/ecs.hpp"
 
 namespace engine::scene {
 
-  /// @todo Consider only exposing update() to the user.
-  // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
-  class IScene : public graphics::IRenderable {
+  /// Scenes are completely separate from one another but objects may be moved between scenes.
+  class Scene {
   public:
-    IScene(SceneAPI& api);
-    virtual ~IScene() = 0;
+    Scene(SceneAPI& api, IFactory& script_factory);
 
-    virtual void update(float delta_time) = 0;
-    virtual void gui()                    = 0;
+    void update(float delta_time);
 
-  protected:
-    SceneAPI& _api;
+    auto ecs() -> architecture::ECS&;
+
+  private:
+    architecture::ECS _ecs;
+    std::unique_ptr<Node> _root;
+    std::unique_ptr<IScript> _script;
+    bool _enabled = true;
   };
 
 }
