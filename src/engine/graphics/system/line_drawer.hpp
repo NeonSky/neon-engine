@@ -11,6 +11,7 @@
 
 namespace engine::graphics::system {
 
+  /// @todo rename to renderer?
   class LineDrawer : public architecture::IEntitySystem {
   public:
     LineDrawer();
