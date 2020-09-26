@@ -15,20 +15,27 @@ Context::Context() {
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glEnable(GL_LINE_SMOOTH);
+  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+  // glEnable(GL_POLYGON_SMOOTH);
+  // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 auto Context::gen_vao() -> unsigned int {
   GLuint vao = 0;
   glGenVertexArrays(1, &vao);
 
-  unsigned int id = (_vao_count++);
+  unsigned int id = ++_vao_count;
   _vao_db[id]     = vao;
 
   return id;
 }
 
 auto Context::vao(unsigned int id) -> GLuint {
-  if (id >= _vao_count)
+  if (id > _vao_count)
     LOG_ERROR("VAO with ID " + std::to_string(id) + " does not exist.");
 
   if (_vao_db.count(id) == 0) {
@@ -48,14 +55,14 @@ auto Context::gen_buffer() -> unsigned int {
   GLuint buffer = 0;
   glGenBuffers(1, &buffer);
 
-  unsigned int id = (_buffer_count++);
+  unsigned int id = ++_buffer_count;
   _buffer_db[id]  = buffer;
 
   return id;
 }
 
 auto Context::buffer(unsigned int id) -> GLuint {
-  if (id >= _buffer_count)
+  if (id > _buffer_count)
     LOG_ERROR("Buffer with ID " + std::to_string(id) + " does not exist.");
 
   if (_buffer_db.count(id) == 0) {

@@ -1,20 +1,21 @@
 #pragma once
 
 #include "../../os/window.hpp"
+#include "../context_implementation.hpp"
 #include "../shader.hpp"
 
 #include <map>
 
 namespace engine::graphics::opengl {
 
-  /// Context represents a OpenGL context.
+  /// @brief Context represents a OpenGL context.
   ///
   /// In general, objects that hold data (textures, vertex/pixel/element objects, renderbuffer objects) are shared, while objects that hold state (vertex array object, framebuffer object) are not.
   ///
   /// @see https://www.khronos.org/opengl/wiki/OpenGL_Context
   /// @todo Separate vao and buffer into different classes/structs and bind them here. Vao could have references to its buffers and recompile automagically.
   /// @todo Add debug option which wraps everything around CHECK_GL_ERROR()
-  class Context {
+  class Context : public IContextImplementation {
   public:
     Context();
 
