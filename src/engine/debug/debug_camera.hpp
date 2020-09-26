@@ -5,6 +5,7 @@
 
 namespace engine::debug {
 
+  /// @todo Seems like orthographic projection is not working properly.
   class DebugCamera {
   public:
     DebugCamera(const os::InputManager& input_manager);

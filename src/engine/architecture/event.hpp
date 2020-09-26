@@ -2,7 +2,6 @@
 
 #include "eventpp/callbacklist.h"
 
-// TODO: Move to engine/architecture
 // THIS FILE IS NOT USED AT THE MOMENT
 // Maybe just use a typedef/using statement?
 

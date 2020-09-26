@@ -110,6 +110,10 @@ auto Camera::projection_matrix(ProjectionType projection_type) const -> geometry
   }
 }
 
+auto Camera::view_projection(ProjectionType projection_type) const -> geometry::Matrix<4> {
+  return projection_matrix(projection_type) * view_matrix();
+}
+
 auto Camera::perspective_projection_matrix() const -> geometry::Matrix<4> {
   float f = _perspective.far;
   float n = _perspective.near;

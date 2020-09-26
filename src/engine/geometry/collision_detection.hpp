@@ -7,6 +7,7 @@
 
 #include <optional>
 
+/// @todo Move outside of geometry. Perhaps to engine/physics?
 namespace engine::geometry {
 
   /// @brief Finds the intersection point between ray \p ray and plane \p plane, if any.

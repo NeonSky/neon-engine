@@ -40,7 +40,6 @@ WindowManager::WindowManager()
 
   create_window();
   create_window();
-  create_window();
 
   set_render_target(_current);
 
