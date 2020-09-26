@@ -44,11 +44,12 @@ void UpdateScheduler::run(const bool& b) {
     }
 
     if (std::chrono::system_clock::now() - prev_log > std::chrono::seconds(1)) {
-      LOG_DEBUG("Scheduler");
+      std::string s = "Scheduler: ";
       for (auto& _tick : _ticks) {
-        LOG_DEBUG(_tick);
+        s += std::to_string(_tick) + " ";
         _tick = 0;
       }
+      LOG_DEBUG(s);
       prev_log = std::chrono::system_clock::now();
     }
   }
