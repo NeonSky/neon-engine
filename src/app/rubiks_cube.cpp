@@ -17,11 +17,7 @@ static const graphics::Color red(1.0F, 0.0F, 0.0F);
 static const graphics::Color black(0.0F, 0.0F, 0.0F);
 
 RubiksCube::RubiksCube(graphics::Renderer& renderer)
-        : RubiksCube(renderer, geometry::Transform()) {}
-
-RubiksCube::RubiksCube(graphics::Renderer& renderer, engine::geometry::Transform transform)
-        : _renderer(renderer),
-          _transform(std::move(transform)) {
+        : _renderer(renderer) {
 
   for (int z = 0; z < 3; z++) {
     for (int y = 0; y < 3; y++) {
@@ -41,10 +37,6 @@ RubiksCube::RubiksCube(graphics::Renderer& renderer, engine::geometry::Transform
       }
     }
   }
-}
-
-auto RubiksCube::transform() -> geometry::Transform& {
-  return _transform;
 }
 
 void RubiksCube::rotate_left(bool ccw) {
@@ -227,9 +219,10 @@ void RubiksCube::rotate_front(bool ccw) {
     std::swap(_pieces[2][1][0], _pieces[2][1][2]);
 }
 
+// void RubiksCube::render(graphics::opengl::Context& ctx, geometry::Matrix<4> view_projection) {
 void RubiksCube::render(geometry::Matrix<4> view_projection) {
   for (unsigned int z = 0; z < 3; z++)
     for (unsigned int y = 0; y < 3; y++)
       for (unsigned int x = 0; x < 3; x++)
-        _pieces[z][y][x]->render(view_projection * _transform.matrix());
+        _pieces[z][y][x]->render(view_projection);
 }

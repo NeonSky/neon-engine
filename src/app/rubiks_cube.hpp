@@ -10,9 +10,6 @@ namespace app {
   class RubiksCube {
   public:
     RubiksCube(engine::graphics::Renderer& renderer);
-    RubiksCube(engine::graphics::Renderer& renderer, engine::geometry::Transform transform);
-
-    auto transform() -> engine::geometry::Transform&;
 
     /// @brief Rotates the left face by 90 degrees.
     ///
@@ -46,12 +43,12 @@ namespace app {
 
     /// @brief Renders this model's current state.
     void render(engine::geometry::Matrix<4> view_projection);
+    // void render(engine::graphics::opengl::Context& ctx, engine::geometry::Matrix<4> view_projection);
 
   private:
     /// @{
     /// Private state.
     std::reference_wrapper<engine::graphics::Renderer> _renderer;
-    engine::geometry::Transform _transform;
     std::array<std::array<std::array<std::unique_ptr<RubiksCubePiece>, 3>, 3>, 3> _pieces;
     /// @}
   };

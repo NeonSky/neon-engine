@@ -53,7 +53,7 @@ void Cuboid::compile() {
   CHECK_GL_ERROR();
 }
 
-void Cuboid::render(geometry::Matrix<4> view_projection, bool draw_corners) {
+void Cuboid::render(geometry::Matrix<4> view_projection) {
   if (!_renderer.get().current_context().is_vao(_vao))
     compile();
 
@@ -67,7 +67,7 @@ void Cuboid::render(geometry::Matrix<4> view_projection, bool draw_corners) {
 
   glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, nullptr);
 
-  if (draw_corners) {
+  if (_draw_corners) {
     glPointSize(10.0F);
     glDrawElements(GL_POINTS, 3 * 12, GL_UNSIGNED_INT, nullptr);
   }
