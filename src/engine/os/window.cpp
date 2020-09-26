@@ -40,6 +40,18 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
   if (_window == nullptr)
     LOG_CRITICAL("Failed to create GLFW window.");
 
+  GLFWwindow* prev_context = glfwGetCurrentContext();
+  glfwMakeContextCurrent(_window.get());
+
+  // Vertical synchronization
+  glfwSwapInterval(1);
+
+  // Multisample anti-aliasing (MSAA). OpenGL needs to be initialized first though.
+  // CHECK_GL_ERROR();
+  // glEnable(GL_MULTISAMPLE);
+  // glfwWindowHint(GLFW_SAMPLES, 4); // 4 subsamples per screen coordinate
+  // CHECK_GL_ERROR();
+
   // Any callbacks are owned by `this`
   glfwSetWindowUserPointer(_window.get(), reinterpret_cast<void*>(this));
 
@@ -92,6 +104,8 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
     for (auto& c : w->_on_mouse_scroll_callbacks)
       c(xoffset, yoffset);
   });
+
+  glfwMakeContextCurrent(prev_context);
 }
 
 void Window::lock_mouse_cursor() const {

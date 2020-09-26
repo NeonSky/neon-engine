@@ -1,6 +1,17 @@
 #include "renderer.hpp"
 
+#include "../geometry/transform.hpp"
+#include "../scene/component/root.hpp"
+#include "component/render_info.hpp"
+#include "system/cuboid_renderer.hpp"
+#include "system/global_transform_updater.hpp"
+#include "system/line_drawer.hpp"
+
+#include "../../app/rubiks_cube_system.hpp"
+
 #include <glad/glad.h>
+
+#include <stack>
 
 using namespace engine;
 using namespace engine::graphics;
@@ -36,23 +47,34 @@ Renderer::Renderer(os::WindowManager& wm)
   }
 
   _wm.set_render_target(0);
+
+  _render_systems.push_back(std::make_unique<system::GlobalTransformUpdater>());
+  _render_systems.push_back(std::make_unique<system::LineDrawer>());
+  _render_systems.push_back(std::make_unique<system::CuboidRenderer>());
+  _render_systems.push_back(std::make_unique<app::RubiksCubeSystem>()); // TODO: Move to user's code (or move rubik cube to engine).
 }
 
-void Renderer::render(IRenderable& renderable, unsigned int window_id) {
+void Renderer::render(architecture::ECS& ecs,
+                      unsigned int window_id,
+                      geometry::Matrix<4> view_projection) {
   if (!_wm.is_target_available(window_id)) {
     LOG_WARNING("Can't render to window with ID " + std::to_string(window_id) + " since that target is currently not available.");
     return;
   }
-
   _wm.set_render_target(window_id);
-
   _current_context = window_id;
 
   _wm.clear_target();
-  renderable.render(); // TODO: Provide ref to current context here. Also have a compile() function that is always run first on a context and also provides the current context.
-  _wm.refresh_target();
 
-  CHECK_GL_ERROR();
+  // Ensure root has updated RenderInfo
+  auto root = ecs.view<scene::component::Root>()[0];
+  ecs.emplace_or_replace<component::RenderInfo>(root, view_projection, current_context());
+
+  // TODO: Use a separate entt registry for each scene so that external render systems don't render objects from other scenes.
+  for (auto& system : _render_systems)
+    system->update(ecs);
+
+  _wm.refresh_target();
 }
 
 auto Renderer::current_context() -> opengl::Context& {
