@@ -67,3 +67,15 @@ TEST(ColorTest, Iterates2) {
   for (auto& comp : color)
     EXPECT_EQ(comp, expected[i++]);
 }
+
+TEST(ColorTest, ConvertsToJSON1) {
+  Color color(0.4F, 0.2F, 0.6F);
+  JSON json = {0.4F, 0.2F, 0.6F, 1.0F};
+  EXPECT_EQ(color.to_json(), json);
+}
+
+TEST(ColorTest, ConvertsToJSON2) {
+  Color color(0.3F, 0.1F, 0.7F, 0.4F);
+  JSON json = {0.3F, 0.1F, 0.7F, 0.4F};
+  EXPECT_EQ(color.to_json(), json);
+}
