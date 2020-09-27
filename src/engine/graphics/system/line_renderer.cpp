@@ -1,10 +1,10 @@
-#include "line_drawer.hpp"
+#include "line_renderer.hpp"
 
 #include "../component/render_info.hpp"
 
 using namespace engine::graphics::system;
 
-LineDrawer::LineDrawer()
+LineRenderer::LineRenderer()
         : _shader(graphics::Shader("color.vert", "color.frag")) {
 
   std::array<GLfloat, 2> width_range{};
@@ -13,7 +13,7 @@ LineDrawer::LineDrawer()
   _max_line_width = width_range[1];
 }
 
-void LineDrawer::render(const geometry::Matrix<4>& view_projection) {
+void LineRenderer::render(const geometry::Matrix<4>& view_projection) {
   if (_line_queue.empty())
     return;
 
@@ -76,12 +76,12 @@ void LineDrawer::render(const geometry::Matrix<4>& view_projection) {
   } while (end != _line_queue.end());
 }
 
-void LineDrawer::clear() {
+void LineRenderer::clear() {
   _line_queue.clear();
 }
 
 /// @todo Don't create new stuff every update, store refs to the buffers in the component.
-void LineDrawer::update([[maybe_unused]] architecture::ECS& ecs) {
+void LineRenderer::update([[maybe_unused]] architecture::ECS& ecs) {
   auto& render_info = ecs.get<component::RenderInfo>(ecs.view<component::RenderInfo>()[0]);
   // auto& ctx         = render_info.context.get();
 
@@ -147,7 +147,7 @@ void LineDrawer::update([[maybe_unused]] architecture::ECS& ecs) {
   }
 }
 
-void LineDrawer::add_line(component::LineSegment&& line) {
+void LineRenderer::add_line(component::LineSegment&& line) {
   line.width = std::clamp(line.width, _min_line_width, _max_line_width);
   auto it    = std::upper_bound(_line_queue.begin(),
                              _line_queue.end(),

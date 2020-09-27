@@ -5,7 +5,7 @@
 #include "component/render_info.hpp"
 #include "system/cuboid_renderer.hpp"
 #include "system/global_transform_updater.hpp"
-#include "system/line_drawer.hpp"
+#include "system/line_renderer.hpp"
 #include "system/rectangle_renderer.hpp"
 
 #include <glad/glad.h>
@@ -48,7 +48,7 @@ Renderer::Renderer(os::WindowManager& wm)
   _wm.set_render_target(0);
 
   _render_systems.push_back(std::make_unique<system::GlobalTransformUpdater>());
-  _render_systems.push_back(std::make_unique<system::LineDrawer>());
+  _render_systems.push_back(std::make_unique<system::LineRenderer>());
   _render_systems.push_back(std::make_unique<system::RectangleRenderer>());
   _render_systems.push_back(std::make_unique<system::CuboidRenderer>());
 }
