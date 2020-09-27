@@ -11,10 +11,9 @@
 
 namespace engine::graphics::system {
 
-  /// @todo rename to renderer?
-  class LineDrawer : public architecture::IEntitySystem {
+  class LineRenderer : public architecture::IEntitySystem {
   public:
-    LineDrawer();
+    LineRenderer();
 
     // Mutators
     void render(const geometry::Matrix<4>& view_projection);
