@@ -4,7 +4,6 @@
 
 #include "../os/window_manager.hpp"
 #include "opengl/context.hpp"
-#include "renderable.hpp"
 
 #include <memory>
 #include <vector>

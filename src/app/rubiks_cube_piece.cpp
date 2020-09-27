@@ -10,12 +10,11 @@ using namespace app;
 
 RubiksCubePiece::RubiksCubePiece(engine::scene::Node& node,
                                  geometry::Transform transform,
-                                 ColorConfiguration color_config)
-        : _transform(std::move(transform)) {
+                                 ColorConfiguration color_config) {
 
   node.add_component<graphics::component::Cuboid>(geometry::Cuboid(), graphics::Color());
 
-  geometry::Vector<3> scale = _transform.scale();
+  geometry::Vector<3> scale = transform.scale();
   float offset              = 1.005F;
 
   struct FaceData {
@@ -93,8 +92,4 @@ RubiksCubePiece::RubiksCubePiece(engine::scene::Node& node,
     n.add_component<graphics::component::Rectangle>(geometry::Rectangle(geometry::Rigidbody(), face_ratio * face.width, face_ratio * face.height), face.color);
     n.add_component<geometry::Transform>(face.pos, face.rot);
   }
-}
-
-auto RubiksCubePiece::transform() -> engine::geometry::Transform& {
-  return _transform;
 }

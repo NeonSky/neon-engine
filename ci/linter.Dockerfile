@@ -12,7 +12,7 @@ COPY .clang-format .
 COPY .clang-tidy .
 COPY Makefile .
 RUN sudo mkdir build
-RUN sudo chown -R aur:aur build
+RUN sudo chown -R aur:aur .
 RUN make build
 
 CMD ["make", "linter"]

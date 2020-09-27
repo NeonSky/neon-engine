@@ -3,7 +3,6 @@
 #include <utility>
 
 #include "../engine/debug/logger.hpp"
-#include "../engine/graphics/rectangle.hpp"
 
 using namespace app;
 using namespace engine;

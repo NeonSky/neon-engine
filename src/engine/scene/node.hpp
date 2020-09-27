@@ -32,8 +32,8 @@ namespace engine::scene {
 
   private:
     std::reference_wrapper<architecture::ECS> _ecs;
-    architecture::EntityID _id;                     //< the entity that this OOP object wraps
-    std::vector<std::unique_ptr<Node>> _children;   // NOTE: Careful, this is duplicated data since component::Node already stores the hierarchy of the nodes. However, Node objects need to be managed and stored in static memory somehow so this is a good enough trade-off to bridge the engine's ECS and the user's OOP world.
+    architecture::EntityID _id;                   //< the entity that this OOP object wraps
+    std::vector<std::unique_ptr<Node>> _children; // NOTE: Careful, this is duplicated data since component::Node already stores the hierarchy of the nodes. However, Node objects need to be managed and stored in static memory somehow so this is a good enough trade-off to bridge the engine's ECS and the user's OOP world.
   };
 
 }

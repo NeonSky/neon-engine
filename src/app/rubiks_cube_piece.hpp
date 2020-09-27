@@ -1,8 +1,7 @@
 #pragma once
 
+#include "../engine/geometry/transform.hpp"
 #include "../engine/graphics/color.hpp"
-#include "../engine/graphics/cuboid.hpp"
-#include "../engine/graphics/rectangle.hpp"
 #include "../engine/scene/node.hpp"
 
 #include <vector>
@@ -21,11 +20,6 @@ namespace app {
     };
 
     RubiksCubePiece(engine::scene::Node& node, engine::geometry::Transform transform, ColorConfiguration color_config);
-
-    auto transform() -> engine::geometry::Transform&;
-
-  private:
-    engine::geometry::Transform _transform;
   };
 
 }
