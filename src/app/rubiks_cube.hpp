@@ -1,15 +1,17 @@
 #pragma once
 
 #include "../engine/geometry/transform.hpp"
-#include "../engine/graphics/renderer.hpp"
 #include "../engine/graphics/shader.hpp"
+#include "../engine/scene/node.hpp"
 #include "rubiks_cube_piece.hpp"
+
+#include <experimental/memory>
 
 namespace app {
 
   class RubiksCube {
   public:
-    RubiksCube(engine::graphics::Renderer& renderer);
+    RubiksCube(engine::scene::Node& node);
 
     /// @brief Rotates the left face by 90 degrees.
     ///
@@ -41,15 +43,10 @@ namespace app {
     /// The rotation will be done counter-clockwise if \p ccw is true, otherwise the rotation will be clockwise.
     void rotate_front(bool ccw = true);
 
-    /// @brief Renders this model's current state.
-    void render(engine::geometry::Matrix<4> view_projection);
-    // void render(engine::graphics::opengl::Context& ctx, engine::geometry::Matrix<4> view_projection);
-
   private:
     /// @{
     /// Private state.
-    std::reference_wrapper<engine::graphics::Renderer> _renderer;
-    std::array<std::array<std::array<std::unique_ptr<RubiksCubePiece>, 3>, 3>, 3> _pieces;
+    std::array<std::array<std::array<std::experimental::observer_ptr<engine::scene::Node>, 3>, 3>, 3> _pieces;
     /// @}
   };
 

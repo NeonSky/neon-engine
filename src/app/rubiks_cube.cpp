@@ -16,8 +16,7 @@ static const graphics::Color orange(1.0F, 0.65F, 0.0F);
 static const graphics::Color red(1.0F, 0.0F, 0.0F);
 static const graphics::Color black(0.0F, 0.0F, 0.0F);
 
-RubiksCube::RubiksCube(graphics::Renderer& renderer)
-        : _renderer(renderer) {
+RubiksCube::RubiksCube(engine::scene::Node& node) {
 
   for (int z = 0; z < 3; z++) {
     for (int y = 0; y < 3; y++) {
@@ -33,7 +32,9 @@ RubiksCube::RubiksCube(graphics::Renderer& renderer)
         color_config.back  = z == 0 ? red : black;
         color_config.front = z == 2 ? orange : black;
 
-        _pieces[z][y][x] = std::make_unique<RubiksCubePiece>(&_renderer.get(), geometry::Transform(pos), color_config);
+        _pieces[z][y][x] = std::experimental::make_observer(&node.add_child());
+        _pieces[z][y][x]->add_component<RubiksCubePiece>(*_pieces[z][y][x], geometry::Transform(pos), color_config);
+        _pieces[z][y][x]->add_component<engine::geometry::Transform>(pos);
       }
     }
   }
@@ -44,7 +45,7 @@ void RubiksCube::rotate_left(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int y = 0; y < 3; y++) {
-      geometry::Transform& t = _pieces[z][y][0]->transform();
+      auto& t = _pieces[z][y][0]->component<geometry::Transform>();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -74,7 +75,7 @@ void RubiksCube::rotate_right(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int y = 0; y < 3; y++) {
-      geometry::Transform& t = _pieces[z][y][2]->transform();
+      auto& t = _pieces[z][y][2]->component<geometry::Transform>();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -104,7 +105,7 @@ void RubiksCube::rotate_bot(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[z][0][x]->transform();
+      auto& t = _pieces[z][0][x]->component<geometry::Transform>();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -134,7 +135,7 @@ void RubiksCube::rotate_top(bool ccw) {
 
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[z][2][x]->transform();
+      auto& t = _pieces[z][2][x]->component<geometry::Transform>();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -164,7 +165,7 @@ void RubiksCube::rotate_back(bool ccw) {
 
   for (unsigned int y = 0; y < 3; y++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[0][y][x]->transform();
+      auto& t = _pieces[0][y][x]->component<geometry::Transform>();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -194,7 +195,7 @@ void RubiksCube::rotate_front(bool ccw) {
 
   for (unsigned int y = 0; y < 3; y++) {
     for (unsigned int x = 0; x < 3; x++) {
-      geometry::Transform& t = _pieces[2][y][x]->transform();
+      auto& t = _pieces[2][y][x]->component<geometry::Transform>();
       t                      = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
@@ -217,12 +218,4 @@ void RubiksCube::rotate_front(bool ccw) {
     std::swap(_pieces[2][0][1], _pieces[2][2][1]);
   else
     std::swap(_pieces[2][1][0], _pieces[2][1][2]);
-}
-
-// void RubiksCube::render(graphics::opengl::Context& ctx, geometry::Matrix<4> view_projection) {
-void RubiksCube::render(geometry::Matrix<4> view_projection) {
-  for (unsigned int z = 0; z < 3; z++)
-    for (unsigned int y = 0; y < 3; y++)
-      for (unsigned int x = 0; x < 3; x++)
-        _pieces[z][y][x]->render(view_projection);
 }

@@ -6,8 +6,8 @@
 #include "system/cuboid_renderer.hpp"
 #include "system/global_transform_updater.hpp"
 #include "system/line_drawer.hpp"
+#include "system/rectangle_renderer.hpp"
 
-#include "../../app/rubiks_cube_system.hpp"
 
 #include <glad/glad.h>
 
@@ -50,8 +50,8 @@ Renderer::Renderer(os::WindowManager& wm)
 
   _render_systems.push_back(std::make_unique<system::GlobalTransformUpdater>());
   _render_systems.push_back(std::make_unique<system::LineDrawer>());
+  _render_systems.push_back(std::make_unique<system::RectangleRenderer>());
   _render_systems.push_back(std::make_unique<system::CuboidRenderer>());
-  _render_systems.push_back(std::make_unique<app::RubiksCubeSystem>()); // TODO: Move to user's code (or move rubik cube to engine).
 }
 
 void Renderer::render(architecture::ECS& ecs,
@@ -70,7 +70,6 @@ void Renderer::render(architecture::ECS& ecs,
   auto root = ecs.view<scene::component::Root>()[0];
   ecs.emplace_or_replace<component::RenderInfo>(root, view_projection, current_context());
 
-  // TODO: Use a separate entt registry for each scene so that external render systems don't render objects from other scenes.
   for (auto& system : _render_systems)
     system->update(ecs);
 

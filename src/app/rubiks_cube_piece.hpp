@@ -3,7 +3,7 @@
 #include "../engine/graphics/color.hpp"
 #include "../engine/graphics/cuboid.hpp"
 #include "../engine/graphics/rectangle.hpp"
-#include "../engine/graphics/renderer.hpp"
+#include "../engine/scene/node.hpp"
 
 #include <vector>
 
@@ -20,17 +20,12 @@ namespace app {
       engine::graphics::Color front;
     };
 
-    RubiksCubePiece(engine::graphics::Renderer* renderer, engine::geometry::Transform transform, ColorConfiguration color_config);
+    RubiksCubePiece(engine::scene::Node& node, engine::geometry::Transform transform, ColorConfiguration color_config);
 
     auto transform() -> engine::geometry::Transform&;
 
-    void render(engine::geometry::Matrix<4> view_projection);
-
   private:
-    std::reference_wrapper<engine::graphics::Renderer> _renderer;
     engine::geometry::Transform _transform;
-    engine::graphics::Cuboid _cuboid;
-    std::vector<engine::graphics::Rectangle> _faces;
   };
 
 }

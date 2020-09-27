@@ -84,7 +84,7 @@ Rubik::Rubik(engine::scene::SceneAPI& api,
                                                       graphics::Color(1.0F, 0.6F, 0.6F));
 
   _rubiks_cube.add_component<geometry::Transform>(geometry::Vector<3>(-4.5F, 2, 4.5F));
-  _rubiks_cube.add_component<RubiksCube>(_api.renderer());
+  _rubiks_cube.add_component<RubiksCube>(_rubiks_cube);
 
   const auto& input = _api.input_manager();
   input.on_key([&]([[maybe_unused]] const os::Window& window,

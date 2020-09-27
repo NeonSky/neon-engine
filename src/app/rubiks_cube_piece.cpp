@@ -1,14 +1,19 @@
 #include "rubiks_cube_piece.hpp"
 
+#include "../engine/graphics/component/cuboid.hpp"
+#include "../engine/graphics/component/rectangle.hpp"
+
 #include <utility>
 
 using namespace engine;
 using namespace app;
 
-RubiksCubePiece::RubiksCubePiece(graphics::Renderer* renderer, geometry::Transform transform, ColorConfiguration color_config)
-        : _renderer(*renderer),
-          _transform(std::move(transform)),
-          _cuboid(*renderer, geometry::Cuboid(), graphics::Color()) {
+RubiksCubePiece::RubiksCubePiece(engine::scene::Node& node,
+                                 geometry::Transform transform,
+                                 ColorConfiguration color_config)
+        : _transform(std::move(transform)) {
+
+  node.add_component<graphics::component::Cuboid>(geometry::Cuboid(), graphics::Color());
 
   geometry::Vector<3> scale = _transform.scale();
   float offset              = 1.005F;
@@ -83,16 +88,13 @@ RubiksCubePiece::RubiksCubePiece(graphics::Renderer* renderer, geometry::Transfo
   }
 
   float face_ratio = 0.9F;
-  for (auto& face : face_data)
-    _faces.emplace_back(_renderer, geometry::Rectangle(geometry::Rigidbody(face.pos, face.rot), face_ratio * face.width, face_ratio * face.height), face.color);
+  for (auto& face : face_data) {
+    auto& n = node.add_child();
+    n.add_component<graphics::component::Rectangle>(geometry::Rectangle(geometry::Rigidbody(), face_ratio * face.width, face_ratio * face.height), face.color);
+    n.add_component<geometry::Transform>(face.pos, face.rot);
+  }
 }
 
 auto RubiksCubePiece::transform() -> engine::geometry::Transform& {
   return _transform;
-}
-
-void RubiksCubePiece::render(geometry::Matrix<4> view_projection) {
-  _cuboid.render(view_projection * _transform.matrix());
-  for (auto& face : _faces)
-    face.render(view_projection * _transform.matrix());
 }
