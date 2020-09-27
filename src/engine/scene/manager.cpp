@@ -9,7 +9,7 @@ using namespace engine::scene;
 Manager::Manager(const os::InputManager& input_manager,
                  graphics::Renderer& renderer,
                  std::vector<std::unique_ptr<IFactory>> scene_factories)
-        : _api(input_manager, renderer),
+        : _api(input_manager),
           _renderer(renderer) {
 
   for (auto& scene_factory : scene_factories)
