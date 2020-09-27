@@ -9,7 +9,7 @@
 
 using namespace engine::graphics;
 
-// FIXME
+/// @todo Convert to member variables.
 bool firstMouse = true;
 float lastX;
 float lastY;
@@ -55,8 +55,8 @@ void Camera::move(Direction move_dir) {
   _rigidbody.position() += _movement_speed * displacement_dir;
 }
 
+/// @todo: name the constant 45.0F
 void Camera::set_zoom(float zoom_level) {
-  // FIXME: name constant
   _perspective.fov.set(45.0F - zoom_level, geometry::Angle::Unit::DEGREES);
 }
 

@@ -9,8 +9,8 @@ namespace engine::graphics {
 
   /// @todo Consider relying on a geometry shader to go from Transform -> 8 corners. Sending a Transform is quite expensive though. Would be worthwhile if the cuboid was a AABB.
   /// @todo Add colored outline option by using Polygon Offset.
-  /// @TODO Remove transform..? Weird to have transform component and this transform.
-  /// @TODO REMOVE. Use component::cuboid.
+  /// @todo Remove transform..? Weird to have transform component and this transform.
+  /// @todo REMOVE. Use component::cuboid.
   class Cuboid {
   public:
     Cuboid(Renderer& renderer, geometry::Cuboid geometry, const Color& color);

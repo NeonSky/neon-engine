@@ -124,11 +124,12 @@ void Window::set_as_current() {
   glfwMakeContextCurrent(_window.get());
 }
 
+/// @todo Document "(void) io;" usage.
 void Window::init_gui() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
-  (void) io; // FIXME
+  (void) io;
   ImGui::StyleColorsDark();
 
   std::string glsl_version = "#version 420";

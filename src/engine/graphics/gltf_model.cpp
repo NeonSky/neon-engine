@@ -87,7 +87,7 @@ void GLTFModel::bind_model_nodes(const std::map<int, GLuint>& vbos, tinygltf::No
 auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> std::map<int, GLuint> {
   for (size_t i = 0; i < _model.bufferViews.size(); ++i) {
     const tinygltf::BufferView& bufferView = _model.bufferViews[i];
-    if (bufferView.target == 0) { // TODO impl drawarrays
+    if (bufferView.target == 0) { // should impl drawarrays
       LOG_WARNING("bufferView.target is zero.");
       continue; // Unsupported bufferView.
     }
@@ -171,7 +171,7 @@ auto GLTFModel::bind_mesh(std::map<int, GLuint> vbos, tinygltf::Mesh& mesh) -> s
         } else if (image.bits == 16) {
           type = GL_UNSIGNED_SHORT;
         } else {
-          LOG_DEBUG("FIXME");
+          LOG_DEBUG("Not implemented.");
         }
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, format, type, &image.image.at(0));

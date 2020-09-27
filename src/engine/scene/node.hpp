@@ -12,6 +12,8 @@ namespace engine::scene {
   /// This is the class that the user interacts with.
   /// @todo Maybe create an interface to hide includes and constructor from the user.
   /// @todo Don't allow access to parent node when node is root.
+  /// @todo Consider adding a "name" field for to_json conversion of scene hierarchy.
+  /// @todo Replace "ecs" with an interface that provides basic node operations, not a mutable reference to whole ECS world.
   class Node {
   public:
     Node(architecture::ECS& ecs, architecture::EntityID id);
@@ -29,8 +31,8 @@ namespace engine::scene {
     }
 
   private:
-    std::reference_wrapper<architecture::ECS> _ecs; // FIXME: Replace with an interface that provides basic node operations, not a mutable reference to whole ECS world.
-    architecture::EntityID _id;                     // the entity that this OOP object wraps
+    std::reference_wrapper<architecture::ECS> _ecs;
+    architecture::EntityID _id;                     //< the entity that this OOP object wraps
     std::vector<std::unique_ptr<Node>> _children;   // NOTE: Careful, this is duplicated data since component::Node already stores the hierarchy of the nodes. However, Node objects need to be managed and stored in static memory somehow so this is a good enough trade-off to bridge the engine's ECS and the user's OOP world.
   };
 

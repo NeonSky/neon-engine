@@ -52,6 +52,7 @@ WindowManager::~WindowManager() {
   glfwTerminate();
 }
 
+/// @todo Move gui to another package.
 void WindowManager::create_window() {
   _windows.push_back(std::make_unique<Window>(1920, 1080, "Application", *_base_window));
   unsigned int id = _windows.size() - 1;
@@ -63,7 +64,7 @@ void WindowManager::create_window() {
     _input_manager.remove_window(*_windows[id]);
     destroy_window(id);
   });
-  // _windows.back()->init_gui(); // TODO Move gui to another package.
+  // _windows.back()->init_gui();
 }
 
 void WindowManager::destroy_window(unsigned int window_id) {

@@ -409,7 +409,7 @@ namespace engine::geometry {
     return res;
   }
 
-  // TODO: Pivot is a (row, col). Maybe rename to `elimate` or something?
+  /// @todo Pivot is a (row, col). Maybe rename to `elimate` or something?
   template <unsigned int R, unsigned int C>
   void Matrix<R, C>::row_echelon_clear_pivot_column(unsigned int row, unsigned int col) {
     for (unsigned int r = 0; r < R; r++)

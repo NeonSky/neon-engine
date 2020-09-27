@@ -5,7 +5,7 @@
 
 namespace engine::graphics {
 
-  // TODO: Move, remove or potentially change name. Maybe to player_camera
+  /// @todo Move, remove or potentially change name. Maybe to player_camera
   enum Direction {
     FORWARD,
     BACKWARD,

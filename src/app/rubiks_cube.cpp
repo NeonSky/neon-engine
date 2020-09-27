@@ -46,7 +46,7 @@ void RubiksCube::rotate_left(bool ccw) {
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int y = 0; y < 3; y++) {
       auto& t = _pieces[z][y][0]->component<geometry::Transform>();
-      t                      = geometry::Transform(rot.matrix() * t.position(),
+      t       = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
   }
@@ -76,7 +76,7 @@ void RubiksCube::rotate_right(bool ccw) {
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int y = 0; y < 3; y++) {
       auto& t = _pieces[z][y][2]->component<geometry::Transform>();
-      t                      = geometry::Transform(rot.matrix() * t.position(),
+      t       = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
   }
@@ -106,7 +106,7 @@ void RubiksCube::rotate_bot(bool ccw) {
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int x = 0; x < 3; x++) {
       auto& t = _pieces[z][0][x]->component<geometry::Transform>();
-      t                      = geometry::Transform(rot.matrix() * t.position(),
+      t       = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
   }
@@ -136,7 +136,7 @@ void RubiksCube::rotate_top(bool ccw) {
   for (unsigned int z = 0; z < 3; z++) {
     for (unsigned int x = 0; x < 3; x++) {
       auto& t = _pieces[z][2][x]->component<geometry::Transform>();
-      t                      = geometry::Transform(rot.matrix() * t.position(),
+      t       = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
   }
@@ -166,7 +166,7 @@ void RubiksCube::rotate_back(bool ccw) {
   for (unsigned int y = 0; y < 3; y++) {
     for (unsigned int x = 0; x < 3; x++) {
       auto& t = _pieces[0][y][x]->component<geometry::Transform>();
-      t                      = geometry::Transform(rot.matrix() * t.position(),
+      t       = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
   }
@@ -196,7 +196,7 @@ void RubiksCube::rotate_front(bool ccw) {
   for (unsigned int y = 0; y < 3; y++) {
     for (unsigned int x = 0; x < 3; x++) {
       auto& t = _pieces[2][y][x]->component<geometry::Transform>();
-      t                      = geometry::Transform(rot.matrix() * t.position(),
+      t       = geometry::Transform(rot.matrix() * t.position(),
                               rot * t.orientation().rotation());
     }
   }

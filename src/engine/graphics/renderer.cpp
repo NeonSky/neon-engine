@@ -8,7 +8,6 @@
 #include "system/line_drawer.hpp"
 #include "system/rectangle_renderer.hpp"
 
-
 #include <glad/glad.h>
 
 #include <stack>

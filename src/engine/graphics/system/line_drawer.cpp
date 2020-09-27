@@ -80,6 +80,7 @@ void LineDrawer::clear() {
   _line_queue.clear();
 }
 
+/// @todo Don't create new stuff every update, store refs to the buffers in the component.
 void LineDrawer::update([[maybe_unused]] architecture::ECS& ecs) {
   auto& render_info = ecs.get<component::RenderInfo>(ecs.view<component::RenderInfo>()[0]);
   // auto& ctx         = render_info.context.get();
@@ -97,7 +98,6 @@ void LineDrawer::update([[maybe_unused]] architecture::ECS& ecs) {
         colors.push_back(line_segment.color.rgb());
     }
 
-    // TODO: Don't create new stuff every update, store refs to the buffers in the component.
     unsigned int pos_buffer = 0;
     glGenBuffers(1, &pos_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, pos_buffer);

@@ -25,7 +25,7 @@ namespace engine::graphics::opengl {
     auto vao(unsigned int id) -> GLuint;
     auto is_vao(unsigned int id) -> bool;
 
-    // TODO: change implementation. Buffers are shared between contexts.
+    /// @todo change implementation. Buffers are shared between contexts.
     auto gen_buffer() -> unsigned int;
     auto buffer(unsigned int id) -> GLuint;
 

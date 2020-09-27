@@ -17,7 +17,7 @@ namespace engine::graphics {
   /// @todo render() should maybe have option to not clear/update.
   /// @todo replace opengl contexts with generic contexts containing references to their windows.
   /// @todo rename to RenderSystem
-  /// @TODO Listen to debug callback: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
+  /// @todo Listen to debug callback: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
   class Renderer {
   public:
     Renderer(os::WindowManager& wm);

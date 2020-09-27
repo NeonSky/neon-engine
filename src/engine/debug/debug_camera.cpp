@@ -79,10 +79,11 @@ void DebugCamera::on_key(const os::Window& window, os::KeyCode keycode, os::KeyA
   }
 }
 
+/// @todo Consider keeping (0, 0) in bot-left instead of top-left.
 void DebugCamera::on_mouse_move(const os::Window& window, float xpos, float ypos) {
   // Viewport Space [0:width, 0:height]
   float x = xpos;
-  float y = ((float) window.height()) - ypos; // In OpenGL, (0, 0) is bot-left. We want (0, 0) to be top-left. TODO: Do we?
+  float y = ((float) window.height()) - ypos; // In OpenGL, (0, 0) is bot-left. We want (0, 0) to be top-left.
 
   // Normalized Device Space [-1:1, -1:1, -1:1]
   geometry::Vector<3> ndc(2.0F * (x / (float) window.width()) - 1.0F,

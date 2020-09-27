@@ -9,8 +9,8 @@ RectangleRenderer::RectangleRenderer()
         : _shader(Shader("unicolor.vert", "color.frag")) {}
 
 void RectangleRenderer::update(architecture::ECS& ecs) {
-  auto& render_info          = ecs.get<component::RenderInfo>(ecs.view<component::RenderInfo>()[0]);
-  auto& ctx = render_info.context.get();
+  auto& render_info = ecs.get<component::RenderInfo>(ecs.view<component::RenderInfo>()[0]);
+  auto& ctx         = render_info.context.get();
 
   _shader.use();
 
