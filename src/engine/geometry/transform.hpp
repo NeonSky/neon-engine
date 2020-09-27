@@ -15,7 +15,7 @@ namespace engine::geometry {
   ///
   /// @see https://www.wikiwand.com/en/Transformation_(function)
   /// @see https://www.wikiwand.com/en/Affine_transformation
-  class Transform : public Rigidbody {
+  class Transform final : public Rigidbody {
   public:
     /// @brief Creates the identity transform.
     Transform();

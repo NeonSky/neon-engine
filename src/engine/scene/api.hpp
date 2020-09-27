@@ -19,7 +19,7 @@ namespace engine::scene {
     [[nodiscard]] auto input_manager() const -> const os::InputManager&;
     [[nodiscard]] auto renderer() -> graphics::Renderer&;
 
-    graphics::Camera* camera;
+    graphics::Camera* camera = nullptr;
 
   private:
     std::reference_wrapper<const os::InputManager> _input_manager;

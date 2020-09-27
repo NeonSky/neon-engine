@@ -7,8 +7,8 @@ using namespace engine::graphics::system;
 LineDrawer::LineDrawer()
         : _shader(graphics::Shader("color.vert", "color.frag")) {
 
-  GLfloat width_range[2] = {0.0F, 0.0F};
-  glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, width_range);
+  std::array<GLfloat, 2> width_range{};
+  glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, width_range.data());
   _min_line_width = width_range[0];
   _max_line_width = width_range[1];
 }

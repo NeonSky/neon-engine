@@ -18,7 +18,7 @@ namespace engine::graphics::system {
     graphics::Shader _shader;
     bool _draw_corners = true;
 
-    void compile_cuboid(opengl::Context& ctx, component::Cuboid& cuboid);
+    static void compile_cuboid(opengl::Context& ctx, component::Cuboid& cuboid);
   };
 
 }

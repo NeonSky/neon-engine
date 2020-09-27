@@ -1,15 +1,15 @@
 #pragma once
 
+#include "../architecture/interface.hpp"
+
 #include "api.hpp"
 #include "node.hpp"
 
 namespace engine::scene {
 
-  // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
-  struct IScript {
+  struct IScript : public architecture::Interface {
     IScript();
     IScript(SceneAPI& api, Node& root);
-    virtual ~IScript() = 0;
 
     virtual void update(float delta_time) = 0;
   };
