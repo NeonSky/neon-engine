@@ -58,7 +58,7 @@ namespace engine::geometry {
 
     /// @{
     /// Private state.
-    const Rigidbody _rigidbody;
+    Rigidbody _rigidbody;
     float _width;
     float _height;
 
