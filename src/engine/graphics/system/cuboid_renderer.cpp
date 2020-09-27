@@ -31,7 +31,6 @@ void CuboidRenderer::update(architecture::ECS& ecs) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cuboid.ibo);
 
     auto mvp = render_info.view_projection * ecs.get<component::GlobalTransform>(entity).matrix;
-
     _shader.set_uniform_rgb("color", cuboid.color);
     _shader.set_uniform_mat4("model_view_projection", mvp);
 

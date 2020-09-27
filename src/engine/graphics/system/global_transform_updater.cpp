@@ -18,8 +18,8 @@ void GlobalTransformUpdater::update(architecture::ECS& ecs) {
     ecs.emplace<component::GlobalTransform>(e);
 
   // Keep track of when to pop matrices.
-  std::stack<architecture::EntityID> next_tree_at;
-  next_tree_at.push(architecture::NullEntityID);
+  std::stack<unsigned int> subtree_done_at;
+  subtree_done_at.push(0);
 
   // DFS of scene hierarchy matrices.
   std::stack<geometry::Matrix<4>> matrices;
@@ -30,21 +30,19 @@ void GlobalTransformUpdater::update(architecture::ECS& ecs) {
   dfs.push(architecture::NullEntityID);
   dfs.push(root);
 
-  while (!dfs.empty()) {
+  while (dfs.top() != architecture::NullEntityID) {
     auto cur = dfs.top();
     dfs.pop();
 
-    if (cur == architecture::NullEntityID)
-      break;
-
-    if (cur == next_tree_at.top()) {
+    // while loop because sometimes we finish multiple subtrees at once.
+    while (dfs.size() == subtree_done_at.top()) {
       matrices.pop();
-      next_tree_at.pop();
+      subtree_done_at.pop();
     }
 
     if (auto* c = ecs.try_get<geometry::Transform>(cur); c != nullptr) {
       matrices.push(matrices.top() * c->matrix());
-      next_tree_at.push(dfs.top());
+      subtree_done_at.push(dfs.size() - 1); // Tree will be one less because we pop the next sibling from dfs.
 
       ecs.get<component::GlobalTransform>(cur).matrix = matrices.top();
     }

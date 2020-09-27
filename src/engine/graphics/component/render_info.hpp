@@ -5,9 +5,10 @@
 
 namespace engine::graphics::component {
 
+  /// @todo Make context const?
   struct RenderInfo {
     geometry::Matrix<4> view_projection;
-    std::reference_wrapper<opengl::Context> context; // TODO: Make const?
+    std::reference_wrapper<opengl::Context> context;
   };
 
 }
