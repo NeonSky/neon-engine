@@ -2,8 +2,8 @@
 
 #include "../../architecture/ecs.hpp"
 
+#include "../api/context.hpp"
 #include "../component/cuboid.hpp"
-#include "../opengl/context.hpp"
 #include "../shader.hpp"
 
 namespace engine::graphics::system {
@@ -18,7 +18,7 @@ namespace engine::graphics::system {
     graphics::Shader _shader;
     bool _draw_corners = false;
 
-    static void compile_cuboid(opengl::Context& ctx, component::Cuboid& cuboid);
+    static void compile_cuboid(api::IContext& ctx, component::Cuboid& cuboid);
   };
 
 }
