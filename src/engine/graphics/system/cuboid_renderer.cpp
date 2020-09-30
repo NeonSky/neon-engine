@@ -45,7 +45,7 @@ void CuboidRenderer::update(architecture::ECS& ecs) {
   CHECK_GL_ERROR();
 }
 
-void CuboidRenderer::compile_cuboid(opengl::Context& ctx, component::Cuboid& cuboid) {
+void CuboidRenderer::compile_cuboid(api::IContext& ctx, component::Cuboid& cuboid) {
   cuboid.vao = ctx.gen_vao();
   glBindVertexArray(ctx.vao(cuboid.vao));
 

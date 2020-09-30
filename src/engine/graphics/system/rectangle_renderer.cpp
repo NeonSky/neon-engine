@@ -38,7 +38,7 @@ void RectangleRenderer::update(architecture::ECS& ecs) {
   glBindVertexArray(0);
 }
 
-void RectangleRenderer::compile_rectangle(opengl::Context& ctx, component::Rectangle& rectangle) {
+void RectangleRenderer::compile_rectangle(api::IContext& ctx, component::Rectangle& rectangle) {
   rectangle.vao = ctx.gen_vao();
   glBindVertexArray(ctx.vao(rectangle.vao));
 

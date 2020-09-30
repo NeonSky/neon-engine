@@ -1,8 +1,8 @@
 #include "context.hpp"
 
-#include "../../debug/logger.hpp"
+#include "../../../debug/logger.hpp"
 
-using namespace engine::graphics::opengl;
+using namespace engine::graphics::api::opengl;
 
 unsigned int Context::_vao_count    = 0;
 unsigned int Context::_buffer_count = 0;
@@ -49,27 +49,4 @@ auto Context::vao(unsigned int id) -> GLuint {
 
 auto Context::is_vao(unsigned int id) -> bool {
   return _vao_db.count(id) > 0;
-}
-
-auto Context::gen_buffer() -> unsigned int {
-  GLuint buffer = 0;
-  glGenBuffers(1, &buffer);
-
-  unsigned int id = ++_buffer_count;
-  _buffer_db[id]  = buffer;
-
-  return id;
-}
-
-auto Context::buffer(unsigned int id) -> GLuint {
-  if (id > _buffer_count)
-    LOG_ERROR("Buffer with ID " + std::to_string(id) + " does not exist.");
-
-  if (_buffer_db.count(id) == 0) {
-    GLuint buffer = 0;
-    glGenBuffers(1, &buffer);
-    _buffer_db[id] = buffer;
-  }
-
-  return _buffer_db.find(id)->second;
 }

@@ -2,8 +2,8 @@
 
 #include "../../architecture/ecs.hpp"
 
+#include "../api/context.hpp"
 #include "../component/rectangle.hpp"
-#include "../opengl/context.hpp"
 #include "../shader.hpp"
 
 namespace engine::graphics::system {
@@ -17,7 +17,7 @@ namespace engine::graphics::system {
   private:
     graphics::Shader _shader;
 
-    static void compile_rectangle(opengl::Context& ctx, component::Rectangle& rectangle);
+    static void compile_rectangle(api::IContext& ctx, component::Rectangle& rectangle);
   };
 
 }

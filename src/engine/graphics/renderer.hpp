@@ -2,8 +2,9 @@
 
 #include "../architecture/ecs.hpp"
 
+#include "../geometry/matrix.hpp"
 #include "../os/window_manager.hpp"
-#include "opengl/context.hpp"
+#include "api/context.hpp"
 
 #include <memory>
 #include <vector>
@@ -23,13 +24,13 @@ namespace engine::graphics {
 
     void render(architecture::ECS& ecs, unsigned int window_id, geometry::Matrix<4> view_projection);
 
-    auto current_context() -> opengl::Context&;
+    auto current_context() -> api::IContext&;
     [[nodiscard]] auto context_count() const -> unsigned int;
 
   private:
     os::WindowManager& _wm;
     unsigned int _current_context = 0;
-    std::vector<opengl::Context> _render_contexts;
+    std::vector<std::unique_ptr<api::IContext>> _render_contexts;
     std::vector<std::unique_ptr<architecture::IEntitySystem>> _render_systems;
   };
 };

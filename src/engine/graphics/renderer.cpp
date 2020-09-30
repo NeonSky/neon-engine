@@ -32,7 +32,7 @@ Renderer::Renderer(os::WindowManager& wm)
 
   _wm.on_window_created([this]([[maybe_unused]] unsigned int window_id) {
     _wm.set_render_target(window_id);
-    _render_contexts.emplace_back();
+    _render_contexts.push_back(api::create_context(api::GraphicsAPI::OPENGL));
     _wm.set_render_target(_current_context);
   });
 
@@ -42,7 +42,7 @@ Renderer::Renderer(os::WindowManager& wm)
 
   for (unsigned int i = 0; i < _wm.window_count(); i++) {
     _wm.set_render_target(i);
-    _render_contexts.emplace_back();
+    _render_contexts.push_back(api::create_context(api::GraphicsAPI::OPENGL));
   }
 
   _wm.set_render_target(0);
@@ -75,8 +75,8 @@ void Renderer::render(architecture::ECS& ecs,
   _wm.refresh_target();
 }
 
-auto Renderer::current_context() -> opengl::Context& {
-  return _render_contexts[_current_context];
+auto Renderer::current_context() -> api::IContext& {
+  return *_render_contexts[_current_context];
 }
 
 auto Renderer::context_count() const -> unsigned int {
