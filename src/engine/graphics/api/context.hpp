@@ -21,6 +21,4 @@ namespace engine::graphics::api {
   /// @brief Creates a new graphics context that uses the graphics API specified by \p api.
   auto create_context(GraphicsAPI api) -> std::unique_ptr<IContext>;
 
-  int test();
-
 }

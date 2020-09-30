@@ -15,9 +15,8 @@ namespace engine::graphics {
   ///
   /// @todo render() should take a list of window targets so it can call renderable.render() once and then copy the pixels/result to all windows.
   /// @todo render() should maybe have option to not clear/update.
-  /// @todo replace opengl contexts with generic contexts containing references to their windows.
+  /// @todo have the generic contexts contain references to their windows.
   /// @todo rename to RenderSystem
-  /// @todo Listen to debug callback: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glDebugMessageCallback.xhtml
   class Renderer {
   public:
     Renderer(os::WindowManager& wm);

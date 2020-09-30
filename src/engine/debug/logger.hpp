@@ -2,7 +2,6 @@
 
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include "spdlog/spdlog.h"
-#include <glad/glad.h>
 #include <stdexcept>
 
 #include <sstream>
@@ -22,11 +21,6 @@
     SPDLOG_CRITICAL(__VA_ARGS__);          \
     throw std::runtime_error(__VA_ARGS__); \
   }
-
-auto checkGLError(const char* file, int line) -> bool;
-
-#define CHECK_GL_ERROR() \
-  { checkGLError(__FILE__, __LINE__); }
 
 inline auto ADDRESS(const void* ptr) -> std::string {
   std::stringstream ss;

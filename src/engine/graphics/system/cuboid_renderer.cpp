@@ -9,8 +9,6 @@ CuboidRenderer::CuboidRenderer()
         : _shader(Shader("unicolor.vert", "color.frag")) {}
 
 void CuboidRenderer::update(architecture::ECS& ecs) {
-  CHECK_GL_ERROR();
-
   auto& render_info = ecs.get<component::RenderInfo>(ecs.view<component::RenderInfo>()[0]);
   auto& ctx         = render_info.context.get();
 
@@ -42,7 +40,6 @@ void CuboidRenderer::update(architecture::ECS& ecs) {
   }
 
   glBindVertexArray(0);
-  CHECK_GL_ERROR();
 }
 
 void CuboidRenderer::compile_cuboid(api::IContext& ctx, component::Cuboid& cuboid) {
