@@ -9,19 +9,12 @@
 
 using namespace engine::graphics;
 
-/// @todo Convert to member variables.
-bool firstMouse = true;
-float lastX;
-float lastY;
-float yaw   = 0.0F;
-float pitch = 0.0F;
-
 Camera::Camera() : Camera(geometry::Rigidbody()) {}
 Camera::Camera(geometry::Rigidbody rigidbody)
         : _rigidbody(std::move(std::move(rigidbody))) {
 
-  yaw   = _rigidbody.orientation().rotation().yaw().radians();
-  pitch = _rigidbody.orientation().rotation().pitch().radians();
+  _yaw   = _rigidbody.orientation().rotation().yaw().radians();
+  _pitch = _rigidbody.orientation().rotation().pitch().radians();
 }
 
 auto Camera::rigidbody() -> geometry::Rigidbody& {
@@ -61,27 +54,27 @@ void Camera::set_zoom(float zoom_level) {
 }
 
 void Camera::lookat_mouse(float mouse_xpos, float mouse_ypos) {
-  if (firstMouse) {
-    lastX      = mouse_xpos;
-    lastY      = mouse_ypos;
-    firstMouse = false;
+  if (_firstMouse) {
+    _lastX      = mouse_xpos;
+    _lastY      = mouse_ypos;
+    _firstMouse = false;
   }
 
-  float xoffset = mouse_xpos - lastX;
-  float yoffset = mouse_ypos - lastY;
-  lastX         = mouse_xpos;
-  lastY         = mouse_ypos;
+  float xoffset = mouse_xpos - _lastX;
+  float yoffset = mouse_ypos - _lastY;
+  _lastX        = mouse_xpos;
+  _lastY        = mouse_ypos;
 
   float sensitivity = 0.003F;
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
-  yaw -= xoffset;
-  pitch += yoffset;
+  _yaw -= xoffset;
+  _pitch += yoffset;
 
-  pitch = std::clamp(pitch, -geometry::pi / 2.0F, geometry::pi / 2.0F);
+  _pitch = std::clamp(_pitch, -geometry::pi / 2.0F, geometry::pi / 2.0F);
 
-  _rigidbody.orientation().rotation() = geometry::Rotation(pitch, yaw, 0.0F, geometry::Angle::Unit::RADIANS);
+  _rigidbody.orientation().rotation() = geometry::Rotation(_pitch, _yaw, 0.0F, geometry::Angle::Unit::RADIANS);
 }
 
 auto Camera::view_matrix() const -> geometry::Matrix<4> {
