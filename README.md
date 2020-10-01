@@ -4,6 +4,10 @@
 
 ![](docs/screenshots/rubik_scene.gif)
 
+### Support for multiple windows
+
+![](docs/screenshots/multiple_windows.png)
+
 ## Getting Started
 
 ```
