@@ -9,5 +9,9 @@ before_install:
 script:
   - make docker-linter-run
 
+branches:
+  only:
+    - master
+
 notifications:
   email: false
