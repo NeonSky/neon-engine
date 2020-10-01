@@ -549,11 +549,13 @@ namespace engine::geometry {
   // Local Functions //
   /////////////////////
 
+  /// @brief The vector \p rhs scaled by the coefficient \p lhs.
   template <unsigned int N, bool U>
   auto operator*(float lhs, const Vector<N, U>& rhs) -> Vector<N> {
     return rhs * lhs;
   }
 
+  /// @brief UnitVector<N> is a shorthand for Vector<N, true>.
   template <unsigned int N>
   using UnitVector = Vector<N, true>;
 }

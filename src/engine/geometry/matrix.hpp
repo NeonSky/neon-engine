@@ -261,8 +261,9 @@ namespace engine::geometry {
         _elements[r][c] = other[r][c];
   }
 
-  template <unsigned int R, unsigned int C, bool U>
-  static auto outer_product(Vector<R, U> lhs, Vector<C, U> rhs) -> Matrix<R, C> {
+  template <unsigned int R, unsigned int C>
+  template <bool U>
+  auto Matrix<R, C>::outer_product(Vector<R, U> lhs, Vector<C, U> rhs) -> Matrix<R, C> {
     Matrix<R, C> matrix;
     for (unsigned int r = 0; r < R; r++)
       for (unsigned int c = 0; c < C; c++)
