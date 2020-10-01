@@ -21,10 +21,10 @@ namespace engine::graphics::api::opengl {
     Context();
 
     /// @todo Support generating multiple vaos in one call
-    auto gen_vao() -> unsigned int;
+    auto gen_vao() -> unsigned int override;
     /// @todo Don't expose GLuint. Have them bind through us instead.
     auto vao(unsigned int id) -> GLuint override;
-    auto is_vao(unsigned int id) -> bool;
+    auto is_vao(unsigned int id) -> bool override;
 
   private:
     static unsigned int _vao_count;
