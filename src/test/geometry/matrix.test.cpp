@@ -536,7 +536,7 @@ TEST(MatrixTest, OuterProduct1) {
   Matrix<2> expected{
     {0.5F, 1.5F},
     {1.0F, 3.0F}};
-  EXPECT_EQ(outer_product(vector1, vector2), expected);
+  EXPECT_EQ(Matrix<2>::outer_product(vector1, vector2), expected);
 }
 
 TEST(MatrixTest, OuterProduct2) {
@@ -547,7 +547,7 @@ TEST(MatrixTest, OuterProduct2) {
     {8.0F, 10.0F},
     {12.0F, 15.0F},
   };
-  EXPECT_EQ(outer_product(vector1, vector2), expected);
+  EXPECT_EQ((Matrix<3, 2>::outer_product(vector1, vector2)), expected);
 }
 
 TEST(MatrixTest, SwapsRows1) {
