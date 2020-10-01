@@ -76,6 +76,12 @@ namespace engine::graphics {
     float _movement_speed = 0.5F;
     float _rotation_speed = 0.1F;
 
+    bool _firstMouse = true;
+    float _lastX     = 0.0F;
+    float _lastY     = 0.0F;
+    float _yaw       = 0.0F;
+    float _pitch     = 0.0F;
+
     [[nodiscard]] auto perspective_projection_matrix() const -> geometry::Matrix<4>;
     [[nodiscard]] auto orthographic_projection_matrix() const -> geometry::Matrix<4>;
   };
