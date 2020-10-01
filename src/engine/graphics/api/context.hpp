@@ -8,9 +8,9 @@ namespace engine::graphics::api {
 
   /// @todo Create VAO class.
   struct IContext : public architecture::Interface {
-    virtual unsigned int gen_vao()            = 0;
-    virtual unsigned int vao(unsigned int id) = 0;
-    virtual bool is_vao(unsigned int id)      = 0;
+    virtual auto gen_vao() -> unsigned int            = 0;
+    virtual auto vao(unsigned int id) -> unsigned int = 0;
+    virtual auto is_vao(unsigned int id) -> bool      = 0;
   };
 
   enum class GraphicsAPI {
