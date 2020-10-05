@@ -34,6 +34,8 @@ namespace engine::graphics::api::vulkan {
     SwapChainSupportDetails query_swap_chain_support(VkSurfaceKHR surface);
     SwapChainSupportDetails query_swap_chain_support(VkPhysicalDevice device, VkSurfaceKHR surface);
 
+    uint32_t find_memory_type(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
     VkFormatProperties format_properties(VkFormat format);
     VkPhysicalDeviceMemoryProperties memory_properties();
 

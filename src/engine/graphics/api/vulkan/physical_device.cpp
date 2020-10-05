@@ -100,6 +100,16 @@ SwapChainSupportDetails PhysicalDevice::query_swap_chain_support(VkPhysicalDevic
   return details;
 }
 
+uint32_t PhysicalDevice::find_memory_type(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+  VkPhysicalDeviceMemoryProperties mem_properties = memory_properties();
+
+  for (uint32_t i = 0; i < mem_properties.memoryTypeCount; i++)
+    if ((typeFilter & (1 << i)) && (mem_properties.memoryTypes[i].propertyFlags & properties) == properties)
+      return i;
+
+  LOG_ERROR("Failed to find suitable memory type.");
+}
+
 VkFormatProperties PhysicalDevice::format_properties(VkFormat format) {
   VkFormatProperties properties;
   vkGetPhysicalDeviceFormatProperties(_device, format, &properties);

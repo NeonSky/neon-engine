@@ -1,20 +1,16 @@
 #pragma once
 
+#include "buffer.hpp"
 #include "debug_messenger.hpp"
 #include "obj_model.hpp"
 #include "physical_device.hpp"
+#include "queue.hpp"
+#include "vertex_buffer.hpp"
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
 #include <GLFW/glfw3.h>
-
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/hash.hpp>
 
 #include <algorithm>
 #include <array>
@@ -40,6 +36,8 @@ namespace engine::graphics::api::vulkan {
     std::unique_ptr<PhysicalDevice> _physical_device;
     std::unique_ptr<DebugMessenger> _debug_messenger;
     std::unique_ptr<OBJModel> _viking_room;
+    std::unique_ptr<VertexBuffer> _vertex_buffer;
+    std::unique_ptr<Queue> _graphics_queue;
 
     GLFWwindow* window;
     GLFWwindow* window2;
@@ -48,10 +46,9 @@ namespace engine::graphics::api::vulkan {
     VkSurfaceKHR surface;
     VkSurfaceKHR surface2;
 
-    // VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     VkDevice device;
 
-    VkQueue graphicsQueue;
+    // VkQueue graphicsQueue;
     VkQueue presentQueue;
 
     VkSwapchainKHR swapChain;
@@ -79,8 +76,8 @@ namespace engine::graphics::api::vulkan {
     VkImageView textureImageView;
     VkSampler textureSampler;
 
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
+    // VkBuffer vertexBuffer;
+    // VkDeviceMemory vertexBufferMemory;
     VkBuffer indexBuffer;
     VkDeviceMemory indexBufferMemory;
 
@@ -175,7 +172,7 @@ namespace engine::graphics::api::vulkan {
 
     void createDescriptorSets();
 
-    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+    // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
     VkCommandBuffer beginSingleTimeCommands();
 
