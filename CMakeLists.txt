@@ -19,6 +19,8 @@ find_package(spdlog 1.4.2 CONFIG REQUIRED)
 find_package(nlohmann_json 3.7.3 CONFIG REQUIRED)
 find_package(EnTT 3.4.0 CONFIG REQUIRED)
 find_package(GTest 1.10.0 CONFIG REQUIRED)
+find_package(tinyobjloader CONFIG REQUIRED)
+# find_package(Vulkan CONFIG REQUIRED)
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
@@ -31,7 +33,8 @@ add_subdirectory("src/vendor")
 # Configure executable.
 file(GLOB_RECURSE src_files "src/engine/*.c" "src/engine/*.h" "src/engine/*.cpp" "src/engine/*.hpp")
 add_library(Engine "${src_files}")
-target_compile_options(Engine PUBLIC -Werror -Wall -Wextra)
+# target_compile_options(Engine PUBLIC -Werror -Wall -Wextra)
+target_link_libraries(Engine PUBLIC -lvulkan)
 file(COPY "res" DESTINATION ".")
 
 # Code coverage
@@ -48,6 +51,7 @@ target_link_libraries(Engine PUBLIC spdlog::spdlog spdlog::spdlog_header_only)
 target_link_libraries(Engine PUBLIC ssl)
 target_link_libraries(Engine PUBLIC crypto)
 target_link_libraries(Engine PUBLIC EnTT::EnTT)
+target_link_libraries(Engine PUBLIC tinyobjloader::tinyobjloader)
 
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
