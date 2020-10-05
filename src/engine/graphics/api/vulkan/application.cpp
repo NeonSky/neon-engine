@@ -96,7 +96,8 @@ void Application::initVulkan() {
   _viking_room = std::make_unique<OBJModel>(MODEL_PATH);
   // createVertexBuffer();
   _vertex_buffer = std::make_unique<VertexBuffer>(*_physical_device, device, _viking_room->vertices(), *_graphics_queue, commandPool);
-  createIndexBuffer();
+  // createIndexBuffer();
+  _index_buffer = std::make_unique<IndexBuffer>(*_physical_device, device, _viking_room->indices(), *_graphics_queue, commandPool);
   createUniformBuffers();
   createDescriptorPool();
   createDescriptorSets();
@@ -191,12 +192,6 @@ void Application::cleanup() {
 
   vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 
-  vkDestroyBuffer(device, indexBuffer, nullptr);
-  vkFreeMemory(device, indexBufferMemory, nullptr);
-
-  // vkDestroyBuffer(device, vertexBuffer, nullptr);
-  // vkFreeMemory(device, vertexBufferMemory, nullptr);
-
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
     vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
     vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
@@ -207,10 +202,8 @@ void Application::cleanup() {
 
   vkDestroyDevice(device, nullptr);
 
-  if (enableValidationLayers) {
-    // DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+  if (enableValidationLayers)
     _debug_messenger.reset();
-  }
 
   vkDestroySurfaceKHR(instance, surface, nullptr);
   vkDestroySurfaceKHR(instance, surface2, nullptr);
@@ -880,26 +873,6 @@ void Application::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
   endSingleTimeCommands(commandBuffer);
 }
 
-void Application::createIndexBuffer() {
-  VkDeviceSize bufferSize = sizeof(_viking_room->indices()[0]) * _viking_room->indices().size();
-
-  VkBuffer stagingBuffer;
-  VkDeviceMemory stagingBufferMemory;
-  create_buffer(*_physical_device, device, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-  void* data;
-  vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-  memcpy(data, _viking_room->indices().data(), (size_t) bufferSize);
-  vkUnmapMemory(device, stagingBufferMemory);
-
-  create_buffer(*_physical_device, device, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
-
-  copyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-  vkDestroyBuffer(device, stagingBuffer, nullptr);
-  vkFreeMemory(device, stagingBufferMemory, nullptr);
-}
-
 void Application::createUniformBuffers() {
   VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
@@ -1062,7 +1035,7 @@ void Application::createCommandBuffers() {
     VkDeviceSize offsets[]   = {0};
     vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    _index_buffer->bind(commandBuffers[i]);
 
     vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 

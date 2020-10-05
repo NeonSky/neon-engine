@@ -2,6 +2,7 @@
 
 #include "buffer.hpp"
 #include "debug_messenger.hpp"
+#include "index_buffer.hpp"
 #include "obj_model.hpp"
 #include "physical_device.hpp"
 #include "queue.hpp"
@@ -37,6 +38,7 @@ namespace engine::graphics::api::vulkan {
     std::unique_ptr<DebugMessenger> _debug_messenger;
     std::unique_ptr<OBJModel> _viking_room;
     std::unique_ptr<VertexBuffer> _vertex_buffer;
+    std::unique_ptr<IndexBuffer> _index_buffer;
     std::unique_ptr<Queue> _graphics_queue;
 
     GLFWwindow* window;
@@ -75,11 +77,6 @@ namespace engine::graphics::api::vulkan {
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
     VkSampler textureSampler;
-
-    // VkBuffer vertexBuffer;
-    // VkDeviceMemory vertexBufferMemory;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
 
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;
