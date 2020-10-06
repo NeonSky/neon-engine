@@ -77,7 +77,9 @@ void Application::framebufferResizeCallback2(GLFWwindow* window, int width, int 
 void Application::initVulkan() {
   createInstance();
   setupDebugMessenger();
-  createSurface();
+  // createSurface();
+  _surface  = std::make_unique<Surface>(instance, window);
+  _surface2 = std::make_unique<Surface>(instance, window2);
   // pickPhysicalDevice();
   _physical_device = std::make_unique<PhysicalDevice>(instance);
   createLogicalDevice();
@@ -106,17 +108,18 @@ void Application::initVulkan() {
 
   if (use_multiple_windows) {
     std::swap(window, window2);
-    std::swap(surface, surface2);
+    std::swap(_surface, _surface2);
     std::swap(swapChain, swapChain2);
 
-    createSurface();
+    // createSurface();
+    _surface = std::make_unique<Surface>(instance, window);
     createSwapChain();
     createImageViews();
     createFramebuffers();
     createCommandBuffers();
 
     std::swap(window, window2);
-    std::swap(surface, surface2);
+    std::swap(_surface, _surface2);
     std::swap(swapChain, swapChain2);
   }
 }
@@ -124,7 +127,7 @@ void Application::initVulkan() {
 void Application::swap_windows() {
   std::swap(swapChain, swapChain2);
 
-  SwapChainSupportDetails swapChainSupport = _physical_device->query_swap_chain_support(surface);
+  SwapChainSupportDetails swapChainSupport = _physical_device->query_swap_chain_support(_surface->surface());
 
   uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
   if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
@@ -205,8 +208,10 @@ void Application::cleanup() {
   if (enableValidationLayers)
     _debug_messenger.reset();
 
-  vkDestroySurfaceKHR(instance, surface, nullptr);
-  vkDestroySurfaceKHR(instance, surface2, nullptr);
+  _surface.reset();
+  _surface2.reset();
+  // vkDestroySurfaceKHR(instance, surface, nullptr);
+  // vkDestroySurfaceKHR(instance, surface2, nullptr);
   vkDestroyInstance(instance, nullptr);
 
   glfwDestroyWindow(window);
@@ -291,27 +296,10 @@ void Application::setupDebugMessenger() {
     return;
 
   _debug_messenger = std::make_unique<DebugMessenger>(instance);
-
-  // VkDebugUtilsMessengerCreateInfoEXT createInfo;
-  // populateDebugMessengerCreateInfo(createInfo);
-
-  // if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-  //   throw std::runtime_error("failed to set up debug messenger!");
-  // }
-}
-
-void Application::createSurface() {
-  if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
-    throw std::runtime_error("failed to create window surface!");
-  }
-
-  // if (glfwCreateWindowSurface(instance, window2, nullptr, &surface2) != VK_SUCCESS) {
-  //   throw std::runtime_error("failed to create window surface!");
-  // }
 }
 
 void Application::createLogicalDevice() {
-  QueueFamilyIndices indices = _physical_device->find_queue_families(surface);
+  QueueFamilyIndices indices = _physical_device->find_queue_families(_surface->surface());
 
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
   std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
@@ -355,7 +343,7 @@ void Application::createLogicalDevice() {
 }
 
 void Application::createSwapChain() {
-  SwapChainSupportDetails swapChainSupport = _physical_device->query_swap_chain_support(surface);
+  SwapChainSupportDetails swapChainSupport = _physical_device->query_swap_chain_support(_surface->surface());
 
   VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
   VkPresentModeKHR presentMode     = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -368,7 +356,7 @@ void Application::createSwapChain() {
 
   VkSwapchainCreateInfoKHR createInfo{};
   createInfo.sType   = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-  createInfo.surface = surface;
+  createInfo.surface = _surface->surface();
 
   createInfo.minImageCount    = imageCount;
   createInfo.imageFormat      = surfaceFormat.format;
@@ -377,7 +365,7 @@ void Application::createSwapChain() {
   createInfo.imageArrayLayers = 1;
   createInfo.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-  QueueFamilyIndices indices    = _physical_device->find_queue_families(surface);
+  QueueFamilyIndices indices    = _physical_device->find_queue_families(_surface->surface());
   uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
 
   if (indices.graphicsFamily != indices.presentFamily) {
@@ -648,7 +636,7 @@ void Application::createFramebuffers() {
 }
 
 void Application::createCommandPool() {
-  QueueFamilyIndices queueFamilyIndices = _physical_device->find_queue_families(surface);
+  QueueFamilyIndices queueFamilyIndices = _physical_device->find_queue_families(_surface->surface());
 
   VkCommandPoolCreateInfo poolInfo{};
   poolInfo.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
