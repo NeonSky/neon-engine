@@ -78,8 +78,7 @@ void Application::initVulkan() {
   createInstance();
   setupDebugMessenger();
   // createSurface();
-  _surface  = std::make_unique<Surface>(instance, window);
-  _surface2 = std::make_unique<Surface>(instance, window2);
+  _surface = std::make_unique<Surface>(instance, window);
   // pickPhysicalDevice();
   _physical_device = std::make_unique<PhysicalDevice>(instance);
   createLogicalDevice();
@@ -338,8 +337,9 @@ void Application::createLogicalDevice() {
   device = _physical_device->create_logical_device(createInfo);
 
   _graphics_queue = std::make_unique<Queue>(device, indices.graphicsFamily.value());
+  _present_queue  = std::make_unique<Queue>(device, indices.presentFamily.value());
   // vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
-  vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+  // vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
 void Application::createSwapChain() {
@@ -1132,7 +1132,8 @@ void Application::drawFrame() {
 
   presentInfo.pImageIndices = &imageIndex;
 
-  result = vkQueuePresentKHR(presentQueue, &presentInfo);
+  result = _present_queue->present(presentInfo);
+  // result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized || framebufferResized2) {
     // std::cout << "RESIZED" << std::endl;

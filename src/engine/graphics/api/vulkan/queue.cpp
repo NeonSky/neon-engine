@@ -17,3 +17,7 @@ void Queue::submit(VkSubmitInfo& submit_info, VkFence fence) {
 void Queue::wait_until_idle() {
   vkQueueWaitIdle(_queue);
 }
+
+VkResult Queue::present(VkPresentInfoKHR& present_info) {
+  return vkQueuePresentKHR(_queue, &present_info);
+}

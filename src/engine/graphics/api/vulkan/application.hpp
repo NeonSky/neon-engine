@@ -41,6 +41,7 @@ namespace engine::graphics::api::vulkan {
     std::unique_ptr<VertexBuffer> _vertex_buffer;
     std::unique_ptr<IndexBuffer> _index_buffer;
     std::unique_ptr<Queue> _graphics_queue;
+    std::unique_ptr<Queue> _present_queue;
     std::unique_ptr<Surface> _surface;
     std::unique_ptr<Surface> _surface2;
 
@@ -50,9 +51,6 @@ namespace engine::graphics::api::vulkan {
     VkInstance instance;
 
     VkDevice device;
-
-    // VkQueue graphicsQueue;
-    VkQueue presentQueue;
 
     VkSwapchainKHR swapChain;
     std::vector<VkImage> swapChainImages;
