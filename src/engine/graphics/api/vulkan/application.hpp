@@ -55,14 +55,8 @@ namespace engine::graphics::api::vulkan {
 
     VkDevice device;
 
-    // VkSwapchainKHR swapChain;
-    // std::vector<VkImage> swapChainImages;
-    // VkFormat swapChainImageFormat;
-    // VkExtent2D swapChainExtent;
     std::vector<VkImageView>* swapChainImageViews;
     std::vector<VkFramebuffer>* swapChainFramebuffers;
-
-    // VkSwapchainKHR swapChain2;
 
     VkRenderPass renderPass;
     VkDescriptorSetLayout descriptorSetLayout;
@@ -123,7 +117,6 @@ namespace engine::graphics::api::vulkan {
     std::vector<VkFence> inFlightFences2;
     std::vector<VkFence> imagesInFlight2;
 
-    // bool swap_chains_flipped = false;
     bool framebufferResized  = false;
     bool framebufferResized2 = false;
 
@@ -202,8 +195,6 @@ namespace engine::graphics::api::vulkan {
     void createDescriptorPool();
 
     void createDescriptorSets();
-
-    // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
     VkCommandBuffer beginSingleTimeCommands();
 

@@ -17,7 +17,6 @@ using namespace engine::graphics::api::vulkan;
 const uint32_t WIDTH      = 800;
 const uint32_t HEIGHT     = 600;
 bool use_multiple_windows = true;
-// bool use_multiple_windows = false;
 
 const std::string MODEL_PATH   = "res/models/viking_room.obj";
 const std::string TEXTURE_PATH = "res/img/viking_room.png";
@@ -78,19 +77,15 @@ void Application::framebufferResizeCallback2(GLFWwindow* window, int width, int 
 void Application::initVulkan() {
   createInstance();
   setupDebugMessenger();
-  // createSurface();
-  _surface = std::make_unique<Surface>(instance, window);
-  // pickPhysicalDevice();
+  _surface         = std::make_unique<Surface>(instance, window);
   _physical_device = std::make_unique<PhysicalDevice>(instance);
   createLogicalDevice();
 
-  // createSwapChain();
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
   VkExtent2D target_extent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
   _swap_chain              = std::make_unique<SwapChain>(*_physical_device, device, *_surface, target_extent);
 
-  // createImageViews();
   _swap_chain->update_image_views();
   swapChainImageViews   = &_swap_chain->image_views();
   swapChainFramebuffers = &_swap_chain->framebuffers();
@@ -122,7 +117,6 @@ void Application::initVulkan() {
     target_extent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
     _swap_chain   = std::make_unique<SwapChain>(*_physical_device, device, *_surface, target_extent);
 
-    // createImageViews();
     _swap_chain->update_image_views();
     swapChainImageViews   = &_swap_chain->image_views();
     swapChainFramebuffers = &_swap_chain->framebuffers();
@@ -136,9 +130,6 @@ void Application::initVulkan() {
     createTextureImage();
     createTextureImageView();
     createTextureSampler();
-    // _viking_room   = std::make_unique<OBJModel>(MODEL_PATH);
-    // _vertex_buffer = std::make_unique<VertexBuffer>(*_physical_device, device, _viking_room->vertices(), *_graphics_queue, commandPool);
-    // _index_buffer  = std::make_unique<IndexBuffer>(*_physical_device, device, _viking_room->indices(), *_graphics_queue, commandPool);
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSets();
@@ -191,11 +182,7 @@ void Application::swap_windows() {
   swapChainImageViews   = &_swap_chain->image_views();
   swapChainFramebuffers = &_swap_chain->framebuffers();
 
-  // _swap_chain->test1();
   vkDeviceWaitIdle(device);
-
-  // createFramebuffers();
-  // createCommandBuffers();
 }
 
 void Application::onSwapChainDestroyed() {
@@ -233,78 +220,43 @@ void Application::mainLoop() {
   vkDeviceWaitIdle(device);
 }
 
-// void Application::cleanupSwapChain() {
-//   vkDestroyImageView(device, depthImageView, nullptr);
-//   vkDestroyImage(device, depthImage, nullptr);
-//   vkFreeMemory(device, depthImageMemory, nullptr);
-
-//   for (auto framebuffer : swapChainFramebuffers) {
-//     vkDestroyFramebuffer(device, framebuffer, nullptr);
-//   }
-
-//   vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
-
-//   vkDestroyPipeline(device, graphicsPipeline, nullptr);
-//   vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-//   vkDestroyRenderPass(device, renderPass, nullptr);
-
-//   for (auto imageView : swapChainImageViews) {
-//     vkDestroyImageView(device, imageView, nullptr);
-//   }
-
-//   vkDestroySwapchainKHR(device, swapChain, nullptr);
-
-//   for (size_t i = 0; i < _swap_chain->size(); i++) {
-//     vkDestroyBuffer(device, uniformBuffers[i], nullptr);
-//     vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
-//   }
-
-//   vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-// }
-
 void Application::cleanup() {
-  onSwapChainDestroyed();
-  if (use_multiple_windows) {
-    _swap_chain2->test1();
-    _swap_chain2->test2();
+  for (int i = 0; i < 2; i++) {
+    onSwapChainDestroyed();
+    _swap_chain.reset();
+
+    vkDestroySampler(device, textureSampler, nullptr);
+    vkDestroyImageView(device, textureImageView, nullptr);
+
+    vkDestroyImage(device, textureImage, nullptr);
+    vkFreeMemory(device, textureImageMemory, nullptr);
+
+    vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+
+    _index_buffer.reset();
+    _vertex_buffer.reset();
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+      vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+      vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+      vkDestroyFence(device, inFlightFences[i], nullptr);
+    }
+
+    vkDestroyCommandPool(device, commandPool, nullptr);
+
+    if (enableValidationLayers)
+      _debug_messenger.reset();
+
+    _surface.reset();
+    glfwDestroyWindow(window);
+
+    swap_windows();
   }
-  _swap_chain.reset();
-  _swap_chain2.reset();
-
-  vkDestroySampler(device, textureSampler, nullptr);
-  vkDestroyImageView(device, textureImageView, nullptr);
-
-  vkDestroyImage(device, textureImage, nullptr);
-  vkFreeMemory(device, textureImageMemory, nullptr);
-
-  vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-
-  _index_buffer.reset();
-  _vertex_buffer.reset();
-
-  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-    vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-    vkDestroyFence(device, inFlightFences[i], nullptr);
-  }
-
-  vkDestroyCommandPool(device, commandPool, nullptr);
-
-  vkDestroyDevice(device, nullptr);
-
-  if (enableValidationLayers)
-    _debug_messenger.reset();
-
-  _surface.reset();
-  _surface2.reset();
-
-  vkDestroyInstance(instance, nullptr);
-
-  glfwDestroyWindow(window);
-  if (use_multiple_windows)
-    glfwDestroyWindow(window2);
 
   glfwTerminate();
+
+  vkDestroyDevice(device, nullptr);
+  vkDestroyInstance(instance, nullptr);
 }
 
 void Application::recreateSwapChain() {
@@ -1175,8 +1127,6 @@ void Application::drawFrame() {
 
     swap_windows();
     recreateSwapChain();
-    // onSwapChainDestroyed();
-    // _swap_chain.reset();
     swap_windows();
 
     framebufferResized  = false;
