@@ -7,6 +7,7 @@
 #include "physical_device.hpp"
 #include "queue.hpp"
 #include "surface.hpp"
+#include "swap_chain.hpp"
 #include "vertex_buffer.hpp"
 
 #include <vulkan/vulkan.h>
@@ -44,6 +45,8 @@ namespace engine::graphics::api::vulkan {
     std::unique_ptr<Queue> _present_queue;
     std::unique_ptr<Surface> _surface;
     std::unique_ptr<Surface> _surface2;
+    std::unique_ptr<SwapChain> _swap_chain;
+    std::unique_ptr<SwapChain> _swap_chain2;
 
     GLFWwindow* window;
     GLFWwindow* window2;
@@ -52,14 +55,14 @@ namespace engine::graphics::api::vulkan {
 
     VkDevice device;
 
-    VkSwapchainKHR swapChain;
-    std::vector<VkImage> swapChainImages;
-    VkFormat swapChainImageFormat;
-    VkExtent2D swapChainExtent;
-    std::vector<VkImageView> swapChainImageViews;
-    std::vector<VkFramebuffer> swapChainFramebuffers;
+    // VkSwapchainKHR swapChain;
+    // std::vector<VkImage> swapChainImages;
+    // VkFormat swapChainImageFormat;
+    // VkExtent2D swapChainExtent;
+    std::vector<VkImageView>* swapChainImageViews;
+    std::vector<VkFramebuffer>* swapChainFramebuffers;
 
-    VkSwapchainKHR swapChain2;
+    // VkSwapchainKHR swapChain2;
 
     VkRenderPass renderPass;
     VkDescriptorSetLayout descriptorSetLayout;
@@ -91,6 +94,36 @@ namespace engine::graphics::api::vulkan {
     std::vector<VkFence> imagesInFlight;
     size_t currentFrame = 0;
 
+    VkRenderPass renderPass2;
+    VkDescriptorSetLayout descriptorSetLayout2;
+    VkPipelineLayout pipelineLayout2;
+    VkPipeline graphicsPipeline2;
+
+    VkCommandPool commandPool2;
+
+    VkImage depthImage2;
+    VkDeviceMemory depthImageMemory2;
+    VkImageView depthImageView2;
+
+    VkImage textureImage2;
+    VkDeviceMemory textureImageMemory2;
+    VkImageView textureImageView2;
+    VkSampler textureSampler2;
+
+    std::vector<VkBuffer> uniformBuffers2;
+    std::vector<VkDeviceMemory> uniformBuffersMemory2;
+
+    VkDescriptorPool descriptorPool2;
+    std::vector<VkDescriptorSet> descriptorSets2;
+
+    std::vector<VkCommandBuffer> commandBuffers2;
+
+    std::vector<VkSemaphore> imageAvailableSemaphores2;
+    std::vector<VkSemaphore> renderFinishedSemaphores2;
+    std::vector<VkFence> inFlightFences2;
+    std::vector<VkFence> imagesInFlight2;
+
+    // bool swap_chains_flipped = false;
     bool framebufferResized  = false;
     bool framebufferResized2 = false;
 
@@ -103,6 +136,8 @@ namespace engine::graphics::api::vulkan {
     void mainLoop();
 
     void cleanupSwapChain();
+
+    void onSwapChainDestroyed();
 
     void cleanup();
 
