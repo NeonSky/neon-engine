@@ -23,6 +23,8 @@ WindowManager::WindowManager()
   glfwSetErrorCallback([](int error_code, const char* description) {
     LOG_WARNING("GLFW error (code " + std::to_string(error_code) + "): " + description);
   });
+
+  // NOTE: Additional calls to glfwInit() after successful initialization but before termination will return GLFW_TRUE immediately.
   if (glfwInit() == GLFW_FALSE)
     LOG_CRITICAL("Failed to initialize GLFW.");
 

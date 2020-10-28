@@ -1,6 +1,8 @@
 #include "window.hpp"
 #include "../debug/logger.hpp"
 
+#include <glad/glad.h>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -26,6 +28,10 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
           _width(width),
           _height(height),
           _clear_color(0.2F, 0.2F, 0.2F, 1.0F) {
+
+  // NOTE: Additional calls to glfwInit() after successful initialization but before termination will return GLFW_TRUE immediately.
+  if (glfwInit() == GLFW_FALSE)
+    LOG_CRITICAL("Failed to initialize GLFW.");
 
   GLFWwindow* glfw_window_parent = nullptr;
   if (parent != nullptr)

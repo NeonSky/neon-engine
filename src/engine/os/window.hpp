@@ -1,10 +1,11 @@
 #pragma once
 
+#include "iwindow.hpp"
+
 #include "../geometry/vector.hpp"
 #include "input.hpp"
 
-#include <glad/glad.h>
-
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <functional>
 #include <vector>
@@ -13,7 +14,7 @@ namespace engine::os {
 
   /// @todo title should be std::string
   /// @todo clear_color should be graphics::color
-  class Window {
+  class Window : public IWindow {
   public:
     Window();
     Window(unsigned int width, unsigned int height);
@@ -39,10 +40,10 @@ namespace engine::os {
     void on_mouse_scroll(const std::function<void(float, float)>& callback) const;
 
     // Accessors
-    [[nodiscard]] auto title() const -> std::string;
-    [[nodiscard]] auto is_closing() const -> bool;
-    [[nodiscard]] auto width() const -> unsigned int;
-    [[nodiscard]] auto height() const -> unsigned int;
+    [[nodiscard]] auto title() const -> std::string override;
+    [[nodiscard]] auto is_closing() const -> bool override;
+    [[nodiscard]] auto width() const -> unsigned int override;
+    [[nodiscard]] auto height() const -> unsigned int override;
 
     [[nodiscard]] auto is_key_down(KeyCode keycode) const -> bool;
 

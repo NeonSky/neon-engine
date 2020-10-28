@@ -1,6 +1,7 @@
 #pragma once
 
 #include "buffer.hpp"
+#include "context.hpp"
 #include "debug_messenger.hpp"
 #include "index_buffer.hpp"
 #include "obj_model.hpp"
@@ -13,7 +14,7 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include <GLFW/glfw3.h>
+#include "../../../os/window.hpp"
 
 #include <algorithm>
 #include <array>
@@ -36,6 +37,8 @@ namespace engine::graphics::api::vulkan {
     void run();
 
   private:
+    std::vector<std::unique_ptr<Context>> _contexts;
+
     std::unique_ptr<PhysicalDevice> _physical_device;
     std::unique_ptr<DebugMessenger> _debug_messenger;
     std::unique_ptr<OBJModel> _viking_room;
@@ -48,6 +51,7 @@ namespace engine::graphics::api::vulkan {
     std::unique_ptr<SwapChain> _swap_chain;
     std::unique_ptr<SwapChain> _swap_chain2;
 
+    std::vector<std::unique_ptr<os::IWindow>> _windows;
     GLFWwindow* window;
     GLFWwindow* window2;
 

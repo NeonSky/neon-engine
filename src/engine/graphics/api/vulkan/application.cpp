@@ -49,6 +49,11 @@ void Application::run() {
 }
 
 void Application::initWindow() {
+  // auto* w = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+  _windows.push_back(std::make_unique<os::Window>(800, 600, "Vulkan Window 1"));
+  _windows.push_back(std::make_unique<os::Window>(800, 600, "Vulkan Window 2"));
+
+  // Old stuff
   glfwInit();
 
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -77,6 +82,9 @@ void Application::framebufferResizeCallback2(GLFWwindow* window, int width, int 
 void Application::initVulkan() {
   createInstance();
   setupDebugMessenger();
+
+  _contexts.push_back(std::make_unique<Context>());
+
   _surface         = std::make_unique<Surface>(instance, window);
   _physical_device = std::make_unique<PhysicalDevice>(instance);
   createLogicalDevice();
@@ -138,8 +146,6 @@ void Application::initVulkan() {
 
     swap_windows();
   }
-
-  LOG_DEBUG("Creation done.");
 }
 
 // More like swap chains or rendering context
@@ -971,6 +977,8 @@ void Application::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSiz
 }
 
 void Application::createCommandBuffers() {
+  static bool t = false;
+  t             = !t;
   commandBuffers.resize(swapChainFramebuffers->size());
 
   VkCommandBufferAllocateInfo allocInfo{};
@@ -999,7 +1007,10 @@ void Application::createCommandBuffers() {
     renderPassInfo.renderArea.extent = _swap_chain->image_extent();
 
     std::array<VkClearValue, 2> clearValues{};
-    clearValues[0].color        = {0.0f, 0.0f, 0.0f, 1.0f};
+    if (t)
+      clearValues[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+    else
+      clearValues[0].color = {0.5f, 0.5f, 0.5f, 1.0f};
     clearValues[1].depthStencil = {1.0f, 0};
 
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -1050,15 +1061,21 @@ void Application::createSyncObjects() {
 }
 
 void Application::updateUniformBuffer(uint32_t currentImage) {
+  static bool t         = false;
+  t                     = !t;
   static auto startTime = std::chrono::high_resolution_clock::now();
 
   auto currentTime = std::chrono::high_resolution_clock::now();
   float time       = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
   UniformBufferObject ubo{};
-  ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-  ubo.view  = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-  ubo.proj  = glm::perspective(glm::radians(45.0f), _swap_chain->image_extent().width / (float) _swap_chain->image_extent().height, 0.1f, 10.0f);
+  glm::mat4 transform(1);
+  if (t)
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  else
+    ubo.model = glm::translate(transform, glm::vec3(0.0F, 0.0F, -0.5F)) * glm::rotate(glm::mat4(1.0f), -time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  ubo.proj = glm::perspective(glm::radians(45.0f), _swap_chain->image_extent().width / (float) _swap_chain->image_extent().height, 0.1f, 10.0f);
   ubo.proj[1][1] *= -1;
 
   void* data;
