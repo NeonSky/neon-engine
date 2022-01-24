@@ -50,8 +50,6 @@ void LineRenderer::render(const geometry::Matrix<4>& view_projection) {
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
   glEnableVertexAttribArray(1);
 
-  glBindVertexArray(vao);
-
   _shader.set_uniform_mat4("model_view_projection", view_projection);
 
   auto end = _line_queue.begin();

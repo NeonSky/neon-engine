@@ -5,7 +5,6 @@
 
 namespace engine::graphics {
 
-  /// @todo Move, remove or potentially change name. Maybe to player_camera
   enum Direction {
     FORWARD,
     BACKWARD,
@@ -20,6 +19,7 @@ namespace engine::graphics {
     ORTHOGRAPHIC,
   };
 
+  /// @todo Move, remove or potentially change name. Maybe to player_camera
   class Camera {
   public:
     Camera();

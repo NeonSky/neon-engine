@@ -3,6 +3,8 @@
 #include "input_manager.hpp"
 #include "window.hpp"
 
+#include "../graphics/api/application.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -10,10 +12,12 @@ namespace engine::os {
 
   /// Each window has its own OpenGL context, but all windows share the same context objects.
   /// @see https://www.khronos.org/opengl/wiki/OpenGL_Context
+  /// @todo Check if multiple wms could be supported, i.e. removing the instances static variable.
   // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
   class WindowManager {
   public:
     WindowManager();
+    WindowManager(graphics::api::Backend backend);
     ~WindowManager();
 
     /// @name Mutators
@@ -54,6 +58,7 @@ namespace engine::os {
   private:
     /// @{
     /// Private state.
+    std::unique_ptr<graphics::api::IApplication> _graphics_app;
     static unsigned int _instances;       //< Amount of instances of this class.
     unsigned int _current;                //< Current render target.
     std::unique_ptr<Window> _base_window; //< Owns the base OpenGL context from which other windows share/derive.
@@ -64,7 +69,5 @@ namespace engine::os {
     mutable std::vector<std::function<void(unsigned int)>> _on_window_closed_callbacks;
     mutable std::vector<std::function<void()>> _on_all_windows_closed_callbacks;
     /// @}
-
-    void poll_errors();
   };
 }

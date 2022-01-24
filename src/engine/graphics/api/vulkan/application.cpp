@@ -41,8 +41,13 @@ struct UniformBufferObject {
   alignas(16) glm::mat4 proj;
 };
 
+Application::Application() {
+  createInstance();
+  setupDebugMessenger();
+}
+
 void Application::run() {
-  initWindow();
+  // initWindow();
   initVulkan();
   mainLoop();
   cleanup();
@@ -50,8 +55,8 @@ void Application::run() {
 
 void Application::initWindow() {
   // auto* w = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-  _windows.push_back(std::make_unique<os::Window>(800, 600, "Vulkan Window 1"));
-  _windows.push_back(std::make_unique<os::Window>(800, 600, "Vulkan Window 2"));
+  // _windows.push_back(std::make_unique<os::Window>(800, 600, "Vulkan Window 1"));
+  // _windows.push_back(std::make_unique<os::Window>(800, 600, "Vulkan Window 2"));
 
   // Old stuff
   glfwInit();
@@ -80,10 +85,10 @@ void Application::framebufferResizeCallback2(GLFWwindow* window, int width, int 
 }
 
 void Application::initVulkan() {
-  createInstance();
-  setupDebugMessenger();
+  // createInstance();
+  // setupDebugMessenger();
 
-  _contexts.push_back(std::make_unique<Context>());
+  // _contexts.push_back(std::make_unique<Context>());
 
   _surface         = std::make_unique<Surface>(instance, window);
   _physical_device = std::make_unique<PhysicalDevice>(instance);
@@ -1231,4 +1236,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Application::debugCallback(VkDebugUtilsMessageSev
   std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
   return VK_FALSE;
+}
+
+auto Application::create_context(std::function<VkSurfaceKHR(VkInstance&)> create_surface) -> std::unique_ptr<IContext> {
+  return std::make_unique<Context>(instance, create_surface(instance));
 }

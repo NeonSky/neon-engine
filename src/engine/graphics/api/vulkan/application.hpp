@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../application.hpp"
+
 #include "buffer.hpp"
 #include "context.hpp"
 #include "debug_messenger.hpp"
@@ -23,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <optional>
 #include <set>
@@ -32,9 +35,14 @@
 
 namespace engine::graphics::api::vulkan {
 
-  class Application {
+  class Application : public IApplication {
   public:
+    Application();
+
     void run();
+
+    /// @brief Creates a new graphics context.
+    auto create_context(std::function<VkSurfaceKHR(VkInstance&)> create_surface) -> std::unique_ptr<IContext>;
 
   private:
     std::vector<std::unique_ptr<Context>> _contexts;
@@ -51,7 +59,7 @@ namespace engine::graphics::api::vulkan {
     std::unique_ptr<SwapChain> _swap_chain;
     std::unique_ptr<SwapChain> _swap_chain2;
 
-    std::vector<std::unique_ptr<os::IWindow>> _windows;
+    // std::vector<std::unique_ptr<os::IWindow>> _windows;
     GLFWwindow* window;
     GLFWwindow* window2;
 

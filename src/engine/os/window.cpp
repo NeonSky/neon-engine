@@ -1,7 +1,16 @@
 #include "window.hpp"
 #include "../debug/logger.hpp"
 
+#include "../graphics/api/opengl/context.hpp"
+#include "../graphics/api/vulkan/application.hpp"
+#include "../graphics/api/vulkan/context.hpp"
+
 #include <glad/glad.h>
+
+#include <vulkan/vulkan.h>
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -18,12 +27,12 @@ Window::Window(unsigned int width, unsigned int height)
         : Window(width, height, "Application") {}
 
 Window::Window(unsigned int width, unsigned int height, const char* title)
-        : Window(width, height, title, nullptr) {}
+        : Window(width, height, title, nullptr, nullptr) {}
 
-Window::Window(unsigned int width, unsigned int height, const char* title, Window& parent)
-        : Window(width, height, title, &parent) {}
+Window::Window(unsigned int width, unsigned int height, const char* title, Window& parent, graphics::api::IApplication& app)
+        : Window(width, height, title, &parent, &app) {}
 
-Window::Window(unsigned int width, unsigned int height, const char* title, Window* parent)
+Window::Window(unsigned int width, unsigned int height, const char* title, Window* parent, graphics::api::IApplication* app)
         : _title(title),
           _width(width),
           _height(height),
@@ -37,8 +46,10 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
   if (parent != nullptr)
     glfw_window_parent = parent->_window.get();
 
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
   _window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>(
-    glfwCreateWindow((int) width, (int) height, title, nullptr, glfw_window_parent),
+    // glfwCreateWindow((int) width, (int) height, title, nullptr, glfw_window_parent),
+    glfwCreateWindow((int) width, (int) height, title, nullptr, nullptr),
     [](GLFWwindow* window) {
       glfwDestroyWindow(window);
     });
@@ -46,11 +57,11 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
   if (_window == nullptr)
     LOG_CRITICAL("Failed to create GLFW window.");
 
-  GLFWwindow* prev_context = glfwGetCurrentContext();
-  glfwMakeContextCurrent(_window.get());
+  // GLFWwindow* prev_context = glfwGetCurrentContext();
+  // glfwMakeContextCurrent(_window.get());
 
   // Vertical synchronization
-  glfwSwapInterval(1);
+  // glfwSwapInterval(1);
 
   // Multisample anti-aliasing (MSAA). OpenGL needs to be initialized first though.
   // CHECK_GL_ERROR();
@@ -111,7 +122,24 @@ Window::Window(unsigned int width, unsigned int height, const char* title, Windo
       c(xoffset, yoffset);
   });
 
-  glfwMakeContextCurrent(prev_context);
+  if (parent != nullptr) {
+    // _graphics_context = std::make_unique<graphics::api::opengl::Context>();
+
+    LOG_DEBUG("ASD");
+    auto* a = dynamic_cast<graphics::api::vulkan::Application*>(app);
+    if (a != nullptr) {
+      _graphics_context = a->create_context([this](VkInstance& instance) {
+        VkSurfaceKHR surface;
+        // glfwSetWindowAttrib(_window.get(), GLFW_CLIENT_API, GLFW_NO_API);
+        if (glfwCreateWindowSurface(instance, _window.get(), nullptr, &surface) != VK_SUCCESS)
+          LOG_ERROR("Failed to create window surface.");
+        return surface;
+      });
+      a->run();
+    }
+  }
+
+  // glfwMakeContextCurrent(prev_context);
 }
 
 void Window::lock_mouse_cursor() const {
@@ -127,7 +155,7 @@ void Window::hide_mouse_cursor() const {
 }
 
 void Window::set_as_current() {
-  glfwMakeContextCurrent(_window.get());
+  // glfwMakeContextCurrent(_window.get());
 }
 
 /// @todo Document "(void) io;" usage.
@@ -160,6 +188,10 @@ void Window::toggle_fullscreen() {
 
 void Window::on_should_close(const std::function<void()>& callback) const {
   _on_should_close_callbacks.push_back(callback);
+}
+
+auto Window::graphics_context() const -> graphics::api::IContext& {
+  return *_graphics_context;
 }
 
 auto Window::title() const -> std::string {

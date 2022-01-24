@@ -13,6 +13,9 @@ using namespace engine::os;
 unsigned int WindowManager::_instances = 0;
 
 WindowManager::WindowManager()
+        : WindowManager(graphics::api::Backend::VULKAN) {}
+
+WindowManager::WindowManager(graphics::api::Backend backend)
         : _current(0) {
 
   _instances++;
@@ -28,15 +31,19 @@ WindowManager::WindowManager()
   if (glfwInit() == GLFW_FALSE)
     LOG_CRITICAL("Failed to initialize GLFW.");
 
-  // Create the first window and set it as ours first render target.
+  // Create the first window/context and set it as ours first render target.
   // GLFW needs to have a OpenGL context before glad can inject OpenGL features to GLFW.
   glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
   _base_window = std::make_unique<Window>(1, 1);
   _base_window->set_as_current();
 
   // Have glad inject the latest OpenGL features to GLFW.
-  if (gladLoadGLLoader((GLADloadproc) glfwGetProcAddress) == 0)
-    LOG_CRITICAL("Failed to setup glad.");
+  LOG_DEBUG("ASDAS");
+  // if (gladLoadGLLoader((GLADloadproc) glfwGetProcAddress) == 0)
+  //   LOG_CRITICAL("Failed to setup glad.");
+  LOG_DEBUG("ASDAS");
+
+  _graphics_app = graphics::api::create_application(backend);
 
   glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 
@@ -56,7 +63,7 @@ WindowManager::~WindowManager() {
 
 /// @todo Move gui to another package.
 void WindowManager::create_window() {
-  _windows.push_back(std::make_unique<Window>(1920, 1080, "Application", *_base_window));
+  _windows.push_back(std::make_unique<Window>(1920, 1080, "Application", *_base_window, *_graphics_app));
   unsigned int id = _windows.size() - 1;
 
   _input_manager.add_window(*_windows[id]);

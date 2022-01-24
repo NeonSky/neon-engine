@@ -13,12 +13,4 @@ namespace engine::graphics::api {
     virtual auto is_vao(unsigned int id) -> bool      = 0;
   };
 
-  enum class GraphicsAPI {
-    OPENGL,
-    VULKAN,
-  };
-
-  /// @brief Creates a new graphics context that uses the graphics API specified by \p api.
-  auto create_context(GraphicsAPI api) -> std::unique_ptr<IContext>;
-
 }

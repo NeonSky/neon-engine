@@ -8,6 +8,9 @@
 #include "../../engine/graphics/component/cuboid.hpp"
 #include "../../engine/graphics/component/line_segment.hpp"
 
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
 using namespace app::scenes;
 using namespace engine;
 
